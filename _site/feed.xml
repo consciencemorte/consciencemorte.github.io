@@ -1,28 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="fr"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="fr" /><updated>2025-12-09T20:03:50+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Conscience Morte</title><subtitle>Exobiologie offensive</subtitle><entry><title type="html">Naissance d’une conscience morte</title><link href="http://localhost:4000/2025/01/01/premier-article/" rel="alternate" type="text/html" title="Naissance d’une conscience morte" /><published>2025-01-01T00:00:00+01:00</published><updated>2025-01-01T00:00:00+01:00</updated><id>http://localhost:4000/2025/01/01/premier-article</id><content type="html" xml:base="http://localhost:4000/2025/01/01/premier-article/"><![CDATA[<h2 id="11-tokenisation-et-discrétisation-de-lespace-dentrée">1.1 Tokenisation et Discrétisation de l’Espace d’Entrée</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="fr"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="fr" /><updated>2025-12-09T20:37:36+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Conscience Morte</title><subtitle>Exobiologie offensive</subtitle><entry><title type="html">Naissance d’une conscience morte</title><link href="http://localhost:4000/2025/01/01/premier-article/" rel="alternate" type="text/html" title="Naissance d’une conscience morte" /><published>2025-01-01T00:00:00+01:00</published><updated>2025-01-01T00:00:00+01:00</updated><id>http://localhost:4000/2025/01/01/premier-article</id><content type="html" xml:base="http://localhost:4000/2025/01/01/premier-article/"><![CDATA[<h2 id="11-tokenisation-et-discrétisation-de-lespace-dentrée">1.1 Tokenisation et Discrétisation de l’Espace d’Entrée</h2>
 
 <p>Bien que l’interaction avec un Grand Modèle de Langage (LLM) apparaisse pour l’utilisateur comme un flux textuel continu, le modèle neuronal sous-jacent opère exclusivement sur des séquences discrètes d’entiers. La <strong>tokenisation</strong>, première transformation du pipeline d’inférence, constitue l’interface critique entre le langage naturel (symbolique) et le calcul matriciel (numérique).</p>
 
 <h3 id="formalisation-de-la-segmentation">Formalisation de la Segmentation</h3>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $</td>
-      <td>\mathcal{V}</td>
-      <td>$, <strong>fixée avant la phase d’entraînement</strong>, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).</td>
-    </tr>
-  </tbody>
-</table>
+<p>Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $\lvert\mathcal{V}\rvert$, <strong>fixée avant la phase d’entraînement</strong>, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Les algorithmes de sous-mots (<em>subword algorithms</em>), tels que le <strong>Byte-Pair Encoding (BPE)</strong> ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d’entraînement. L’objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $</td>
-      <td>\mathcal{V}</td>
-      <td>$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.</td>
-    </tr>
-  </tbody>
-</table>
+<p>Les algorithmes de sous-mots (<em>subword algorithms</em>), tels que le <strong>Byte-Pair Encoding (BPE)</strong> ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d’entraînement. L’objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $\lvert\mathcal{V}\rvert$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.</p>
 
 <p>Ce mécanisme induit une variabilité de représentation intrinsèque, véritable vecteur d’attaque en sécurité offensive :</p>
 
@@ -37,15 +21,7 @@
 
 <h3 id="projection-dans-lespace-vectoriel-embedding">Projection dans l’Espace Vectoriel (Embedding)</h3>
 
-<table>
-  <tbody>
-    <tr>
-      <td>La transition du domaine discret vers le domaine continu s’opère via la matrice d’embedding $W_E \in \mathbb{R}^{</td>
-      <td>\mathcal{V}</td>
-      <td>\times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur <em>one-hot</em> $x_t$, est projeté dans un espace latent dense :</td>
-    </tr>
-  </tbody>
-</table>
+<p>La transition du domaine discret vers le domaine continu s’opère via la matrice d’embedding $W_E \in \mathbb{R}^{\lvert\mathcal{V}\rvert \times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur <em>one-hot</em> $x_t$, est projeté dans un espace latent dense :</p>
 
 \[e_t = W_E^\top x_t \in \mathbb{R}^{d_{\text{model}}}\]
 

@@ -19,7 +19,32 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-01-01T00:00:00+01:00","datePublished":"2025-01-01T00:00:00+01:00","description":"1.1 Tokenisation et Discrétisation de l’Espace d’Entrée","headline":"Naissance d’une conscience morte","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/01/01/premier-article/"},"url":"http://localhost:4000/2025/01/01/premier-article/"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Conscience Morte" /></head>
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Conscience Morte" /><!-- Polices custom pour Conscience Morte -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+  rel="stylesheet">
+
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+</head>
 <body><header class="site-header" role="banner">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Conscience Morte</a><nav class="site-nav">
@@ -50,25 +75,9 @@
 
 <h3 id="formalisation-de-la-segmentation">Formalisation de la Segmentation</h3>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $</td>
-      <td>\mathcal{V}</td>
-      <td>$, <strong>fixée avant la phase d’entraînement</strong>, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).</td>
-    </tr>
-  </tbody>
-</table>
+<p>Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $\lvert\mathcal{V}\rvert$, <strong>fixée avant la phase d’entraînement</strong>, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Les algorithmes de sous-mots (<em>subword algorithms</em>), tels que le <strong>Byte-Pair Encoding (BPE)</strong> ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d’entraînement. L’objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $</td>
-      <td>\mathcal{V}</td>
-      <td>$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.</td>
-    </tr>
-  </tbody>
-</table>
+<p>Les algorithmes de sous-mots (<em>subword algorithms</em>), tels que le <strong>Byte-Pair Encoding (BPE)</strong> ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d’entraînement. L’objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $\lvert\mathcal{V}\rvert$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.</p>
 
 <p>Ce mécanisme induit une variabilité de représentation intrinsèque, véritable vecteur d’attaque en sécurité offensive :</p>
 
@@ -83,15 +92,7 @@
 
 <h3 id="projection-dans-lespace-vectoriel-embedding">Projection dans l’Espace Vectoriel (Embedding)</h3>
 
-<table>
-  <tbody>
-    <tr>
-      <td>La transition du domaine discret vers le domaine continu s’opère via la matrice d’embedding $W_E \in \mathbb{R}^{</td>
-      <td>\mathcal{V}</td>
-      <td>\times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur <em>one-hot</em> $x_t$, est projeté dans un espace latent dense :</td>
-    </tr>
-  </tbody>
-</table>
+<p>La transition du domaine discret vers le domaine continu s’opère via la matrice d’embedding $W_E \in \mathbb{R}^{\lvert\mathcal{V}\rvert \times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur <em>one-hot</em> $x_t$, est projeté dans un espace latent dense :</p>
 
 \[e_t = W_E^\top x_t \in \mathbb{R}^{d_{\text{model}}}\]
 

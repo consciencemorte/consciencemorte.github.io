@@ -705,10 +705,11 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.48;
   background-image: radial-gradient(45% 55% at 15% 30%, rgba(124, 63, 228, 0.28), transparent 60%), radial-gradient(50% 60% at 85% 20%, rgba(24, 255, 246, 0.18), transparent 65%), radial-gradient(35% 40% at 35% 80%, rgba(245, 163, 181, 0.22), transparent 70%), linear-gradient(120deg, rgba(255, 184, 108, 0.08), transparent 45%, rgba(124, 63, 228, 0.06) 75%);
   filter: blur(16px);
   mix-blend-mode: screen;
+  animation: cm-bg-flow 42s ease-in-out infinite alternate;
 }
 
 body::after {
@@ -716,11 +717,28 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.14;
   background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08) 1px, transparent 1px, transparent 4px), repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 2px, transparent 2px, transparent 5px);
   mix-blend-mode: soft-light;
+  background-size: auto, 100% 220%;
+  animation: cm-scanlines 14s linear infinite;
 }
 
+/* Animation lente du fond global (hors header) */
+@keyframes cm-bg-flow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -24px, 0) scale(1.04);
+    filter: hue-rotate(12deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: hue-rotate(0deg);
+  }
+}
 /* Liens */
 a, a:visited {
   color: var(--cm-glow);

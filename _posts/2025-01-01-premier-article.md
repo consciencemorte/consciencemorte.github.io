@@ -12,9 +12,9 @@ Bien que l’interaction avec un Grand Modèle de Langage (LLM) apparaisse pour 
 
 ### Formalisation de la Segmentation
 
-Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $|\mathcal{V}|$, **fixée avant la phase d'entraînement**, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).
+Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $\lvert\mathcal{V}\rvert$, **fixée avant la phase d'entraînement**, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).
 
-Les algorithmes de sous-mots (_subword algorithms_), tels que le **Byte-Pair Encoding (BPE)** ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d'entraînement. L'objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $|\mathcal{V}|$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.
+Les algorithmes de sous-mots (_subword algorithms_), tels que le **Byte-Pair Encoding (BPE)** ou SentencePiece, ne procèdent pas par une compression sémantique, mais par une compression statistique : ils réalisent une fusion itérative des paires de symboles les plus fréquentes dans le corpus d'entraînement. L'objectif est de minimiser la longueur moyenne de la séquence $(t_i)$ tout en maintenant la taille du vocabulaire $\lvert\mathcal{V}\rvert$ fixe. Il en résulte un découpage adaptatif : les termes fréquents deviennent des tokens uniques, tandis que les termes rares ou morphologiquement complexes sont décomposés en sous-unités.
 
 Ce mécanisme induit une variabilité de représentation intrinsèque, véritable vecteur d'attaque en sécurité offensive :
 
@@ -25,7 +25,7 @@ Ce mécanisme induit une variabilité de représentation intrinsèque, véritabl
 
 ### Projection dans l'Espace Vectoriel (Embedding)
 
-La transition du domaine discret vers le domaine continu s'opère via la matrice d’embedding $W_E \in \mathbb{R}^{|\mathcal{V}| \times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur _one-hot_ $x_t$, est projeté dans un espace latent dense :
+La transition du domaine discret vers le domaine continu s'opère via la matrice d’embedding $W_E \in \mathbb{R}^{\lvert\mathcal{V}\rvert \times d_{\text{model}}}$. Chaque token $t$, représenté conceptuellement par un vecteur _one-hot_ $x_t$, est projeté dans un espace latent dense :
 
 $$e_t = W_E^\top x_t \in \mathbb{R}^{d_{\text{model}}}$$
 
