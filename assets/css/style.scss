@@ -1,0 +1,95 @@
+---
+---
+
+// On commence par le CSS du thème
+@import "{{ site.theme }}";
+
+// === Palette Conscience Morte ===
+:root {
+  --cm-bg: #0F0A1C;          // Noir cosmique
+  --cm-violet: #3C0F62;      // Violet neurone
+  --cm-glow: #7F3FE4;        // Glow synaptique
+  --cm-brume: #E6D3FF;       // Brume cognitive
+  --cm-cyan: #18FFF6;        // Cyan aberrant
+  --cm-rose: #F5A3B5;        // Rose anomalique
+  --cm-orange: #FFB86C;      // Orange spectral
+}
+
+/* Fond + texte */
+body {
+  background-color: var(--cm-bg);
+  color: var(--cm-brume);
+}
+
+/* Liens */
+a, a:visited {
+  color: var(--cm-glow);
+}
+a:hover {
+  color: var(--cm-rose);
+}
+
+/* Titres */
+h1, h2, h3, h4 {
+  color: var(--cm-glow);
+}
+
+/* Citations markdown (>) */
+blockquote {
+  border-left: 4px solid var(--cm-orange);
+  color: var(--cm-orange);
+  background: rgba(255, 184, 108, 0.05);
+}
+
+/* Code inline + blocs */
+code, pre {
+  background-color: #140f27;
+  color: var(--cm-cyan);
+}
+
+/* Séparateurs */
+hr {
+  border-color: var(--cm-violet);
+}
+
+/* Header / navbar du thème minima */
+.site-header {
+  background-color: transparent;
+  background-image: linear-gradient(
+      135deg,
+      rgba(124, 63, 228, 0.35),
+      rgba(24, 255, 246, 0.1)
+    ),
+    url("{{ '/assets/img/header-neuro.png' | relative_url }}");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--cm-violet);
+}
+
+.site-title, .site-title:visited {
+  color: var(--cm-glow);
+}
+.site-title:hover {
+  color: var(--cm-cyan);
+}
+
+.site-nav .page-link {
+  color: var(--cm-brume);
+}
+.site-nav .page-link:hover {
+  color: var(--cm-rose);
+}
+
+/* Contenu de l’article */
+.post-title {
+  color: var(--cm-glow);
+}
+.post-meta {
+  color: #9a8cd9;
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--cm-violet);
+  color: #7e72c5;
+}

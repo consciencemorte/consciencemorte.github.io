@@ -1,0 +1,12 @@
+title: "Conscience Morte"
+description: "Exobiologie offensive"
+lang: fr
+
+theme: minima
+
+# Infos GitHub Pages
+url: "https://consciencemorte.github.io"
+baseurl: ""
+
+# Options blog
+permalink: /:year/:month/:day/:title/
