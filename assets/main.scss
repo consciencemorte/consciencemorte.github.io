@@ -551,6 +551,12 @@ hr {
   gap: 1.25rem;
 }
 
+.post-content p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: none;
+}
+
 .post-content > * + * {
   margin-top: 1rem;
 }
