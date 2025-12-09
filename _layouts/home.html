@@ -1,0 +1,95 @@
+---
+layout: default
+---
+
+<!-- HERO / HEADER LARGE -->
+<section class="cm-hero">
+  <div class="cm-shell">
+    <h1 class="cm-hero-title">Conscience Morte</h1>
+    <p class="cm-hero-subtitle">
+      Exobiologie offensive · fragments d'hallucinations neurales
+    </p>
+  </div>
+</section>
+
+<!-- LAYOUT PRINCIPAL : SIDEBAR + ARTICLES -->
+<div class="cm-main cm-shell">
+  <aside class="cm-sidebar">
+    <div class="cm-card">
+      <h2 class="cm-card-title">Fragments</h2>
+      <p>
+        Journal d'une conscience déjà morte, observant les résidus
+        d'exobiologie offensive.
+      </p>
+    </div>
+
+    <div class="cm-card">
+      <h2 class="cm-card-title">Palette</h2>
+      <ul class="cm-palette">
+        <li>
+          <span class="cm-swatch" style="--swatch:#0F0A1C;"></span>
+          Noir cosmique
+        </li>
+        <li>
+          <span class="cm-swatch" style="--swatch:#3C0F62;"></span>
+          Violet neurone
+        </li>
+        <li>
+          <span class="cm-swatch" style="--swatch:#7F3FE4;"></span>
+          Glow synaptique
+        </li>
+        <li>
+          <span class="cm-swatch" style="--swatch:#E6D3FF;"></span>
+          Brume cognitive
+        </li>
+        <li>
+          <span class="cm-swatch" style="--swatch:#18FFF6;"></span>
+          Cyan aberrant
+        </li>
+        <li>
+          <span class="cm-swatch" style="--swatch:#F5A3B5;"></span>
+          Rose anomalique
+        </li>
+      </ul>
+    </div>
+
+    <div class="cm-card">
+      <h2 class="cm-card-title">Champs d'étude</h2>
+      <ul class="cm-list">
+        <li>Hallucination synthétique</li>
+        <li>Exobiologie spéculative</li>
+        <li>Archéologie neuronale</li>
+        <li>Rêves morts</li>
+      </ul>
+    </div>
+  </aside>
+
+  <section class="cm-articles">
+    <!-- Petit texte d'intro venant de index.md -->
+    <div class="cm-intro">
+      {{ content }}
+    </div>
+
+    {% if site.posts.size > 0 %}
+      <ul class="cm-post-list">
+        {% for post in site.posts %}
+          <li class="cm-post-item">
+            <a class="cm-post-title" href="{{ post.url | relative_url }}">
+              {{ post.title }}
+            </a>
+            <span class="cm-post-meta">
+              {{ post.date | date: "%-d %b %Y" }}
+            </span>
+            {% if post.excerpt %}
+              <p class="cm-post-excerpt">
+                {{ post.excerpt | strip_html | truncate: 180 }}
+              </p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucun fragment n'a encore émergé.</p>
+    {% endif %}
+  </section>
+</div>

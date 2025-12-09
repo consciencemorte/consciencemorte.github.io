@@ -4,6 +4,31 @@
 /* On importe les styles du thème Minima */
 @import "minima";
 
+/* Wrapper override to widen layout */
+.wrapper {
+  max-width: 1280px;
+  width: min(94vw, 1280px);
+  margin: 0 auto;
+}
+
+/* Let page content span full width so hero can breathe */
+.page-content {
+  padding: 0;
+}
+.page-content > .wrapper {
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+/* Shell for our custom sections */
+.cm-shell {
+  max-width: 1400px;
+  width: min(98vw, 1400px);
+  margin-left: clamp(0rem, 1vw, 0.75rem);
+  margin-right: auto;
+}
+
 /* === Palette Conscience Morte === */
 :root {
   --cm-bg: #0F0A1C;          /* Noir cosmique */
@@ -19,6 +44,47 @@
 body {
   background-color: var(--cm-bg);
   color: var(--cm-brume);
+  /* fumée / halos / glitch très léger */
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(124, 63, 228, 0.30) 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(24, 255, 246, 0.18) 0, transparent 60%),
+    linear-gradient(135deg, rgba(245, 163, 181, 0.06), transparent 40%, rgba(255, 184, 108, 0.04) 75%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.0),
+      rgba(0, 0, 0, 0.0) 3px,
+      rgba(5, 2, 15, 0.45) 4px
+    );
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* couches supplémentaires fumée / artefacts sur le fond (hors header) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(45% 55% at 15% 30%, rgba(124, 63, 228, 0.28), transparent 60%),
+    radial-gradient(50% 60% at 85% 20%, rgba(24, 255, 246, 0.18), transparent 65%),
+    radial-gradient(35% 40% at 35% 80%, rgba(245, 163, 181, 0.22), transparent 70%),
+    linear-gradient(120deg, rgba(255, 184, 108, 0.08), transparent 45%, rgba(124, 63, 228, 0.06) 75%);
+  filter: blur(16px);
+  mix-blend-mode: screen;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08) 1px, transparent 1px, transparent 4px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 2px, transparent 2px, transparent 5px);
+  mix-blend-mode: soft-light;
 }
 
 /* Liens */
@@ -55,16 +121,9 @@ hr {
 
 /* HEADER / bandeau */
 .site-header {
-  background-color: transparent;
-  background-image: linear-gradient(
-      135deg,
-      rgba(124, 63, 228, 0.35),
-      rgba(24, 255, 246, 0.12)
-    ),
-    url("{{ '/assets/img/header-neuro.png' | relative_url }}");
-  background-size: cover;
-  background-position: center;
-  border-bottom: 1px solid var(--cm-violet);
+  background: #090515;
+  border-bottom: 1px solid #24143f;
+  background-image: none;
 }
 
 .site-title, .site-title:visited {
@@ -81,20 +140,257 @@ hr {
   color: var(--cm-rose);
 }
 
-/* CONTENU D’ACCUEIL */
-.page-content {
-  padding-top: 2rem;
+/* HERO / HEADER LARGE */
+.cm-hero {
+  position: relative;
+  padding: 5rem 0 3.5rem;
+  margin-bottom: 2.5rem;
+  background-image:
+    linear-gradient(
+      135deg,
+      rgba(15, 10, 28, 0.9),
+      rgba(60, 15, 98, 0.95),
+      rgba(15, 10, 28, 0.9)
+    ),
+    url("{{ '/assets/img/header-neuro.png' | relative_url }}");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--cm-violet);
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  align-items: stretch;
 }
 
-.home h1 {
+.cm-hero .cm-shell {
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding-left: clamp(0rem, 2vw, 1.2rem);
+  padding-right: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.cm-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(60% 70% at 15% 20%, rgba(124, 63, 228, 0.45), transparent 55%),
+    radial-gradient(50% 60% at 85% 35%, rgba(24, 255, 246, 0.25), transparent 60%),
+    radial-gradient(45% 55% at 40% 80%, rgba(245, 163, 181, 0.28), transparent 65%),
+    linear-gradient(135deg, rgba(255, 184, 108, 0.08), transparent 40%, rgba(124, 63, 228, 0.1) 70%);
+  mix-blend-mode: screen;
+  filter: blur(6px);
+}
+
+.cm-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(24, 255, 246, 0.15),
+      rgba(24, 255, 246, 0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+.cm-hero-title {
+  font-size: 3.5rem;
+  margin: 0 0 0.5rem;
   color: var(--cm-glow);
 }
 
+.cm-hero-subtitle {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--cm-cyan);
+  max-width: 40rem;
+  font-style: italic;
+}
+
+/* LAYOUT PRINCIPAL */
+.cm-main {
+  display: flex;
+  gap: 5rem;
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+  align-items: flex-start;
+  padding-left: clamp(0rem, 2vw, 1.2rem);
+  padding-right: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.cm-sidebar {
+  flex: 0 0 300px;
+}
+
+.cm-articles {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-left: 1.5rem;
+}
+
+/* cartes de la sidebar */
+.cm-card {
+  background: rgba(7, 4, 18, 0.9);
+  border: 1px solid rgba(124, 63, 228, 0.4);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.55);
+}
+
+.cm-card-title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cm-rose);
+}
+
+.cm-palette {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cm-palette li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.cm-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background-color: var(--swatch);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cm-list li {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+/* intro en haut de la colonne articles */
+.cm-intro {
+  margin-bottom: 1.5rem;
+  font-size: 0.98rem;
+}
+
+/* liste des posts */
+.cm-post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cm-post-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(60, 15, 98, 0.6);
+}
+
+.cm-post-title {
+  display: inline-block;
+  font-size: 1.15rem;
+  color: var(--cm-glow);
+}
+
+.cm-post-title:hover {
+  color: var(--cm-rose);
+}
+
+.cm-post-meta {
+  display: block;
+  font-size: 0.8rem;
+  color: #9a8cd9;
+  margin-top: 0.15rem;
+}
+
+.cm-post-excerpt {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--cm-brume);
+}
+
+/* posts individuels */
 .post-title {
   color: var(--cm-glow);
 }
+
 .post-meta {
   color: #9a8cd9;
+}
+
+/* Page article */
+.post {
+  max-width: 880px;
+  margin: 3.5rem auto 5rem;
+  padding: 0 1.75rem;
+}
+
+.post-header {
+  margin-bottom: 1.5rem;
+}
+
+.post-title {
+  font-size: 2.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.post-content {
+  line-height: 1.75;
+  font-size: 1rem;
+  gap: 1.25rem;
+}
+
+.post-content > * + * {
+  margin-top: 1rem;
+}
+
+/* responsive */
+@media (max-width: 800px) {
+  .cm-main {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .cm-sidebar {
+    flex: 1 1 auto;
+  }
+  .cm-hero-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrapper {
+    width: calc(100% - 1.5rem);
+  }
+  .cm-hero {
+    padding: 4rem 0 3rem;
+    min-height: 280px;
+  }
 }
 
 /* FOOTER */
