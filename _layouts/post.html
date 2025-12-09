@@ -4,6 +4,17 @@ layout: default
 
 <article class="post">
   <header class="post-header">
+    <nav class="cm-breadcrumb" aria-label="Fil d'Ariane">
+      <span class="cm-breadcrumb-root">Fragments</span>
+      {%- if page.categories and page.categories != empty -%}
+        {%- for cat in page.categories -%}
+          <span class="cm-breadcrumb-sep">›</span>
+          <span class="cm-breadcrumb-item">{{ cat }}</span>
+        {%- endfor -%}
+      {%- endif -%}
+      <span class="cm-breadcrumb-sep">›</span>
+      <span class="cm-breadcrumb-current">{{ page.title }}</span>
+    </nav>
     <h1 class="post-title">{{ page.title }}</h1>
     <p class="post-meta">{{ page.date | date: "%-d %b %Y" }}</p>
   </header>
