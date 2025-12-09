@@ -683,12 +683,16 @@ table td {
   --cm-cyan: #18FFF6; /* Cyan aberrant */
   --cm-rose: #F5A3B5; /* Rose anomalique */
   --cm-orange: #FFB86C; /* Orange spectral */
+  --cm-font-head: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --cm-font-body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --cm-font-code: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 /* Fond global + texte */
 body {
   background-color: var(--cm-bg);
   color: var(--cm-brume);
+  font-family: var(--cm-font-body);
   /* fumée / halos / glitch très léger */
   background-image: radial-gradient(circle at 0% 0%, rgba(124, 63, 228, 0.3) 0, transparent 55%), radial-gradient(circle at 100% 100%, rgba(24, 255, 246, 0.18) 0, transparent 60%), linear-gradient(135deg, rgba(245, 163, 181, 0.06), transparent 40%, rgba(255, 184, 108, 0.04) 75%), repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 3px, rgba(5, 2, 15, 0.45) 4px);
   background-attachment: fixed;
@@ -729,6 +733,8 @@ a:hover {
 /* Titres */
 h1, h2, h3, h4 {
   color: var(--cm-glow);
+  font-family: var(--cm-font-head);
+  font-weight: 600;
 }
 
 /* Blockquotes markdown (>) */
@@ -743,11 +749,20 @@ blockquote {
 code, pre {
   background-color: #140f27;
   color: var(--cm-cyan);
+  font-family: var(--cm-font-code);
 }
 
 /* Séparateurs */
 hr {
   border-color: var(--cm-violet);
+}
+
+.site-title,
+.cm-hero-title,
+.cm-card-title,
+.cm-post-title,
+.post-title {
+  font-family: var(--cm-font-head);
 }
 
 /* HEADER / bandeau */
@@ -759,10 +774,15 @@ hr {
 
 .site-title, .site-title:visited {
   color: var(--cm-glow);
+  position: relative;
+  text-shadow: 0 0 0 transparent;
+  transition: text-shadow 200ms ease, transform 200ms ease;
 }
 
 .site-title:hover {
   color: var(--cm-cyan);
+  text-shadow: -1px 0 8px rgba(24, 255, 246, 0.8), 1px 0 8px rgba(245, 163, 181, 0.8);
+  transform: translateY(-1px);
 }
 
 .site-nav .page-link {
@@ -786,6 +806,7 @@ hr {
   min-height: 360px;
   display: flex;
   align-items: stretch;
+  animation: cm-nebula-shift 38s ease-in-out infinite;
 }
 
 .cm-hero .cm-shell {
@@ -818,8 +839,39 @@ hr {
   mix-blend-mode: screen;
   opacity: 0.18;
   background-image: repeating-linear-gradient(90deg, rgba(24, 255, 246, 0.15), rgba(24, 255, 246, 0.15) 1px, transparent 1px, transparent 3px);
+  animation: cm-scanlines 9s linear infinite;
 }
 
+/* ANIMATION NÉBULEUSE DU HERO */
+@keyframes cm-nebula-shift {
+  0% {
+    background-position: 0% 50%, center;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%, center;
+    filter: hue-rotate(15deg);
+  }
+  100% {
+    background-position: 0% 50%, center;
+    filter: hue-rotate(0deg);
+  }
+}
+/* Effet scanlines doux pour le hero */
+@keyframes cm-scanlines {
+  0% {
+    background-position: 0 0, 0 0;
+    opacity: 0.1;
+  }
+  50% {
+    background-position: 4px 0, 0 3px;
+    opacity: 0.18;
+  }
+  100% {
+    background-position: 0 0, 0 0;
+    opacity: 0.1;
+  }
+}
 .cm-hero-title {
   font-size: 3.5rem;
   margin: 0 0 0.5rem;
@@ -931,16 +983,33 @@ hr {
 .cm-post-item {
   padding: 1rem 0;
   border-bottom: 1px solid rgba(60, 15, 98, 0.6);
+  position: relative;
+}
+
+.cm-post-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(24, 255, 246, 0.3), rgba(127, 63, 228, 0.5), transparent);
+  opacity: 0.4;
 }
 
 .cm-post-title {
   display: inline-block;
   font-size: 1.15rem;
   color: var(--cm-glow);
+  position: relative;
+  text-shadow: 0 0 0 transparent;
+  transition: text-shadow 200ms ease, transform 200ms ease;
 }
 
 .cm-post-title:hover {
   color: var(--cm-rose);
+  text-shadow: -1px 0 8px rgba(24, 255, 246, 0.8), 1px 0 8px rgba(245, 163, 181, 0.8);
+  transform: translateY(-1px);
 }
 
 .cm-post-meta {
@@ -1017,6 +1086,31 @@ hr {
 .site-footer {
   border-top: 1px solid var(--cm-violet);
   color: #7e72c5;
+}
+
+/* TYPOGRAPHIE CONSCIENCE MORTE */
+body {
+  font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  letter-spacing: 0.03em;
+}
+
+code, pre {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Chromatisme subtil : sélection & curseur */
+::selection {
+  background: rgba(24, 255, 246, 0.28);
+  color: var(--cm-brume);
+}
+
+body {
+  caret-color: var(--cm-cyan);
 }
 
 /*# sourceMappingURL=main.css.map */
