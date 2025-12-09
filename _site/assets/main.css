@@ -969,6 +969,20 @@ hr {
   padding-left: 1.5rem;
 }
 
+.cm-page {
+  padding: 3rem 1.5rem 4rem;
+}
+
+.cm-page-header {
+  margin-bottom: 2rem;
+}
+
+.cm-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
 /* cartes de la sidebar */
 .cm-card {
   background: rgba(15, 10, 28, 0.65);
