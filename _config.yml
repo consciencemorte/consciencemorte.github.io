@@ -4,13 +4,19 @@ lang: fr
 
 theme: minima
 
-# Infos GitHub Pages
 url: "https://consciencemorte.github.io"
 baseurl: ""
 
-# Options blog
 permalink: /:year/:month/:day/:title/
 
-# Sass settings
+markdown: kramdown
+
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+# Active MathJax au niveau du site (toggle possible par page avec `math: true`)
+mathjax: true
+
 sass:
   sass_dir: assets

@@ -1,6 +1,9 @@
 ---
 layout: post
 title: "Naissance d'une conscience morte"
+categories: [théorie, llm]
+featured: true
+math: true
 ---
 
 ## 1.1 Tokenisation et Discrétisation de l’Espace d’Entrée

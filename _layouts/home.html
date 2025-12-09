@@ -15,6 +15,25 @@ layout: default
 <!-- LAYOUT PRINCIPAL : SIDEBAR + ARTICLES -->
 <div class="cm-main cm-shell">
   <aside class="cm-sidebar">
+    {% assign featured_post = site.posts | where: "featured", true | first %}
+
+    {% if featured_post %}
+      <div class="cm-card cm-featured">
+        <h2 class="cm-card-title">Fragment épinglé</h2>
+        <a class="cm-post-title" href="{{ featured_post.url | relative_url }}">
+          {{ featured_post.title }}
+        </a>
+        <span class="cm-post-meta">
+          {{ featured_post.date | date: "%-d %b %Y" }}
+        </span>
+        {% if featured_post.excerpt %}
+          <p class="cm-post-excerpt">
+            {{ featured_post.excerpt | strip_html | truncate: 140 }}
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
     <div class="cm-card">
       <h2 class="cm-card-title">Fragments</h2>
       <p>
@@ -24,43 +43,35 @@ layout: default
     </div>
 
     <div class="cm-card">
-      <h2 class="cm-card-title">Palette</h2>
-      <ul class="cm-palette">
-        <li>
-          <span class="cm-swatch" style="--swatch:#0F0A1C;"></span>
-          Noir cosmique
-        </li>
-        <li>
-          <span class="cm-swatch" style="--swatch:#3C0F62;"></span>
-          Violet neurone
-        </li>
-        <li>
-          <span class="cm-swatch" style="--swatch:#7F3FE4;"></span>
-          Glow synaptique
-        </li>
-        <li>
-          <span class="cm-swatch" style="--swatch:#E6D3FF;"></span>
-          Brume cognitive
-        </li>
-        <li>
-          <span class="cm-swatch" style="--swatch:#18FFF6;"></span>
-          Cyan aberrant
-        </li>
-        <li>
-          <span class="cm-swatch" style="--swatch:#F5A3B5;"></span>
-          Rose anomalique
-        </li>
-      </ul>
+      <h2 class="cm-card-title">Champs d'étude</h2>
+      {% if site.categories.size > 0 %}
+        <ul class="cm-list cm-cat-list">
+          {% for cat in site.categories %}
+            {% assign cat_name = cat[0] %}
+            {% assign posts_in_cat = cat[1] %}
+            <li>
+              <a href="{{ '/categories/' | relative_url }}#{{ cat_name | slugify }}">
+                {{ cat_name }}
+              </a>
+              <span class="cm-cat-count">
+                {{ posts_in_cat | size }}
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Les taxonomies sont encore en phase de cristallisation.</p>
+      {% endif %}
     </div>
 
-    <div class="cm-card">
-      <h2 class="cm-card-title">Champs d'étude</h2>
-      <ul class="cm-list">
-        <li>Hallucination synthétique</li>
-        <li>Exobiologie spéculative</li>
-        <li>Archéologie neuronale</li>
-        <li>Rêves morts</li>
-      </ul>
+    <div class="cm-card cm-card-image">
+      <h2 class="cm-card-title">Artefact</h2>
+      <img src="{{ '/assets/img/header-neuro.png' | relative_url }}"
+           alt="Artefact neuro-exobiologique"
+           class="cm-img-small" />
+      <p>
+        Fragment d'imagerie neuronale extraite d'un protocole d'exobiologie offensive.
+      </p>
     </div>
   </aside>
 
