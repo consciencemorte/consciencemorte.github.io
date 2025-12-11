@@ -2,8 +2,11 @@
 layout: default
 ---
 
-<article class="post">
-  <header class="post-header">
+{%- assign hero_image = page.hero_image | default: page.header_image | default: page.cover -%}
+{%- assign hero_subtitle = page.hero_subtitle | default: page.subtitle -%}
+
+<section class="cm-hero cm-hero-post"{% if hero_image %} style="--cm-hero-img: url('{{ hero_image | relative_url }}');"{% endif %}>
+  <div class="cm-shell">
     <nav class="cm-breadcrumb" aria-label="Fil d'Ariane">
       <span class="cm-breadcrumb-root">Fragments</span>
       {%- if page.categories and page.categories != empty -%}
@@ -15,11 +18,60 @@ layout: default
       <span class="cm-breadcrumb-sep">›</span>
       <span class="cm-breadcrumb-current">{{ page.title }}</span>
     </nav>
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">{{ page.date | date: "%-d %b %Y" }}</p>
-  </header>
+    <h1 class="cm-hero-post-title">{{ page.title }}</h1>
+    {%- if hero_subtitle -%}
+      <p class="cm-hero-subtitle cm-hero-post-subtitle">{{ hero_subtitle }}</p>
+    {%- endif -%}
+    <p class="cm-hero-meta">{{ page.date | date: "%-d %b %Y" }}</p>
+  </div>
+</section>
 
-  <section class="post-content">
-    {{ content }}
-  </section>
+<article class="post post-with-hero">
+  <div class="post-body">
+    <aside class="post-toc" aria-label="Sommaire de l'article">
+      <div class="post-toc-title">Sommaire</div>
+      <nav class="post-toc-nav" id="cm-toc-nav">
+        <p class="post-toc-empty">Le sommaire apparaît ici.</p>
+      </nav>
+    </aside>
+    <section class="post-content" id="post-content">
+      {{ content }}
+    </section>
+  </div>
 </article>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const content = document.querySelector('.post-content');
+    const tocNav = document.getElementById('cm-toc-nav');
+    if (!content || !tocNav) return;
+
+    const headings = Array.from(content.querySelectorAll('h2, h3'));
+    if (!headings.length) {
+      tocNav.innerHTML = '<p class="post-toc-empty">Aucune section détectée.</p>';
+      return;
+    }
+
+    const list = document.createElement('ul');
+    headings.forEach((h) => {
+      const text = h.textContent.trim();
+      if (!text) return;
+      if (!h.id) {
+        h.id = text.toLowerCase()
+          .replace(/[^a-z0-9\u00C0-\u024f\s-]/gi, '')
+          .trim()
+          .replace(/\s+/g, '-');
+      }
+      const li = document.createElement('li');
+      if (h.tagName === 'H3') li.classList.add('is-sub');
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = text;
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+
+    tocNav.innerHTML = '';
+    tocNav.appendChild(list);
+  });
+</script>
