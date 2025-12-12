@@ -38,16 +38,19 @@
   --cm-cyan: #18FFF6;        /* Cyan aberrant */
   --cm-rose: #F5A3B5;        /* Rose anomalique */
   --cm-orange: #FFB86C;      /* Orange spectral */
+  --cm-text-main: var(--cm-brume);
   --cm-font-head: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --cm-font-body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --cm-font-code: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  --cm-font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 /* Fond global + texte */
 body {
   background-color: var(--cm-bg);
-  color: var(--cm-brume);
+  color: var(--cm-text-main);
   font-family: var(--cm-font-body);
+  font-size: 16px;
+  caret-color: var(--cm-cyan);
   /* fumée / halos / glitch très léger */
   background-image:
     radial-gradient(circle at 0% 0%, rgba(124, 63, 228, 0.30) 0, transparent 55%),
@@ -77,7 +80,7 @@ body::before {
     linear-gradient(120deg, rgba(255, 184, 108, 0.08), transparent 45%, rgba(124, 63, 228, 0.06) 75%);
   filter: blur(12px);
   mix-blend-mode: screen;
-  animation: cm-bg-flow 42s ease-in-out infinite alternate;
+  animation: cm-bg-flow 20s ease-in-out infinite alternate;
 }
 
 body::after {
@@ -91,7 +94,9 @@ body::after {
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 2px, transparent 2px, transparent 5px);
   mix-blend-mode: soft-light;
   background-size: auto, 100% 220%;
-  animation: cm-scanlines 14s linear infinite;
+  animation:
+    cm-glitch-band 6s infinite ease-in-out,
+    cm-scanlines-scroll 30s linear infinite;
 }
 
 /* Animation lente du fond global (hors header) */
@@ -100,11 +105,17 @@ body::after {
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(0, -24px, 0) scale(1.04);
+    transform: translate3d(-50px, -50px, 0) scale(1.1);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
   }
+}
+
+/* Balayage vertical continu des scanlines du fond */
+@keyframes cm-scanlines-scroll {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 0 0, 0 -220%; }
 }
 
 /* Liens */
@@ -120,6 +131,7 @@ h1, h2, h3, h4 {
   color: var(--cm-glow);
   font-family: var(--cm-font-head);
   font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 /* Blockquotes markdown (>) */
@@ -721,6 +733,56 @@ hr {
   margin-top: 1rem;
 }
 
+.post-comments {
+  max-width: 880px;
+  margin: 1rem auto 5rem;
+  padding: 0 1.75rem;
+}
+
+.post-comments-inner {
+  border: 1px solid rgba(124, 63, 228, 0.35);
+  border-radius: 14px;
+  background: rgba(15, 10, 28, 0.8);
+  box-shadow:
+    0 0 18px rgba(60, 15, 98, 0.35),
+    0 0 32px rgba(24, 255, 246, 0.16);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.post-comments-header h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.4rem;
+  color: var(--cm-glow);
+}
+
+.post-comments-header p {
+  margin: 0 0 1.2rem;
+  color: rgba(230, 211, 255, 0.85);
+  font-size: 0.98rem;
+}
+
+.post-comments-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.post-comments-embed {
+  border: 1px solid rgba(124, 63, 228, 0.35);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(12, 8, 23, 0.85);
+  min-height: 120px;
+}
+
+.post-comments-empty {
+  margin: 0;
+  color: rgba(230, 211, 255, 0.7);
+}
+
 .cm-figure {
   margin: 2.25rem auto;
   max-width: 1024px;
@@ -852,31 +914,10 @@ hr {
   font-family: var(--cm-font-head);
 }
 
-/* TYPOGRAPHIE CONSCIENCE MORTE */
-body {
-  font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  font-size: 16px;
-}
-
-h1, h2, h3, h4 {
-  font-family: "Cormorant Garamond", "Times New Roman", serif;
-  letter-spacing: 0.03em;
-}
-
-code, pre {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
 /* Chromatisme subtil : sélection & curseur */
 ::selection {
   background: var(--cm-rose);
   color: #000;
-}
-
-body {
-  caret-color: var(--cm-cyan);
 }
 
 /* Overrides pour la coloration syntaxique (Dark Mode) */

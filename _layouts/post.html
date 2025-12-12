@@ -40,6 +40,17 @@ layout: default
   </div>
 </article>
 
+<section class="post-comments" aria-labelledby="cm-comments-title">
+  <div class="post-comments-inner">
+    <header class="post-comments-header">
+      <h2 id="cm-comments-title">Commentaires</h2>
+    </header>
+    <div id="cm-comments-embed" class="post-comments-embed" data-loaded="false">
+      <p class="post-comments-empty">Chargement…</p>
+    </div>
+  </div>
+</section>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const content = document.querySelector('.post-content');
@@ -73,5 +84,24 @@ layout: default
 
     tocNav.innerHTML = '';
     tocNav.appendChild(list);
+  });
+
+  /* Chargement différé d'Utterances pour les commentaires partagés */
+  document.addEventListener('DOMContentLoaded', () => {
+    const embed = document.getElementById('cm-comments-embed');
+    if (!embed || embed.dataset.loaded === 'true') return;
+
+    const script = document.createElement('script');
+    script.src = 'https://utteranc.es/client.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.setAttribute('repo', '{{ site.github.repository_nwo | default: "consciencemorte/consciencemorte.github.io" }}');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'commentaire');
+    script.setAttribute('theme', 'github-dark');
+
+    embed.dataset.loaded = 'true';
+    embed.innerHTML = '';
+    embed.appendChild(script);
   });
 </script>

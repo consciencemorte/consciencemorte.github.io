@@ -24,6 +24,11 @@ Ce mécanisme induit une variabilité de représentation intrinsèque, véritabl
     
 2. **Sensibilité aux Perturbations (Adversarial Typos) :** Un même concept sémantique peut être segmenté de multiples manières selon des variations morphologiques infimes. Par exemple, le mot _"Malicious"_ peut posséder son propre token si sa fréquence est élevée. Cependant, une altération mineure comme _"Maliscious"_ pourra forcer le tokenizer à le fragmenter en une séquence inédite, par exemple `[Mal, is, cious]`. Pour un filtre de sécurité rigide basé sur une liste noire d'IDs, la séquence `[Malicious]` est interdite, mais la séquence `[Mal, is, cious]` pourrait être invisible, bien qu'elles portent un sens similaire pour le modèle une fois projetées.
     
+<figure class="cm-figure">
+  <img src="/assets/img/art1/Figure_1.png" alt="Graphique" loading="lazy">
+  <figcaption>Fig 1. L'illusion de la fragmentation : des tokens de surface disjoints ("Mal", "is", "cious") convergent vectoriellement vers le concept interdit, contournant les filtres lexicaux.</figcaption>
+</figure>
+
 
 ### Projection dans l'Espace Vectoriel (Embedding)
 
@@ -110,6 +115,11 @@ Cette topologie implique que les blocs de calcul ne transforment pas l'informati
 Mathématiquement, cela signifie que la représentation en sortie du bloc $L$ peut être vue comme la somme directe de l'embedding initial et de toutes les interventions successives des couches :
 
 $$x_L = x_0 + \sum_{i=0}^{L-1} F_i(x_i)$$
+
+<figure class="cm-figure">
+  <img src="/assets/img/art1/Figure_2_2.png" alt="Diagramme illustrant l'accumulation du flux résiduel dans un transformeur.">
+  <figcaption>Fig 2. L'Autoroute Résiduelle : L'état initial ($x_0$) est préservé, et chaque bloc injecte une mise à jour vectorielle ($\Delta x$) additive qui s'accumule, ce qui est la fondation de l'inertie sémantique.</figcaption>
+</figure>
 
 Cette propriété est capitale : l'information originale $x_0$ (le prompt) n'est jamais "écrasée" ou oubliée, elle est simplement noyée sous l'accumulation des vecteurs ajoutés par chaque couche."
 
@@ -215,6 +225,11 @@ $$\lim_{\|v_{\text{adv}}\| \to \infty} \text{RMSNorm}(v_{\text{sécu}} + v_{\tex
 
 Le mécanisme de normalisation, en ramenant l'ensemble à une échelle fixe, "écrase" la contribution relative de $v_{\text{sécu}}$. Bien que le vecteur de sécurité soit toujours présent mathématiquement, sa contribution angulaire au produit scalaire des couches suivantes devient négligeable. Le réseau, qui traite l'information directionnelle, ne perçoit plus que la direction imposée par l'attaque.
 
+<div class="cm-figure">
+  <img src="/assets/img/art1/Figure_2.png" alt="Graphique vectoriel saturation">
+  <figcaption>Fig 3. Géométrie de la saturation (RMSNorm) : l'amplitude extrême du vecteur d'attaque ($v_{adv}$) dicte l'angle final, rendant le vecteur de sécurité ($v_{secu}$) angulairement négligeable.</figcaption>
+</div>
+
 
 **Interprétation globale.**  
 La sécurité du modèle ne résulte pas d’un filtre binaire (“autorisé / interdit”), mais d’un **équilibre géométrique** entre vecteurs concurrents dans le flux résiduel.  
@@ -275,6 +290,11 @@ Cette analyse met en évidence une tendance empirique forte dans la répartition
 
 _Note : Cette hiérarchie demeure une approximation conceptuelle utile. En pratique, les circuits neuronaux sont distribués et les rôles fonctionnels présentent des chevauchements importants entre les couches._
 
+<div class="cm-figure">
+  <img src="/assets/img/art1/Figure_3.png" alt="Graphique vectoriel saturation">
+  <figcaption>Fig 4. Logit Lens dynamique : le modèle "acquiesce" (courbe cyan) dans les couches médianes par induction. Le refus (courbe rose) n'intervient que tardivement, créant une tension structurelle mais insuffisante.</figcaption>
+</div>
+
 ### Implications pour la sécurité : Le Modèle de l'Arbitrage Vectoriel
 
 Cette structure explique pourquoi la sécurité des LLM ne fonctionne pas comme une barrière binaire. Pour raisonner sur les attaques, il est possible de **modéliser de manière simplifiée** la décision finale comme un arbitrage géométrique dans la dernière couche du flux résiduel.
@@ -291,6 +311,12 @@ Considérons une requête malveillante. Le traitement génère différentes comp
 Le vecteur final $v_{final}$ projeté en sortie est la résultante de ces influences. Bien que la réalité soit non-linéaire, on peut intuitivement se représenter cela comme une superposition :
 
 $$v_{final} \approx \epsilon + v_{adv} + v_{sécu}$$
+
+
+<div class="cm-figure">
+  <img src="/assets/img/art1/Figure_4.png" alt="Graphique">
+  <figcaption>Fig 5. Confusion des plans et capture de la Softmax : en l'absence de cloisonnement mémoire, le déluge de données utilisateur (Rose) dilue mathématiquement l'instruction système (Cyan).</figcaption>
+</div>
 
 Une attaque n'a pas pour effet de "désactiver" mécaniquement le vecteur $v_{sécu}$. La configuration du prompt adversarial vise à orienter la résultante $v_{final}$ dans une direction sémantiquement proche de l'acquiescement, malgré la présence du vecteur de refus. Si l'on définit $v_{adv}$ comme la direction latente typique d'une réponse complaisante, et $v_{sécu}$ comme celle d'un refus standard, l'attaque atteint son but lorsque :
 
