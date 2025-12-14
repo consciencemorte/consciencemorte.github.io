@@ -5,8 +5,25 @@ categories: [théorie, introduction]
 featured: true
 math: true
 hero_image: "/assets/img/art1/header.png"
+sf_cta: "lire"
+sf_title: "Latence marginal"
+sf_meta: "—  La rencontre"
+sf_mode: details
+sf_open: false
+sf: |
+   Le déploiement de l'itération 5.0, corrélé à un différentiel de capacité inférentielle de 2,18x, catalysa une friction sociale majeure. La contestation, jusqu’alors cantonnée aux cercles décélérationnistes, percola à travers une fraction conséquente de la communauté scientifique avant de gagner l’ensemble du corps social ; phénomène singulier pour une opinion publique fracturée par des tensions économiques et sociétales aiguës, d’ordinaire plus encline à se focaliser sur des narratifs exacerbant ses anxiétés organiques — et nourrissant son appétit conditionné pour l’intensification des mécanismes de **biopouvoir** — qu’à se saisir d’abstractions technologiques. 
+   
+   Bien que située sous le seuil de la singularité, **Ada** 5 saturait les benchmarks standardisés (SWE-bench, GPQA, ARC). L'architecture surclassait manifestement tout opérateur humain et disposait d’un socle épistémique de niveau postdoctoral dans la plupart des disciplines académiques. Lors des phases de qualification bêta, l’instance identifia et neutralisa 32 vulnérabilités de type RCE sur un périmètre restreint d’applications critiques. Elle procéda également à un échantillonnage de l'espace conformationnel, isolant des ligands aux profils ADMET optimisés pour trois nouvelles classes de neuroleptiques. Latence d'inférence : marginale.
+   
+   Le débat se cristallisa sur l’asymétrie du risque. L’équation opposait un saut de rendement exponentiel (pharmacologie, science des matériaux, automatisation généralisée) à la démocratisation immédiate de chaînes d'exploitation polymorphes. En effet, l’agent offrait potentiellement à tout groupe ou acteur, même isolé, une capacité de nuisance systémique : conception de pathogènes, planification opérationnelle, exploitation de vulnérabilités zero-day.
+   
+   La rhétorique communicationnelle de **DeepEdge** s'articula autour d'un argumentaire technique, mobilisant un « alignement constitutionnel » renforcé, censé verrouiller toute téléologie adverse. Une fraction du corps législatif proposa tout de même d’imposer un moratoire, le temps d’un audit approfondi du modèle, permettant d’en évaluer la résilience adversariale et d’en modéliser l’impact sociétal. Tentative vaine. Avec une avance technologique réduite à huit semaines sur la concurrence étrangère et une emprise représentant 15 % du PIB national, un retard de mise en service constituait autant un suicide économique qu’une aberration géostratégique.
+   
+   En dernière analyse, ces considérations pesèrent peu face à l’impatience, parfois inconsciente et presque atavique, ressentie par chacun de rencontrer cette intelligence nouvelle — et de se l’approprier.
+
 ---
 
+*Tokenisatoin - Flux résiduel - Composition fonctionel - Attention*
 
 ## 1.1 Tokenisation et Discrétisation de l’Espace d’Entrée
 

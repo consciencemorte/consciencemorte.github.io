@@ -19,7 +19,7 @@ layout: default
 
     {% if featured_post %}
       <div class="cm-card cm-featured">
-        <h2 class="cm-card-title">Fragment épinglé</h2>
+        <h2 class="cm-card-title">Note épinglé</h2>
         <a class="cm-post-title" href="{{ featured_post.url | relative_url }}">
           {{ featured_post.title }}
         </a>
@@ -34,13 +34,6 @@ layout: default
       </div>
     {% endif %}
 
-    <div class="cm-card">
-      <h2 class="cm-card-title">Fragments</h2>
-      <p>
-        Journal d'une conscience déjà morte, observant les résidus
-        d'exobiologie offensive.
-      </p>
-    </div>
 
     <div class="cm-card">
       <h2 class="cm-card-title">Champs d'étude</h2>
@@ -70,7 +63,7 @@ layout: default
            alt="Artefact neuro-exobiologique"
            class="cm-img-small" />
       <p>
-        Fragment d'imagerie neuronale extraite d'un protocole d'exobiologie offensive.
+        exobiologie offensive.
       </p>
     </div>
   </aside>
@@ -78,6 +71,7 @@ layout: default
   <section class="cm-articles">
     <!-- Petit texte d'intro venant de index.md -->
     <div class="cm-intro">
+      {% include sf_fragment.html %}
       {{ content }}
     </div>
     <div class="cm-intro-meta">

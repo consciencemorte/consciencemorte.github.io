@@ -1,0 +1,39 @@
+{%- assign fragment_text = include.text | default: page.sf -%}
+{%- if fragment_text -%}
+  {%- assign fragment_title = page.sf_title | default: "FRAGMENT" -%}
+  {%- assign fragment_meta = page.sf_meta -%}
+  {%- assign fragment_mode = page.sf_mode | default: "details" -%}
+  {%- assign fragment_open = page.sf_open -%}
+  {%- assign fragment_cta = include.cta | default: page.sf_cta | default: "ouvrir" -%}
+
+  {%- if fragment_mode == "static" -%}
+    <section class="cm-fragment cm-fragment-static" aria-label="{{ fragment_title }}">
+      <header class="cm-fragment-header">
+        <span class="cm-fragment-kicker">{{ fragment_title }}</span>
+        {%- if fragment_meta -%}
+          <span class="cm-fragment-meta">{{ fragment_meta }}</span>
+        {%- endif -%}
+      </header>
+      <div class="cm-fragment-body">
+        <div class="cm-fragment-text">
+          {{ fragment_text | markdownify }}
+        </div>
+      </div>
+    </section>
+  {%- else -%}
+    <details class="cm-fragment cm-fragment-details"{% if fragment_open %} open{% endif %}>
+      <summary>
+        <span class="cm-fragment-kicker">{{ fragment_title }}</span>
+        {%- if fragment_meta -%}
+          <span class="cm-fragment-meta">{{ fragment_meta }}</span>
+        {%- endif -%}
+        <span class="cm-fragment-cta" aria-hidden="true">{{ fragment_cta }}</span>
+      </summary>
+      <div class="cm-fragment-body">
+        <div class="cm-fragment-text">
+          {{ fragment_text | markdownify }}
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+{%- endif -%}

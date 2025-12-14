@@ -35,6 +35,7 @@ layout: default
       </nav>
     </aside>
     <section class="post-content" id="post-content">
+      {% include sf_fragment.html %}
       {{ content }}
     </section>
   </div>
@@ -57,7 +58,8 @@ layout: default
     const tocNav = document.getElementById('cm-toc-nav');
     if (!content || !tocNav) return;
 
-    const headings = Array.from(content.querySelectorAll('h2, h3'));
+    const headings = Array.from(content.querySelectorAll('h2, h3'))
+      .filter((h) => !h.closest('.cm-fragment'));
     if (!headings.length) {
       tocNav.innerHTML = '<p class="post-toc-empty">Aucune section détectée.</p>';
       return;
