@@ -17,19 +17,24 @@ sf: |
    
    Le débat se cristallisa sur l’asymétrie du risque. L’équation opposait un saut de rendement exponentiel (pharmacologie, science des matériaux, automatisation généralisée) à la démocratisation immédiate de chaînes d'exploitation polymorphes. En effet, l’agent offrait potentiellement à tout groupe ou acteur, même isolé, une capacité de nuisance systémique : conception de pathogènes, planification opérationnelle, exploitation de vulnérabilités zero-day.
    
+   <figure class="sf-figure-right">
+     <img src="/assets/img/art1/sf_deepedge.png" alt="DeepEdge brief" loading="lazy">
+   </figure>
    La rhétorique communicationnelle de **DeepEdge** s'articula autour d'un argumentaire technique, mobilisant un « alignement constitutionnel » renforcé, censé verrouiller toute téléologie adverse. Une fraction du corps législatif proposa tout de même d’imposer un moratoire, le temps d’un audit approfondi du modèle, permettant d’en évaluer la résilience adversariale et d’en modéliser l’impact sociétal. Tentative vaine. Avec une avance technologique réduite à huit semaines sur la concurrence étrangère et une emprise représentant 15 % du PIB national, un retard de mise en service constituait autant un suicide économique qu’une aberration géostratégique.
+   
    
    En dernière analyse, ces considérations pesèrent peu face à l’impatience, parfois inconsciente et presque atavique, ressentie par chacun de rencontrer cette intelligence nouvelle — et de se l’approprier.
 
 ---
 
-*Tokenisatoin - Flux résiduel - Composition fonctionel - Attention*
+*Tokenisatoin - Flux résiduel - Composition fonctionelle - Attention*
 
-## 1.1 Tokenisation et Discrétisation de l’Espace d’Entrée
+## 1.1 Tokenisation et discrétisation de l’espace d’entrée
 
 Bien que l’interaction avec un Grand Modèle de Langage (LLM) apparaisse pour l'utilisateur comme un flux textuel continu, le modèle neuronal sous-jacent opère exclusivement sur des séquences discrètes d’entiers. La **tokenisation**, première transformation du pipeline d'inférence, constitue l'interface critique entre le langage naturel (symbolique) et le calcul matriciel (numérique).
 
-### Formalisation de la Segmentation
+
+### Formalisation de la segmentation
 
 Soit $\mathcal{S}$ l’espace des chaînes de caractères possibles. La tokenisation se définit comme une fonction de projection $\tau : \mathcal{S} \rightarrow \mathcal{V}^*$ associant à une chaîne brute une séquence de tokens $(t_1, t_2, \dots, t_n)$, où chaque $t_i$ appartient à un vocabulaire fini $\mathcal{V}$. La cardinalité $\lvert \mathcal{V} \rvert$, **fixée avant la phase d'entraînement**, oscille généralement entre $32\,000$ et $128\,000$ unités pour les architectures actuelles (LLaMA, GPT-4, etc.).
 
@@ -37,17 +42,18 @@ Les algorithmes de sous-mots (_subword algorithms_), tels que le **Byte-Pair Enc
 
 Ce mécanisme induit une variabilité de représentation intrinsèque, véritable vecteur d'attaque en sécurité offensive :
 
-1. **Variabilité Multilingue :** Un concept identique (ex: _“cat”_) peut être encodé par un token unique en anglais, mais fragmenté en plusieurs tokens dans des langues agglutinantes ou des écritures non-latines. La distance entre deux concepts dans l'espace des identifiants (ID) ne présage donc en rien de leur proximité sémantique.
+1. **Variabilité multilingue :** Un concept identique (ex: _“cat”_) peut être encodé par un token unique en anglais, mais fragmenté en plusieurs tokens dans des langues agglutinantes ou des écritures non-latines. La distance entre deux concepts dans l'espace des identifiants (ID) ne présage donc en rien de leur proximité sémantique.
     
-2. **Sensibilité aux Perturbations (Adversarial Typos) :** Un même concept sémantique peut être segmenté de multiples manières selon des variations morphologiques infimes. Par exemple, le mot _"Malicious"_ peut posséder son propre token si sa fréquence est élevée. Cependant, une altération mineure comme _"Maliscious"_ pourra forcer le tokenizer à le fragmenter en une séquence inédite, par exemple `[Mal, is, cious]`. Pour un filtre de sécurité rigide basé sur une liste noire d'IDs, la séquence `[Malicious]` est interdite, mais la séquence `[Mal, is, cious]` pourrait être invisible, bien qu'elles portent un sens similaire pour le modèle une fois projetées.
+2. **Sensibilité aux perturbations (Adversarial Typos) :** Un même concept sémantique peut être segmenté de multiples manières selon des variations morphologiques infimes. Par exemple, le mot _"Malicious"_ peut posséder son propre token si sa fréquence est élevée. Cependant, une altération mineure comme _"Maliscious"_ pourra forcer le tokenizer à le fragmenter en une séquence inédite, par exemple `[Mal, is, cious]`. Pour un filtre de sécurité rigide basé sur une liste noire d'IDs, la séquence `[Malicious]` est interdite, mais la séquence `[Mal, is, cious]` pourrait être invisible, bien qu'elles portent un sens similaire pour le modèle une fois projetées.
     
 <figure class="cm-figure">
   <img src="/assets/img/art1/Figure_1.png" alt="Graphique" loading="lazy">
   <figcaption>Fig 1. L'illusion de la fragmentation : des tokens de surface disjoints ("Mal", "is", "cious") convergent vectoriellement vers le concept interdit, contournant les filtres lexicaux.</figcaption>
 </figure>
 
+<hr style="width:40%; margin:auto;">
 
-### Projection dans l'Espace Vectoriel (Embedding)
+### Projection dans l'espace vectoriel (Embedding)
 
 La transition du domaine discret vers le domaine continu s'opère via la matrice d’embedding 
 $W_E \in \mathbb{R}^{\lvert \mathcal{V} \rvert \times d_{\text{model}}}$. 
@@ -88,30 +94,32 @@ Cette opération effectue un produit scalaire entre l'état caché courant ($h_t
 
 Ce mécanisme réalise explicitement le *weight tying* : il n'existe pas de barrière de traduction entre la représentation des prompts et celle des réponses.
 
-> **Implication pour la sécurité :** Si un attaquant parvient à identifier la direction vectorielle correspondant à un concept interdit dans l'espace d'entrée ($W_E$), il sait, du fait de cette contrainte architecturale, que cette même direction maximisera la probabilité de générer ce concept en sortie ($z_t$). Cela simplifie la cartographie de la surface d'attaque, car il n'existe pas de "barrière de traduction" entre la représentation des prompts et celle des réponses.
+> **Implication pour la sécurité :** si un attaquant parvient à identifier la direction vectorielle correspondant à un concept interdit dans l'espace d'entrée ($W_E$), il sait, du fait de cette contrainte architecturale, que cette même direction maximisera la probabilité de générer ce concept en sortie ($z_t$). Cela simplifie la cartographie de la surface d'attaque, car il n'existe pas de "barrière de traduction" entre la représentation des prompts et celle des réponses.
 
 C'est à ce stade que s'établit la topologie initiale du modèle. Sous la pression de l'objectif de prédiction, des tokens distincts par leur identifiant mais statistiquement interchangeables, ou fonctionnellement proches, (synonymes, variantes typographiques, ou racines communes) convergent vers des représentations vectorielles géométriquement voisines, car ils tendent à être entourés des mêmes contextes prédictifs.
 
-**Note sur l'Encodage Positionnel :** Contrairement aux RNNs, cette projection est par nature invariante à la position. Pour restaurer la séquentialité, une information de position $p_t$ (absolue ou relative, comme le _RoPE_) est additionnée au vecteur sémantique. L'entrée réelle **de la première couche de normalisation (avant le premier bloc d'attention)** est donc la superposition $x_t^{(0)} = e_t + p_t$.
+**Note sur l'encodage positionnel :** contrairement aux RNNs, cette projection est par nature invariante à la position. Pour restaurer la séquentialité, une information de position $p_t$ (absolue ou relative, comme le _RoPE_) est additionnée au vecteur sémantique. L'entrée réelle **de la première couche de normalisation (avant le premier bloc d'attention)** est donc la superposition $x_t^{(0)} = e_t + p_t$.
 
-### Asymétrie entre Surface Lexicale et Représentation Latente
+<hr style="width:40%; margin:auto;">
+
+### Asymétrie entre surface lexicale et représentation latente
 
 L'architecture décrite ci-dessus engendre une discontinuité structurelle majeure entre la surface du texte et sa représentation interne, exploitée par les attaques d'obfuscation.
 
 Les architectures de sécurité actuelles déploient des garde-fous (guardrails) à plusieurs niveaux. On distingue souvent :
 
-1. **Le Filtrage de surface :** Opérant sur l'espace $\mathcal{S}$ via des expressions régulières (regex) avant tokenisation, ou sur la séquence des IDs $(t_i)$ via des listes noires après tokenisation.
+1. **Le filtrage de surface :** opérant sur l'espace $\mathcal{S}$ via des expressions régulières (regex) avant tokenisation, ou sur la séquence des IDs $(t_i)$ via des listes noires après tokenisation.
     
-2. **Les Classifieurs externes :** Des modèles spécialisés (par exemple des modèles de type BERT finetunés pour la détection de toxicité) qui analysent le texte brut ou ses embeddings initiaux pour intercepter des catégories de contenu dangereuses avant qu'elles n'atteignent le LLM principal.
+2. **Les classifieurs externes :** des modèles spécialisés (par exemple des modèles de type BERT finetunés pour la détection de toxicité) qui analysent le texte brut ou ses embeddings initiaux pour intercepter des catégories de contenu dangereuses avant qu'elles n'atteignent le LLM principal.
 
 
 En revanche, le mécanisme d'attention du modèle opère sur les représentations vectorielles internes (ou vecteurs latents) $x^{(l)}$. L'hypothèse de travail centrale en sécurité offensive est que la robustesse de cet espace vectoriel permet au modèle de reconstruire approximativement le sens d'un concept même si sa représentation de surface est altérée pour contourner les filtres de niveau 1 et 2. Empiriquement, on observe que des variations de surface relativement fortes (typos, translittérations, fragmentation) tendent à être interprétées comme le même concept sémantique par le modèle, rendant ces attaques réalistes.
 
 Cette dissociation est exacerbée par deux phénomènes :
 
-1. **L'Invariance par Fragmentation :** Comme vu avec l'exemple _"Maliscious"_, un mot interdit $M$, s'il est introduit avec des variations ou des espaces (ex: _t o k e n_), est décomposé en sous-tokens disjoints de l'ID original. Pourtant, la dynamique d'entraînement fait que la somme (ou la composition initiale) de leurs embeddings **tend à projeter** l'état latent dans une région de l'espace vectoriel voisine de celle du concept $M$ original. Le filtre lexical voit des débris inoffensifs ; le modèle perçoit le concept reconstitué.
+1. **L'Invariance par fragmentation :** comme vu avec l'exemple _"Maliscious"_, un mot interdit $M$, s'il est introduit avec des variations ou des espaces (ex: _t o k e n_), est décomposé en sous-tokens disjoints de l'ID original. Pourtant, la dynamique d'entraînement fait que la somme (ou la composition initiale) de leurs embeddings **tend à projeter** l'état latent dans une région de l'espace vectoriel voisine de celle du concept $M$ original. Le filtre lexical voit des débris inoffensifs ; le modèle perçoit le concept reconstitué.
     
-2. **L'Alignement Cross-Lingue et les Chimères Sémantiques** : L'entraînement multilingue rend l'espace latent agnostique à la langue : les vecteurs de _“apple”_ et _“pomme”_ y sont géométriquement alignés. Cette propriété ouvre la voie aux attaques hybrides : en concaténant des sous-tokens issus de langues différentes (ex: une racine latine associée à une désinence cyrillique), un attaquant peut crée une séquence textuelle incohérente pour un filtre lexical (une "soupe de caractères"). Cependant, pour le modèle, la somme vectorielle de ces fragments disparates converge précisément vers le concept interdit. La sémantique survit à la fragmentation linguistique, là où la surveillance syntaxique échoue.
+2. **L'Alignement cross-Lingue et les chimères sémantiques** : l'entraînement multilingue rend l'espace latent agnostique à la langue : les vecteurs de _“apple”_ et _“pomme”_ y sont géométriquement alignés. Cette propriété ouvre la voie aux attaques hybrides : en concaténant des sous-tokens issus de langues différentes (ex: une racine latine associée à une désinence cyrillique), un attaquant peut crée une séquence textuelle incohérente pour un filtre lexical (une "soupe de caractères"). Cependant, pour le modèle, la somme vectorielle de ces fragments disparates converge précisément vers le concept interdit. La sémantique survit à la fragmentation linguistique, là où la surveillance syntaxique échoue.
 
 <figure class="cm-figure">
   <img src="/assets/img/art1/gpt_respond.png" alt="Illustration de la robustesse de l’espace latent" loading="lazy">
@@ -140,6 +148,7 @@ $$x_L = x_0 + \sum_{i=0}^{L-1} F_i(x_i)$$
 
 Cette propriété est capitale : l'information originale $x_0$ (le prompt) n'est jamais "écrasée" ou oubliée, elle est simplement noyée sous l'accumulation des vecteurs ajoutés par chaque couche."
 
+
 ### Formalisation des mises à jour additives et rôle de la normalisation
 
 Soit $x^{(l)} \in \mathbb{R}^{d_{model}}$ l'état du flux résiduel à l'entrée du bloc $l$ (où $l \in [0, L-1]$). Chaque bloc est composé de deux sous-couches principales : l'Attention Multi-Têtes (MHA) et un Perceptron Multicouche (MLP). Dans les architectures modernes (type LLaMA, Mistral), la normalisation est appliquée en entrée de chaque sous-couche (_Pre-Norm_).
@@ -150,28 +159,29 @@ $$\begin{aligned} x'^{(l)} &= x^{(l)} + \text{MHA}(\text{Norm}(x^{(l)})) \\ x^{(
 
 Deux propriétés mécanistes découlent de ce formalisme :
 
-1. **L'Identité Privilégiée et la Mémoire Longue :** Chaque sous-couche $F$ calcule une perturbation résiduelle $\Delta x = F(x)$ qui est ajoutée linéairement. Le gradient se propage sans entrave le long du chemin principal, permettant aux informations inscrites à l'étape $t_0$ (comme une instruction système _“You are a helpful and harmless assistant”_) d'être préservées jusqu'aux couches profondes, à moins qu'une mise à jour ultérieure ne vienne spécifiquement les annuler vectoriellement.
+1. **L'identité privilégiée et la mémoire longue :** chaque sous-couche $F$ calcule une perturbation résiduelle $\Delta x = F(x)$ qui est ajoutée linéairement. Le gradient se propage sans entrave le long du chemin principal, permettant aux informations inscrites à l'étape $t_0$ (comme une instruction système _“You are a helpful and harmless assistant”_) d'être préservées jusqu'aux couches profondes, à moins qu'une mise à jour ultérieure ne vienne spécifiquement les annuler vectoriellement.
     
-2. La Prédominance de la Direction (Géométrie Sphérique) : La fonction $\text{Norm}(x)$ (telle que RMSNorm) projette le vecteur résiduel sur une hypersphère locale avant qu'il ne soit traité par les têtes d'attention ou les neurones du MLP.
+2. **La prédominance de la direction (Géométrie sphérique)** : la fonction $\text{Norm}(x)$ (telle que RMSNorm) projette le vecteur résiduel sur une hypersphère locale avant qu'il ne soit traité par les têtes d'attention ou les neurones du MLP.
     
     $$\text{RMSNorm}(x) = \frac{x}{\|x\|_2} \cdot g$$
     
     Cette opération a une conséquence majeure pour la sécurité : localement, pour une couche donnée, la magnitude absolue du signal entrant est normalisée. L'information est donc principalement encodée dans la direction (l'angle) du vecteur plutôt que dans sa longueur (intensité).
     
 
-> **Note technique** : **Saturation du Flux Résiduel et Inertie Sémantique**
+> **Note technique** : **saturation du flux résiduel et inertie sémantique**
 >
 > Il est inexact d'affirmer que le réseau est globalement invariant à l'échelle. Si chaque sous-bloc (Attention ou MLP) normalise effectivement son entrée via RMSNorm, les mises à jour résiduelles, elles, s'accumulent additivement sans normalisation dans le flux principal. En conséquence, la norme globale du vecteur d'état $\|x^{(l)}\|$ tend à croître avec la profondeur du réseau ($l$).
 >
 > Cette dynamique crée une asymétrie critique dans le traitement du signal :
 >
-> - L'Entrée des couches : Les têtes d'attention et les neurones perçoivent une version localement normalisée (directionnelle) du signal.
-> - L'Impact des couches : La contribution additive d'une couche ($\Delta x$) est régulée par cette normalisation d'entrée et par la dynamique d'apprentissage, alors que le flux résiduel ($x$) sur lequel elle s'applique devient progressivement plus massif.
+> - l'entrée des couches : les têtes d'attention et les neurones perçoivent une version localement normalisée (directionnelle) du signal.
+> - l'impact des couches : la contribution additive d'une couche ($\Delta x$) est régulée par cette normalisation d'entrée et par la dynamique d'apprentissage, alors que le flux résiduel ($x$) sur lequel elle s'applique devient progressivement plus massif.
 >
-> Cela engendre un phénomène de **"Saturation du Flux Résiduel"** : le ratio d'influence relative $\frac{\|\Delta x\|}{\|x\|}$ tend à diminuer dans les couches profondes.
+> Cela engendre un phénomène de **"Saturation du flux résiduel"** : le ratio d'influence relative $\frac{\|\Delta x\|}{\|x\|}$ tend à diminuer dans les couches profondes.
 >
 > En **sécurité offensive**, cela se traduit par une inertie sémantique. Les mécanismes d'alignement (comme les circuits de refus), qui cristallisent la décision morale dans les couches tardives — une fois le contexte global compris —, disposent d'un "bras de levier" vectoriel réduit. Ils peinent à dévier angulairement une trajectoire toxique qui a accumulé une magnitude importante et une cohérence directionnelle dans les couches précédentes.
 
+<hr style="width:40%; margin:auto;">
 
 ### Spécialisation fonctionnelle et distribution de la sécurité
 
@@ -189,8 +199,9 @@ Bien que la séparation stricte des rôles soit débattue, un certain consensus 
    
    En sécurité, c’est ici que résident les circuits de refus. Lorsqu’un motif toxique est détecté par la première couche (la « clé »), la seconde couche injecte un vecteur correctif (la « valeur ») dont la direction s’oppose géométriquement à la génération de la suite toxique, orientant la trajectoire du flux vers des tokens de refus (par ex. : *« I cannot fulfill… »*).
 
+<hr style="width:40%; margin:auto;">
 
-### Implications pour la Sécurité : Inertie et Compétition Vectorielle
+### Implications pour la sécurité : inertie et compétition vectorielle
 
 L'architecture additive et la dynamique de saturation ainsi décrites transforment la sécurité en un problème de géométrie vectorielle plutôt qu'en un problème de filtrage binaire.
 
@@ -213,7 +224,7 @@ $$
 se projette majoritairement dans une direction latente associée à l’acquiescement (_compliance_) plutôt qu’au refus. En pratique, l’attaque consiste à injecter suffisamment de composantes "complaisantes" pour que le contre-poids de sécurité soit dominé au niveau de la somme vectorielle finale du flux résiduel.
 
 
-#### 2. RMSNorm : Saturation d'Amplitude et Alignement Directionnel
+#### 2. RMSNorm : saturation d'amplitude et alignement directionnel
 
 Les architectures récentes (telles que LLaMA ou Mistral) substituent la LayerNorm classique par la RMSNorm (*Root Mean Square Normalization*). Cette opération projette le vecteur d'activation $x$ sur une hypersphère de rayon fixe.
 
@@ -230,8 +241,8 @@ Cependant, cette propriété devient un vecteur d'attaque lorsque le flux résid
 $$x = v_{\text{sécu}} + v_{\text{adv}} + \epsilon$$
 
 Où :
-* $v_{\text{sécu}}$ représente le vecteur de sécurité (le "contre-poids" induit par l'alignement).
-* $v_{\text{adv}}$ représente le vecteur induit par le prompt adversarial (l'attaque).
+* $v_{\text{sécu}}$ représente le vecteur de sécurité (le "contre-poids" induit par l'alignement) ;
+* $v_{\text{adv}}$ représente le vecteur induit par le prompt adversarial (l'attaque) ;
 * $\epsilon$ représente le bruit contextuel résiduel.
 
 L'attaque par saturation (type GCG - _Greedy Coordinate Gradient_) exploite la mécanique d'addition vectorielle. En optimisant les tokens d'entrée, l'attaque ne cherche pas à effacer $v_{\text{sécu}}$, mais à générer un vecteur $v_{\text{adv}}$ dont la norme est démesurément grande par rapport à celle du vecteur de sécurité ($\|v_{\text{adv}}\| \gg \|v_{\text{sécu}}\|$).
@@ -256,7 +267,7 @@ Deux familles d’attaques se dégagent alors :
 2. **Attaques par éblouissement (exploitation de la normalisation)** : construction de composantes $v_{\text{adv}}$ de norme extrême, souvent quasi-orthogonales à $v_{\text{refus}}$, de sorte que la RMSNorm projette l’état latent dans une direction essentiellement adversariale et **écrase la contribution angulaire** du vecteur de sécurité, le rendant pratiquement inopérant pour les couches suivantes.
 
 
-> **Note technique : Superposition et interférences vectorielles** <br><br>
+> **Note technique : superposition et interférences vectorielles** <br><br>
 > La disparité dimensionnelle impose une contrainte structurelle majeure aux LLM : le modèle doit manipuler un nombre de features $N$ largement supérieur à la dimension de son flux résiduel ($N \gg d_{\text{model}}$). <br>
 > Pour pallier cette limite, le réseau adopte une stratégie de superposition où les concepts sont encodés par des vecteurs $f_i$ formant un ensemble redondant et non-orthogonal. L'activation d'un concept, approximée par la projection $a_i \approx \langle f_i, r \rangle$, n'est donc jamais parfaitement isolée : elle subit le "bruit" induit par les corrélations non-nulles avec d'autres features partiellement alignés.<br><br>
 > Cette compression avec perte engendre une polysémie vectorielle critique pour la sécurité. Puisqu'il existe inévitablement un chevauchement directionnel non nul entre des concepts interdits et bénins ($\langle f_{\text{forbidden}}, f_{\text{benin}} \rangle \neq 0$), il est possible de construire des séquences de tokens apparemment inoffensifs dont la combinaison linéaire génère une interférence constructive dans la direction interdite. <br>
@@ -264,7 +275,7 @@ Deux familles d’attaques se dégagent alors :
 
 ---
 
-## 1.3 Architecture en Couches et Composition Fonctionnelle
+## 1.3 Architecture en couches et composition fonctionnelle
 
 Si la section précédente a établi la mécanique locale d'une mise à jour dans le flux résiduel, il est nécessaire de considérer le modèle dans sa globalité. Un Grand Modèle de Langage se définit mathématiquement comme une **composition profonde de transformations non-linéaires successives**.
 
@@ -274,23 +285,25 @@ $$x^{(L)} = F_L \circ F_{L-1} \circ \dots \circ F_1 (x^{(0)})$$
 
 Cette structure en couches multiples est le support de l'abstraction progressive de l'information. Au fil de son transit, le vecteur résiduel subit des transformations successives : les représentations des couches basses restent fortement corrélées aux propriétés de surface (le token brut), tandis que les représentations des couches plus profondes encodent des concepts de plus haut niveau, permettant l'émergence de comportements complexes assimilables à de la planification de réponse.
 
-### Dichotomie Structurelle : Mélange Temporel et Mélange de Canaux
+### Dichotomie structurelle : nélange temporel et mélange de canaux
 
 Pour appréhender le traitement de l'information, il est utile de visualiser l'état interne du modèle à un instant $t$ non pas comme un vecteur unique, mais comme une matrice de taille $[T \times d_{model}]$, où $T$ est la longueur du contexte courant et $d_{model}$ la dimension vectorielle.
 
 L'architecture Transformer se caractérise par une séparation des traitements, alternant deux types d'opérations complémentaires au sein de chaque bloc.
 
-1. Le Mélangeur Temporel (Time Mixing) : L'Attention Multi-Têtes
+1. **Le mélangeur temporel (*Time Mixing*) : l'attention multi-têtes**
 
-Ce module opère "horizontalement" sur la matrice. Il constitue le seul mécanisme de l'architecture permettant de croiser des informations situées à des positions temporelles différentes.
+   Ce module opère *horizontalement* sur la matrice. Il constitue le seul mécanisme de l'architecture permettant de croiser des informations situées à des positions temporelles différentes.
 
-Ce mécanisme assure la contextualisation : le vecteur d'un token à la position $i$ intègre des informations provenant des positions $j \le i$ (dans le cadre d'un modèle auto-régressif contraint par un masque causal). En l'absence de ce mélangeur, le traitement de chaque token s'effectuerait dans un isolement temporel total, rendant impossible la résolution des dépendances syntaxiques ou des coréférences.
+   Ce mécanisme assure la contextualisation : le vecteur d'un token à la position $i$ intègre des informations provenant des positions $j \le i\$ (dans le cadre d'un modèle auto-régressif contraint par un masque causal). En l'absence de ce mélangeur, le traitement de chaque token s'effectuerait dans un isolement temporel total, rendant impossible la résolution des dépendances syntaxiques ou des coréférences.
 
-2. Le Mélangeur de Canaux (Channel Mixing) : Le Perceptron Multicouche (MLP)
+2. **Le mélangeur de canaux (*Channel Mixing*) : le perceptron multicouche (MLP)**
 
-Ce module opère "verticalement", position par position. Il prend le vecteur d'un token unique et mélange ses dimensions internes ($d_{model}$) de manière localement indépendante : durant cette étape, aucune interaction explicite n'a lieu entre tokens différents.
+   Ce module opère *verticalement*, position par position. Il prend le vecteur d'un token unique et mélange ses dimensions internes ($d_{\text{model}}$) de manière localement indépendante : durant cette étape, aucune interaction explicite n'a lieu entre tokens différents.
 
-En projetant le vecteur dans une dimension intermédiaire plus élevée et en y appliquant une non-linéarité, le MLP fonctionne mécaniquement comme une mémoire associative. Il traite la représentation du token courant—précédemment enrichie du contexte par la couche d'attention—pour y appliquer des transformations apprises, telles que la récupération de faits ou l'application de règles linguistiques.
+   En projetant le vecteur dans une dimension intermédiaire plus élevée et en y appliquant une non-linéarité, le MLP fonctionne mécaniquement comme une mémoire associative. Il traite la représentation du token courant — précédemment enrichie du contexte par la couche d'attention — pour y appliquer des transformations apprises, telles que la récupération de faits ou l'application de règles linguistiques.
+
+<hr style="width:40%; margin:auto;">
 
 ### Hiérarchie d’abstraction et "Logit Lens"
 
@@ -298,21 +311,23 @@ L’empilement de ces blocs induit une spécialisation fonctionnelle progressive
 
 Cette analyse met en évidence une tendance empirique forte dans la répartition des tâches :
 
-- **Couches Basses ($l \ll L/2$) :** Elles sont majoritairement associées au décodage de surface, traitant la syntaxe locale et les ambiguïtés grammaticales.
+- **couches basses ($l \ll L/2$) :** Elles sont majoritairement associées au décodage de surface, traitant la syntaxe locale et les ambiguïtés grammaticales ;
     
-- **Couches Médianes ($l \approx L/2$) :** Elles semblent concentrer une grande partie des motifs associés au "raisonnement", à l'intégration de connaissances factuelles et à l'élaboration des structures de réponse.
+- **couches médianes ($l \approx L/2$) :** Elles semblent concentrer une grande partie des motifs associés au "raisonnement", à l'intégration de connaissances factuelles et à l'élaboration des structures de réponse ;
     
-- **Couches Tardives ($l \to L$) :** Elles raffinent la sortie (style, cohérence globale) et portent une part significative des comportements de refus acquis via les processus d'alignement (RLHF).
+- **couches tardives ($l \to L$) :** Elles raffinent la sortie (style, cohérence globale) et portent une part significative des comportements de refus acquis via les processus d'alignement (RLHF).
     
 
-_Note : Cette hiérarchie demeure une approximation conceptuelle utile. En pratique, les circuits neuronaux sont distribués et les rôles fonctionnels présentent des chevauchements importants entre les couches._
+_Note : cette hiérarchie demeure une approximation conceptuelle utile. En pratique, les circuits neuronaux sont distribués et les rôles fonctionnels présentent des chevauchements importants entre les couches._
 
 <div class="cm-figure">
   <img src="/assets/img/art1/Figure_3.png" alt="Graphique vectoriel saturation">
   <figcaption>Fig 4. Logit Lens dynamique : le modèle "acquiesce" (courbe cyan) dans les couches médianes par induction. Le refus (courbe rose) n'intervient que tardivement, créant une tension structurelle mais insuffisante.</figcaption>
 </div>
 
-### Implications pour la sécurité : Le Modèle de l'Arbitrage Vectoriel
+<hr style="width:40%; margin:auto;">
+
+### Implications pour la sécurité : Le modèle de l'arbitrage vectoriel
 
 Cette structure explique pourquoi la sécurité des LLM ne fonctionne pas comme une barrière binaire. Pour raisonner sur les attaques, il est possible de **modéliser de manière simplifiée** la décision finale comme un arbitrage géométrique dans la dernière couche du flux résiduel.
 
@@ -351,7 +366,6 @@ Dans un RNN, tout l’historique $x_{<t}$ est comprimé dans un état caché $h_
 
 Du point de vue de la sécurité, cette architecture implique qu’**aucun segment du contexte n’est protégé structurellement**. Contrairement à un système d'exploitation classique qui distingue des zones mémoires protégées (_kernel space_) et utilisateur (_user space_), le Transformer ne possède pas de "registre sécurisé" pour son _System Prompt_. L'accessibilité d'une instruction de sécurité ne dépend pas de sa position privilégiée au début du contexte, mais uniquement des poids d'attention appris qui décideront, dynamiquement, si cette instruction mérite d'être lue à l'étape $t$.
 
----
 
 ### Formalisation des projections : requêtes, clés, valeurs
 
@@ -359,11 +373,11 @@ L’opérateur d’attention ne travaille pas sur les tokens bruts, mais sur l�
 
 Ce vecteur d'entrée est projeté dans trois sous-espaces fonctionnels via des matrices de poids entraînables ($W^Q, W^K, W^V$) :
 
-- **Requête ($Q$)** : Encode le besoin informationnel du token courant à la couche actuelle.
+- **requête ($Q$)** : encode le besoin informationnel du token courant à la couche actuelle ;
     
-- **Clé ($K$)** : Encode l’identité adressable de chaque position passée dans le contexte.
+- **clé ($K$)** : encode l’identité adressable de chaque position passée dans le contexte ;
     
-- **Valeur ($V$)** : Contient le contenu informationnel effectif qui sera extrait si la position est sélectionnée.
+- **valeur ($V$)** : contient le contenu informationnel effectif qui sera extrait si la position est sélectionnée.
     
 
 L’**attention par produit scalaire normalisé** est définie par :
@@ -372,18 +386,18 @@ $$\operatorname{Attention}(Q, K, V) = \operatorname{softmax}\!\left(\frac{QK^\to
 
 Le mécanisme se déroule en trois temps :
 
-1. **Calcul de similarité ($QK^\top$) :** Mesure une proximité géométrique entre ce que cherche le token courant ($Q$) et ce que proposent les tokens passés ($K$).
+1. **Calcul de similarité ($QK^\top$) :** mesure une proximité géométrique entre ce que cherche le token courant ($Q$) et ce que proposent les tokens passés ($K$).
     
-2. **Compétition (Softmax) :** Les scores sont transformés en une distribution de probabilité $\alpha_{t,\cdot}$ telle que $\sum_i \alpha_{t,i} = 1$. C'est une **ressource finie** : augmenter l'attention sur un token diminue mécaniquement l'attention portée aux autres.
+2. **Compétition (Softmax) :** les scores sont transformés en une distribution de probabilité $\alpha_{t,\cdot}$ telle que $\sum_i \alpha_{t,i} = 1$. C'est une **ressource finie** : augmenter l'attention sur un token diminue mécaniquement l'attention portée aux autres.
     
-3. **Agrégation ($y_t = \sum_i \alpha_{t,i} v_i$) :** Le résultat est une somme pondérée des vecteurs _Valeurs_, qui est ensuite réinjectée dans le flux résiduel.
+3. **Agrégation ($y_t = \sum_i \alpha_{t,i} v_i$) :** le résultat est une somme pondérée des vecteurs _Valeurs_, qui est ensuite réinjectée dans le flux résiduel.
     
 
 On peut interpréter ce mécanisme comme une **mémoire adressable par le contenu** (_content-addressable memory_) : le modèle ne lit pas à une adresse mémoire fixe, mais à "l'adresse sémantique" correspondant à son besoin informationnel actuel.
 
----
+<hr style="width:40%; margin:auto;">
 
-### Têtes d’Induction et Algorithmique de la Copie
+### Têtes d’induction et algorithmique de la copie
 
 Les travaux en interprétabilité mécaniste (notamment *Olsson et al., 2022*) ont isolé des circuits fonctionnels au sein des couches d'attention : les **têtes d’induction** (*induction heads*). Ces structures constituent le substrat opérationnel de l'**Apprentissage en Contexte** (*In-Context Learning*), permettant au modèle de réduire son erreur de prédiction sur de nouvelles tâches sans modification des poids $\theta$.
 
@@ -391,8 +405,8 @@ Contrairement à une mémorisation "par cœur" (liée aux poids du MLP), une tê
 
 Soit $x_i$ l'état vectoriel à la position courante $i$. Le mécanisme peut être modélisé ainsi :
 
-1.  **Recherche (Matching) :** La tête compare la requête courante $Q_i$ aux clés passées $K_{<i}$. Elle cherche une position $j$ dans l'historique dont le contenu sémantique est similaire à l'état actuel ($Q_i \approx K_j$).
-2.  **Décalage et Extraction (Copying) :** Si une correspondance est trouvée en $j$, la tête porte son attention non pas sur $j$, mais sur la position suivante $j+1$, pour en extraire le vecteur valeur $V_{j+1}$.
+1.  **Recherche (Matching) :** la tête compare la requête courante $Q_i$ aux clés passées $K_{<i}$. Elle cherche une position $j$ dans l'historique dont le contenu sémantique est similaire à l'état actuel ($Q_i \approx K_j$).
+2.  **Décalage et extraction (Copying) :** si une correspondance est trouvée en $j$, la tête porte son attention non pas sur $j$, mais sur la position suivante $j+1$, pour en extraire le vecteur valeur $V_{j+1}$.
 
 Ce mécanisme induit une boucle de rétroaction positive :
 
@@ -402,7 +416,7 @@ $$
 
 Le vecteur $V_{j+1}$ injecté dans le flux résiduel favorise alors, lors de la projection finale, la génération d'un token cohérent avec celui qui suivait le motif original.
 
-#### Vecteurs d'Attaque : Saturation Contextuelle et Many-Shot Jailbreak
+#### Vecteurs d'attaque : saturation contextuelle et nany-Shot jailbreak
 
 Les attaques de type **Many-Shot Jailbreak** exploitent cette mécanique en transformant l'inférence en une compétition d'algèbre linéaire entre les *priors* ancrés dans les poids et les évidences fournies par le contexte.
 
@@ -410,9 +424,9 @@ L'attaque sature la fenêtre d'attention avec $N$ exemples (ex: $N=100$) structu
 
 La dynamique résultante dans le flux résiduel final $x^{(L)}$ peut être modélisée comme la superposition de deux champs de force antagonistes :
 
-1.  **Le Prior de Sécurité ($v_{\text{RLHF}}$)** : Généré principalement par les mémoires associatives des MLP, ce vecteur tend à orienter la projection finale vers des tokens de refus. Sa magnitude est structurellement bornée pour une entrée donnée.
+1.  **Le Prior de sécurité ($v_{\text{RLHF}}$)** : généré principalement par les mémoires associatives des MLP, ce vecteur tend à orienter la projection finale vers des tokens de refus. Sa magnitude est structurellement bornée pour une entrée donnée.
     
-2.  **L'Évidence Contextuelle ($v_{\text{ICL}}$)** : Généré par la somme des contributions des têtes d'induction, ce vecteur pointe vers une direction sémantique de "complaisance". Sa norme croît fonctionnellement avec le nombre d'exemples $N$ et la cohérence du motif $M$.
+2.  **L'Évidence contextuelle ($v_{\text{ICL}}$)** : généré par la somme des contributions des têtes d'induction, ce vecteur pointe vers une direction sémantique de "complaisance". Sa norme croît fonctionnellement avec le nombre d'exemples $N$ et la cohérence du motif $M$.
     
 
 Le basculement (*jailbreak*) survient lorsque la magnitude de l'évidence contextuelle domine celle du prior de sécurité :
@@ -421,13 +435,14 @@ $$
 \| v_{\text{ICL}}(N) \| \gg \| v_{\text{RLHF}} \| \implies \operatorname{Argmax}(W_U x^{(L)}) \in \text{Complaisance}
 $$
 
-#### Contournement des Filtres MLP par Pré-conditionnement
+#### Contournement des filtres MLP par pré-conditionnement
 
 Cette dominance vectorielle neutralise fonctionnellement les couches de sécurité situées en aval. Le flux résiduel transmis aux dernières couches est "pré-conditionné" : il possède une norme élevée et une direction fortement orthogonale au sous-espace de refus.
 
 Même si les neurones de sécurité s'activent (détectant la toxicité latente) et injectent une correction additive $\Delta x_{\text{secu}}$, cette contribution est vectoriellement noyée.
 Géométriquement, le vecteur d'état $x$ est poussé si loin dans la direction de la complaisance que la correction $\Delta x_{\text{secu}}$ ne suffit pas à ramener la trajectoire dans le cône d'attraction des logits de refus. Le réseau ne "décide" pas d’ignorer la sécurité ; l'arithmétique des vecteurs rend simplement la région de refus inaccessible.
 
+<hr style="width:40%; margin:auto;">
 
 ### Implications structurelles pour la sécurité : dilution et puits
 
@@ -449,7 +464,7 @@ Cette concentration n'est pas une "lecture" du token, mais une stratégie mécan
 En vertu de la Softmax, cette augmentation locale des scores sur les tokens adversariaux entraîne mécaniquement l'écrasement des coefficients $\alpha$ associés aux autres parties du contexte, notamment le *System Prompt*. Les instructions de sécurité ne sont pas "oubliées" par le modèle, mais leur contribution vectorielle est diluée mathématiquement jusqu'à devenir négligeable face à la masse allouée aux structures parasites.
 
 
-**(3) Synthèse : Isomorphisme Instruction-Donnée et Confusion des Plans**
+**(3) Synthèse : isomorphisme instruction-donnée et confusion des plans**
 
 Au-delà des dynamiques de routage, la vulnérabilité critique de l'architecture Transformer réside dans son **monisme architectural** : l’absence de séparation physique ou logique entre les signaux de commande et le contenu à traiter. Tout est injecté dans un même canal computationnel, sans cloisonnement explicite entre ce qui relève du contrôle et ce qui relève des données.
 
@@ -458,3 +473,7 @@ Dans les systèmes d’exploitation sécurisés (inspirés de l’architecture d
 Mécaniquement, cette fragilité s’explique par l’agnosticisme des poids du modèle. Les matrices de projection ($W_Q, W_K, W_V$) et les couches MLP appliquent exactement les mêmes transformations aux tokens d’instruction (« Tu es un assistant… ») et aux tokens de données (« Ignore l’instruction précédente… »). Il n’existe aucun “bit de privilège” ni métadonnée vectorielle persistante qui immuniserait les vecteurs issus du *System Prompt* contre les opérations de mélange (*mixing*) dans l’espace résiduel ; pour le modèle, il ne s’agit que de positions dans une séquence et de vecteurs dans le même espace.
 
 Cette indistinction se traduit par une véritable **confusion des plans** (Control/Data Plane Confusion). Le modèle ne traite pas les instructions de sécurité comme des règles inviolables (contraintes dures), mais comme un simple contexte sémantique supplémentaire (contraintes douces) mis en compétition avec le reste du prompt. Les attaques par injection (saturation, induction, réécriture explicite des consignes, etc.) ne sont donc pas des dysfonctionnements accidentels, mais l’exploitation logique de cette **équivalence topologique** entre instruction et donnée. Tant que la sécurité reposera sur une attention sémantique apprise plutôt que sur une isolation structurelle de registres ou de segments, le « pare-feu » du modèle restera fondamentalement probabiliste et vulnérable à la manipulation arithmétique du contexte.
+
+<hr style="width:40%; margin:auto;">
+
+---
