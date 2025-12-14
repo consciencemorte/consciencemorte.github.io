@@ -5,7 +5,8 @@
 
   {%- seo -%}
 
-  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  {%- assign css_version = site.github.build_revision | default: site.time | date: '%s' -%}
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}?v={{ css_version }}">
   {%- feed_meta -%}
   <link rel="icon" href="{{ '/assets/favicon.png' | relative_url }}" type="image/png">
 

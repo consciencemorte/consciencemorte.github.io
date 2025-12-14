@@ -4,4 +4,4 @@ title: Manifeste
 permalink: /about/
 ---
 
-_Those alien minds are not tools_
+_Alien minds aren’t tools._

@@ -1097,6 +1097,10 @@ hr {
 
 .cm-card-image {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .cm-card-image .cm-img-small {
@@ -1105,6 +1109,10 @@ hr {
   border-radius: 10px;
   margin-bottom: 0.65rem;
   opacity: 0.9;
+}
+
+.cm-card-image p {
+  margin: 0;
 }
 
 .cm-palette {
@@ -1645,6 +1653,7 @@ hr {
   max-height: 42rem;
 }
 
+.sf-figure-right,
 .cm-fragment-text .sf-figure-right {
   float: right;
   max-width: 38%;
@@ -1655,6 +1664,7 @@ hr {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
 }
 
+.sf-figure-right img,
 .cm-fragment-text .sf-figure-right img {
   display: block;
   width: 100%;
@@ -1662,6 +1672,7 @@ hr {
 }
 
 @media (max-width: 720px) {
+  .sf-figure-right,
   .cm-fragment-text .sf-figure-right {
     float: none;
     max-width: 100%;

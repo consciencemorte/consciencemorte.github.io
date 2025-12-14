@@ -492,6 +492,7 @@ hr {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.35rem;
 }
 
 .cm-card-image .cm-img-small {
@@ -500,6 +501,10 @@ hr {
   border-radius: 10px;
   margin-bottom: 0.65rem;
   opacity: 0.9;
+}
+
+.cm-card-image p {
+  margin: 0;
 }
 
 .cm-palette {
