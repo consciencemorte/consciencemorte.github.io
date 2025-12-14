@@ -4,4 +4,4 @@ title: Manifeste
 permalink: /about/
 ---
 
-_Ton petit manifeste sur la conscience morte, l'exobiologie offensive, etc._
+_Those alien minds are not tools_
