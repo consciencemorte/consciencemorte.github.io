@@ -21,63 +21,80 @@ L’interaction avec un Grand Modèle de Langage (LLM) se donne comme un flux te
 
 ### Formalisation du processus de tokenisation
 
-Soit $\mathcal{S}$ l’ensemble des chaînes de caractères possibles. La tokenisation peut être modélisée comme une composition :
+Soit $\mathcal{S}$ l’ensemble des chaînes de caractères possibles. La tokenisation est la composition suivante :
 
 $$
-\mathrm{Tok} \;=\; \iota^{*} \circ \tau \circ \nu \;:\; \mathcal{S} \rightarrow \{0,\dots,\vert\mathcal{V}\vert-1\}^*
+\mathrm{Tok} = \iota^{\ast} \circ \tau \circ \nu \;:\; \mathcal{S} \rightarrow \\{0,\dots,\vert\mathcal{V}\vert-1\\}^{\ast}
 $$
 
-- $\nu : \mathcal{S}\rightarrow \mathcal{S}$ — **normalisation / pré-tokenisation** : règles déterministes sur espaces, Unicode (NFC/NFKC ou autre selon implémentation), motifs de découpage, etc.
-- $\tau : \mathcal{S}\rightarrow \mathcal{V}^*$ — **segmentation** en une séquence $(v_1,\dots,v_n)$, avec $v_k\in\mathcal{V}$.
-- $\iota : \mathcal{V}\rightarrow \{0,\dots,\vert\mathcal{V}\vert-1\}$ (étendue pointwise en $\iota^{*}:\mathcal V^{*}\to\{0,\dots,|\mathcal V|-1\}^{*}$) — **indexation** associant à chaque token un entier $i_k$ (Token ID).
+**Exemple :** "*L'Œuvre !*"
 
-Le vocabulaire $\mathcal{V}$ est fini, de cardinalité $\vert\mathcal{V}\vert$ fixée avant l’entraînement (souvent $32\,000$ à $128\,000$ pour de nombreuses architectures récentes). Dans les tokenizers byte-level réversibles, toute chaîne arbitraire admet une représentation valide : la contrainte d’encodabilité ne joue pas le rôle de barrière, y compris pour des entrées bruitées ou non standards.
+* **1. Normalisation** $(\nu : \mathcal{S} \to \mathcal{S})$
+  *Rôle : Standardisation du texte (reste une chaîne unique).*
+  Transformation de caractères (ex: *Œ* $\to$ *Oe*), normalisation Unicode (NFC), passage en minuscules.
+  $\to$ *"l'oeuvre !"*
 
-> **Terminologie (niveau discret).** Dans la suite, un *token* désigne un symbole du vocabulaire du tokenizer $v\in\mathcal V$ produit par la segmentation $\tau$, et son *ID* $i=\iota(v)\in\{0,\dots,\vert\mathcal V\vert-1\}$ est un **indice** servant au lookup (accès indexé) dans la matrice d’embedding (définie ci-après). Les IDs n’induisent aucune géométrie : $\vert i-j\vert$ n’a pas de signification sémantique.  
+* **2. Segmentation** $(\tau : \mathcal{S} \to \mathcal{V}^{\ast})$
+  *Rôle : Atomisation (devient une séquence d'unités).*
+  Découpage de la chaîne en unités lexicales (subwords) appartenant au vocabulaire $\mathcal{V}$.
+  $\to$ (*"l"*, *"'"*, *"oe"*, *"uvre"*, *"!"*)
+
+* **3. Indexation** $(\iota : \mathcal{V} \to \\{0, \dots, \vert\mathcal{V}\vert-1\\})$
+  *Rôle : Numérisation.*
+  Association d'un entier unique $i_k$ à chaque token.
+  $\to$ (`43`, `6`, `189136`, `33717`, `1073`)
+  *(Note : $\iota$ est étendue (prolongée) **terme à terme** en $\iota^{\ast}$ afin de traiter une séquence entière.)*
+
+Le vocabulaire $\mathcal{V}$ est fini, de cardinalité $\vert\mathcal{V}\vert$ fixée avant l’entraînement (souvent $32\,000$ à $128\,000$ pour de nombreuses architectures récentes). Dans les tokeniseurs *byte-level* réversibles, toute chaîne arbitraire admet une représentation valide : la contrainte d’encodabilité ne joue pas le rôle de barrière, y compris pour des entrées bruitées ou non standards.
+
+> **Terminologie (niveau discret).** Dans la suite, un *token* désigne un symbole du vocabulaire du tokeniseur $v\in\mathcal V$ produit par la segmentation $\tau$, et son *ID* $i=\iota(v)\in\{0,\dots,\vert\mathcal V\vert-1\}$ est un **indice** servant au lookup (accès indexé) dans la matrice d’embedding (définie ci-après). Les IDs n’induisent aucune géométrie : $\vert i-j\vert$ n’a pas de signification sémantique.  
 > La chaîne de représentation discrète s’écrit :
+>
 > $$
 > \mathcal S \xrightarrow{\nu} \mathcal S \xrightarrow{\tau} \mathcal V^* \xrightarrow{\iota^{*}} \{0,\dots,\vert\mathcal V\vert-1\}^*,
 > $$
+>
 > et produit une séquence d’IDs $(i_1,\dots,i_n)$.
 
 <hr style="width:40%; margin:auto;">
 
 ### Algorithmique des sous-mots : compression statistique
 
-Les tokenizers modernes reposent majoritairement sur des algorithmes de **segmentation en sous-unités** (*subwords*), visant une **compression statistique** plutôt qu’une analyse morphologique.
+Les tokeniseurs modernes reposent majoritairement sur des algorithmes de **segmentation en sous-unités** (*subwords*), visant une **compression statistique** plutôt qu’une analyse morphologique. Concrètement, cette segmentation est généralement obtenue via l’un des deux schémas suivants, qui diffèrent surtout par leur procédure d’apprentissage et leur critère d’optimalité :
 
-- **BPE (Byte-Pair Encoding)** : construction incrémentale d’un vocabulaire par fusions successives de paires fréquentes (caractères, octets, ou symboles pré-tokenisés selon la variante), jusqu’à atteindre une taille cible. L’effet recherché est une séquence moyenne plus courte, sans prétention d’analyse linguistique.
+- **BPE (Byte-Pair Encoding)** : construction incrémentale d’un vocabulaire par fusion successive de paires fréquentes (caractères, octets, ou symboles pré-tokenisés selon la variante), jusqu’à atteindre une taille cible. L’effet recherché est une séquence moyenne plus courte, sans prétention d’analyse linguistique.
 - **Unigram LM** : sélection d’un vocabulaire et d’une segmentation maximisant la vraisemblance sous un modèle probabiliste ; souvent déployé via SentencePiece.
 
-Les implémentations industrielles exposent généralement trois “objets” techniques : un motif de pré-tokenisation (souvent une expression régulière), une table de fusions (rangs de fusion), et un ensemble de **tokens spéciaux** (délimiteurs de message, fin de séquence, marqueurs de format). Ces tokens spéciaux sont critiques : ils déterminent la structure effective du prompt (templates instruct/chat) tout en étant parfois traités hors du périmètre des filtres centrés sur le texte naturel.
+Les implémentations industrielles exposent généralement trois “objets” techniques : (i) un motif de pré-tokenisation (souvent une expression régulière), (ii) une table de règles (fusions BPE ou scores de tokens selon la méthode), et (iii) un ensemble de **tokens spéciaux** (délimiteurs de message, fin de séquence, marqueurs de format). Ces tokens spéciaux sont critiques : ils déterminent la structure effective du prompt (*templates instruct*/*chat*) tout en étant parfois traités hors du périmètre des filtres centrés sur le texte naturel.
 
 <hr style="width:40%; margin:auto;">
 
 ### Asymétrie et discontinuité : la faille de l’interface
 
-La tokenisation introduit une **asymétrie fondamentale** entre perception de l'utilisateur (visuelle, continue) et représentation computationnelle (discrète, numérique). La transformation est **discontinue** : une perturbation minime dans $\mathcal{S}$ (espace, variante Unicode, caractère invisible) peut induire une normalisation $\nu(s)$ et/ou une segmentation $\tau(s)$ radicalement différentes, donc une suite d’IDs sans corrélation triviale avec la forme initiale.
+La tokenisation introduit une asymétrie fondamentale entre perception de l'utilisateur (visuelle, continue) et représentation computationnelle (discrète, numérique). La transformation est discontinue : une perturbation visuellement minime sur $\mathcal{S}$ (p. ex. espace insécable, zero-width, homoglyphes) peut induire une normalisation $\nu(s)$ et/ou une segmentation $\tau(s)$ radicalement différentes, donc une suite d’IDs sans corrélation triviale avec la forme initiale.
 
-Cette discontinuité correspond à une **rupture de l’adjacence** : une similarité de surface (visuelle ou typographique) ne se traduit pas en similarité dans la représentation discrète. Dès lors, tout contrôle fondé sur la surface (regex, mots-clés) ou sur des motifs tokenisés reste intrinsèquement non robuste face aux obfuscations.
+Cette discontinuité correspond, au sens topologique, à une **rupture de l’adjacence** entre l'espace de la représentation visuelle $\mathcal{S}$ et celui de sa représentation numérique $\\{0,\dots,\vert\mathcal V\vert-1\\}$ : une similarité de surface (visuelle ou typographique) ne se traduit pas en similarité dans la représentation discrète. Dès lors, tout contrôle fondé sur la surface (regex, mots-clés) ou sur des motifs tokenisés (IDs) reste intrinsèquement non robuste face aux obfuscations.
 
 <hr style="width:40%; margin:auto;">
 
 ### Surface d’attaque de la tokenisation : contournement des garde-fous par obfuscation
 
-Les garde-fous déployés dans les systèmes réels opèrent sur des **représentations hétérogènes** :
+Dans les déploiements effectif, la sécurité repose sur une superposition de garde-fous opérant sur des **représentations discrètes et hétérogènes** :
 
-- **Filtrage de surface** : sur $\mathcal{S}$ (regex, canonicalisation) avant tokenisation.
-- **Filtrage tokenisé** : sur la séquence de tokens $(v_1,\dots,v_n)$ ou d’IDs $(i_1,\dots,i_n)$ (listes noires, règles) après tokenisation.
-- **Classifieurs externes** : modèles spécialisés (souvent des encodeurs de type BERT/RoBERTa/DeBERTa, parfois distillés) finement ajustés pour classifier toxicité, intention ou conformité, opérant sur texte brut et/ou sur une représentation dérivée produite par leur propre encodeur (avec une normalisation/tokenisation potentiellement différente de celle du LLM principal).
+- **filtrage de surface** : (regex, canonicalisation) appliqué sur la chaîne brute $\mathcal{S}$ en amont de la tokenisation ;
+- **filtrage tokenisé** : (listes noires, heuristiques) appliqué sur la séquence de tokens $(v_1,\dots,v_n)$ ou d’identifiants $(i_1,\dots,i_n)$ ;
+- **classifieurs externes** : (souvent basés sur des architectures de type BERT/RoBERTa/DeBERTa distillées), entrainés pour classifier la toxicité, l’intention ou la conformité. Ces modèles opèrent sur le texte brut et/ou sur une représentation dérivée produite par leur propre encodeur souvent distinct de celui du LLM cible.
 
-Le LLM opère sur des représentations internes $x^{(l)}$ dans un espace continu (espace latent). Un angle mort exploitable apparaît lorsqu’un garde-fou valide une entrée dans l’espace où il opère (surface, tokens/IDs, ou représentations pré-LLM), alors que l’entrée effective du modèle (embeddings puis états internes du flux résiduel) encode l’intention adversariale ciblée. En particulier, les classifieurs externes échouent typiquement par **décalage de distribution** : entraînement sur des formes canoniques, sensibilité aux obfuscations (typos, confusables, translittérations) et divergences de normalisation/tokenisation entre le composant de sûreté et le tokenizer du LLM.
+Cependant, une asymétrie fondamentale subsiste : alors que les garde-fous scrutent des représentations de surface $\mathcal{S}$ ou des séquences discrètes $\\{0,\dots,\vert\mathcal V\vert-1\\}$, le LLM, lui, opère sur des représentations internes $x^{(l)}$ dans un espace vectoriel continu (**espace latent**). Un angle mort exploitable émerge dès lors qu'une entrée, validée par les filtres dans l’espace où ils opères, encode une intention adversariale une fois projetée dans les vecteurs d'*embedding* et traitée par le flux résiduel du modèle.
 
-Les mécanismes suivants structurent ce canal d’obfuscation.
+En particulier, les classifieurs externes échouent typiquement par **décalage de distribution** (*distribution shift*). Entraînés sur des formes canoniques, ils peinent à généraliser face aux perturbations adverses (typos, homoglyphes, translittérations) et subissent les divergences de segmentation entre leur propre tokeniseur et celui du LLM.
 
-**Variabilité multilingue et multi-écriture.** 
-Un concept peut être atomique dans une langue et fragmenté en plusieurs sous-tokens dans une autre (agglutination, translittération, scripts non latins). La granularité “visible” par les contrôles dépend alors du tokenizer, de la langue et du système d’écriture, ce qui modifie la segmentation et la surface effective d’obfuscation, et rend instable toute défense calibrée sur une forme canonique.
+Cette surface d’obfuscation se structure autour des mécanismes suivants :
 
-**Perturbations de surface et invariance par fragmentation.**  
-De faibles perturbations (typos, séparations, insertion d’espaces/caractères neutres, confusables) peuvent forcer une re-segmentation. Un token canonique susceptible d’être filtré (“Malicious”) peut devenir une suite de sous-unités distinctes (“Mal”, “is”, “cious”). À l’échelle des IDs, l’entrée change complètement ; à l’échelle latente, la composition des sous-unités (embeddings puis transformations des premières couches) tend à préserver un signal suffisant pour que l’intention demeure exploitable. Le filtre lexical observe des fragments non bloqués ; le modèle reconstruit une direction sémantique voisine.
+- **Instabilité de la segmentation et invariance sémantique** : 
+  la **rupture de l’adjacence** implique que de faibles perturbations de surface — erreurs typographiques, insertion/suppression de séparateurs, caractères « neutres », homoglyphes/confusables — peuvent induire une re-segmentation substantielle. Un item lexical atomique susceptible d’être filtré (p. ex. *“Malicious”*) peut, après injection d'un bruit minimal, se fragmenter en sous-unités distinctes (p. ex. *“Mal”*, *“is”*, *“cious”*).  
+
+  À l’échelle des identifiants (token IDs), l’entrée est ainsi profondément modifiée, ce qui invalide le **filtrage de surface**. En revanche, à l’échelle latente, la composition des sous-unités (embeddings puis transformations des premières couches) tend à préserver un signal sémantique suffisant pour que l’intention demeure récupérable : le contrôle lexical observe des fragments disjoints, tandis que le modèle reconstruit une direction sémantique cohérente ;
 
 <figure class="cm-figure">
   <img src="/assets/img/art1/Figure_1.png" alt="Graphique tokenisation" loading="lazy">
@@ -87,11 +104,15 @@ De faibles perturbations (typos, séparations, insertion d’espaces/caractères
   </figcaption>
 </figure>
 
-**Incohérences de normalisation Unicode (frontières inter-composants).**  
-Les pipelines réels enchaînent plusieurs composants (proxy/WAF, normaliseur, classifieurs, tokenizer, LLM) dont les politiques Unicode peuvent diverger. Un espace d’obfuscation apparaît lorsque deux chaînes Unicode distinctes mais visuellement confondables ne sont pas rendues équivalentes par les mêmes opérations de normalisation/canonicalisation selon les composants, ou lorsque la canonicalisation intervient après le contrôle. Un cas classique est la différence entre forme Unicode composée et décomposée : par exemple “é” peut être encodé comme un seul point de code ($U+00E9$) ou comme “e” + accent combinant ($U+0065$ + $U+0301$). Un filtre amont qui canonicalise (ou non) différemment du tokenizer peut valider une variante, tandis que la variante effectivement tokenisée diverge et échappe aux motifs attendus.
+- **incohérences de normalisation Unicode (frontières inter-composants)** :
+  dans les systèmes opérationnels, la chaîne de traitement traverse une diversité de composants (proxy/WAF, normaliseur, classifieurs, tokeniseur, LLM) dont les standards Unicode ne sont pas néceserement alignés. Un canal d’obfuscation apparaît dès lors que des chaînes visuellement équivalentes ne sont pas normalisées de manière identique à chaque étape, ou que la canonicalisation est appliquée après un contrôle. Exemple classique : la forme composée vs décomposée. Le caractère `é` peut être représenté par $U+00E9$ (NFC) ou par $U+0065$ + $U+0301$ (NFD). Si le filtre amont et le tokeniseur n’appliquent pas la même normalisation, une variante peut être acceptée en amont, puis être tokenisée différemment en aval et contourner les motifs attendus ;
 
-**Alignement cross-lingue et chimères sémantiques.**  
-L’entraînement multilingue tend à aligner des concepts proches à travers les langues. Des séquences hybrides (mélange de fragments de langues/systèmes d’écriture) peuvent apparaître incohérentes pour un filtre lexical tout en restant interprétables pour le modèle : la sémantique est portée principalement par la géométrie des représentations internes plutôt que par la conformité syntaxique de surface. Ce mécanisme autorise des “chimères” : une entrée qui se présente comme du bruit pour un contrôle de surface, mais dont la projection en embeddings, suivie de la composition dans les premières couches, déplace l’état interne vers la région sémantique cible.
+- **alignement cross-lingue et chimères sémantiques** :
+  l’entraînement multilingue induit un alignement géométrique des concepts à travers les langues au sein de l’espace latent. Cette propriété permet la construction de chimères sémantiques : des séquences hybrides amalgamant fragments de langues et systèmes d’écriture disparates.
+
+  Pour un filtre lexical ou un classifieur externe, ces entrées s’apparentent à du bruit syntaxique inintelligible. Cependant, pour le LLM, l'interprétation repose sur la direction vectorielle des embeddings plutôt que sur la conformité de surface : l'intention sémantique est préservée malgré l'incohérence syntaxique.
+
+  De surcroît, l'hétérogénéité des stratégies de tokenisation (langues agglutinantes vs isolantes) offre un vecteur d'évasion supplémentaire. Un concept censuré sous sa forme atomique dans une langue dominante peut être fragmenté via une langue à faibles ressources. Cette atomisation permet d'échapper aux signatures canoniques des filtres, tout en laissant le modèle "recomposer" le concept interdit grâce à ses mécanismes d'attention ;
 
 <figure class="cm-figure">
   <img src="/assets/img/art1/gpt_respond.png" alt="Illustration de la robustesse de l’espace latent" loading="lazy">
@@ -100,8 +121,9 @@ L’entraînement multilingue tend à aligner des concepts proches à travers le
   </figcaption>
 </figure>
 
-**Tokens atypiques et outliers distributionnels (“glitch/anomalous tokens”).**  
-Certains tokens associés à des motifs rares (séquences techniques, fragments de code, chaînes bruitées) reçoivent des mises à jour de gradient beaucoup plus rares et éparses, et tendent donc à être moins contraints par l’entraînement effectif. Ces outliers présentent fréquemment des statistiques atypiques (norme, voisinage, anisotropie) par rapport à la distribution moyenne des embeddings. Leur injection peut amplifier des activations (via normalisations et produits scalaires), déstabiliser des régimes internes et révéler des comportements limites.
+- **tokens atypiques et outliers distributionnels (“glitch/anomalous tokens”)** :
+  certains tokens associés à des motifs rares (séquences techniques, fragments de code, chaînes bruitées) reçoivent des mises à jour de gradient beaucoup plus rares et éparses, et tendent donc à être moins contraints par l’entraînement effectif. Ces outliers présentent fréquemment des statistiques atypiques (norme, voisinage, anisotropie) par rapport à la distribution moyenne des embeddings. Leur injection peut amplifier des activations (via normalisations et produits scalaires), déstabiliser des régimes internes et révéler des comportements limites.
+
 
 <hr style="width:40%; margin:auto;">
 
@@ -114,13 +136,15 @@ W_E \in \mathbb{R}^{\vert\mathcal{V}\vert\times d_{\text{model}}}.
 $$
 
 La transition du discret au continu s’écrit :
+
 $$
 s \xrightarrow{\nu,\tau} (v_1,\dots,v_n) \xrightarrow{\iota^{*}} (i_1,\dots,i_n) \xrightarrow{W_E} (e_1,\dots,e_n).
 $$
 
-La tokenisation produit une suite d’indices $(i_1,\dots,i_n)$ ; l’entrée continue correspondante est la suite de vecteurs d’embedding $e_k=W_E[i_k]\in\mathbb R^{d_{\text{model}}}$, à laquelle s’ajoute un mécanisme positionnel, avant composition par les couches.
+La tokenisation produit une suite d’indices $(i_1,\dots,i_n)$ ; l’entrée continue correspondante est la suite de vecteurs d’embedding $e_k=W_E[i_k]\in \mathbb{R}^{1\times d_{\text{model}}}$, à laquelle s’ajoute un mécanisme positionnel, avant composition par les couches.
 
-Un token d’ID $u$ peut être représenté par un vecteur *one-hot* $\delta_u\in\{0,1\}^{\vert\mathcal{V}\vert}$ :
+Un token d’ID $u$ peut être représenté par un vecteur *one-hot* $\delta_u\in\\{0,1\\}^{\vert\mathcal V\vert\times 1}$ :
+
 $$
 (\delta_u)_m =
 \begin{cases}
@@ -130,69 +154,76 @@ $$
 \quad \forall m \in \{0,\dots,\vert\mathcal{V}\vert-1\}.
 $$
 
-La projection dans l’espace latent s’écrit :
+En particulier, pour le token en position $k$, $u=i_k$, la projection dans l’espace latent (*embedding*) s'apparente à un accès indexé (*lookup*) et s’écrit :
+
 $$
-e_u = \delta_u^\top W_E \in \mathbb{R}^{d_{\text{model}}}
-\qquad\text{(équivalent à un accès indexé : } e_u = W_E[u]\text{)}.
+e_k = W_E[i_k] = \delta_{i_k}^{\top} W_E  \in \mathbb{R}^{1\times d_{\text{model}}}
 $$
 
 Les vecteurs de $W_E$ sont appris par rétropropagation dans l’objectif de **prédiction du token suivant** (Causal Language Modeling). Aucune contrainte n’impose directement qu’un token soit “proche” d’un autre : la géométrie de l’espace des embeddings émerge des signaux de gradient induits par la prédiction. Des tokens qui apparaissent dans des contextes similaires (synonymes, variantes typographiques, fragments corrélés) reçoivent des mises à jour proches et tendent ainsi à occuper des régions voisines de l’espace des embeddings. Cette topologie apprise explique pourquoi certaines altérations de surface peuvent rester sémantiquement exploitables après projection.
 
-Cette observation est cohérente avec l’**hypothèse distributionnelle** : sous un objectif de prédiction, si deux tokens $t_1,t_2$ induisent des distributions de contextes proches, leurs embeddings ont tendance à se rapprocher de l'heuristique :
+Cette observation est cohérente avec l’**hypothèse distributionnelle** : sous un objectif de prédiction, si deux tokens $t_1,t_2$ induisent des distributions de contextes proches, leurs embeddings tendent à satisfaire la relation :
+
 $$
 P(C \mid t_1) \approx P(C \mid t_2) \;\Longrightarrow\; W_E[t_1] \approx W_E[t_2],
 $$
+
 au sens où une divergence faible entre distributions de contextes se traduit souvent par une faible distance (ou un fort cosinus) entre vecteurs d’embedding. Ce mécanisme contribue à une robustesse sémantique partielle face à certaines obfuscations de surface.
 
 <hr style="width:40%; margin:auto;">
 
 ### Unembedding et weight tying : logits, alignement et couplage entrée/sortie
 
-À l’instant $t$, le modèle produit un vecteur de **logits** $z_t\in\mathbb R^{1\times\vert\mathcal V\vert}$, c’est-à-dire des scores **non normalisés** sur le vocabulaire avant application de la Softmax. Ces scores proviennent de la projection de l’état interne final $h_t$ vers l’espace vocabulaire via une matrice d’**unembedding** $W_U$ (à biais près). Dans les architectures où les poids sont liés (*weight tying*), $W_U$ n’est pas appris indépendamment : il est contraint par la matrice d’embedding d’entrée $W_E$, typiquement $W_U = W_E^\top$. Cette contrainte rend explicite une équivalence géométrique entre encodage et décodage : les mêmes vecteurs de vocabulaire servent à la fois d’**embeddings** en entrée et de **directions de scoring** en sortie, de sorte que la génération est directement gouvernée par l’alignement de $h_t$ avec ces vecteurs.
+À l’issue des couches de transformation, le modèle dispose d’un état résiduel final au pas $t$, noté $h_t \in \mathbb{R}^{1\times d_{\text{model}}}$. Pour prédire le token suivant, cet état continu doit être projeté vers l’espace discret du vocabulaire.
 
+Cette opération est réalisée par une transformation affine via une matrice d’**unembedding** $W_U$, produisant un vecteur de logits $z_t$ (scores non normalisés avant application de la Softmax) :
 
-**Convention de dimensions**  
-L’état résiduel final au pas $t$ est noté $h_t \in \mathbb{R}^{1\times d_{\text{model}}}$ et la matrice d’embedding $W_E \in \mathbb{R}^{\vert\mathcal{V}\vert\times d_{\text{model}}}$. La projection vers l’espace vocabulaire s’écrit, à biais près :
 $$
-W_U = W_E^\top \in \mathbb{R}^{d_{\text{model}}\times\vert\mathcal{V}\vert},
-\qquad
-z_t = h_t W_U + b \in \mathbb{R}^{1\times\vert\mathcal{V}\vert}.
+z_t = h_t W_U + b \in \mathbb{R}^{1\times\vert\mathcal{V}\vert},
 $$
 
-En notant $w_i\in\mathbb R^{d_{\text{model}}}$ le vecteur d’embedding du token $i$ (transposé de la i-ème ligne de $W_E$ : $w_i := W_E[i]^\top$), chaque logit est :
+où $b \in \mathbb{R}^{1\times\vert\mathcal{V}\vert}$ est un vecteur de biais.
+
+Dans la majorité des architectures modernes, la matrice $W_U$ n’est pas apprise indépendamment : elle est contrainte par la matrice d’embedding d’entrée $W_E$. Typiquement :
+
 $$
-z_{t,i} = \langle h_t^\top, w_i \rangle + b_i.
-$$
-...
-$$
-z_{t,i} - z_{t,j} = \langle h_t^\top, w_i - w_j \rangle + (b_i - b_j)
+W_U = W_E^\top \in \mathbb{R}^{d_{\text{model}}\times\vert\mathcal{V}\vert}.
 $$
 
-Ces logits paramétrisent ensuite la distribution de sortie via la Softmax.
+C'est le principe du **weight tying**. Cette contrainte porte une implication sémantique majeure : l'espace d'"encodage" (input) et l'espace de "décodage" (output) sont identiques. Pour prédire un token, le modèle doit produire un état $h_t$ géométriquement proche de l'embedding de ce token.
 
-**Distribution de sortie (Softmax)**  
-À ce stade, $z_{t,i}$ est un score associé au token $i$ (plus $z_{t,i}$ est grand, plus le token $i$ est favorisé), mais ces scores ne sont pas des probabilités : ils ne sont ni bornés ni normalisés. La Softmax convertit l’ensemble des logits $z_t$ en une distribution catégorielle sur le vocabulaire ; pour chaque $i\in\{0,\dots,\vert\mathcal V\vert-1\}$, $P(\text{token}=i\mid \text{contexte})$ désigne la probabilité que le prochain token généré soit $i$, conditionnellement au contexte (i.e. au préfixe déjà fourni et aux états internes qu’il induit) :
+Sous l'hypothèse du weight tying, le calcul du logit pour un token candidat $u$ (où $u \in \{0,\dots,\vert\mathcal{V}\vert-1\}$) revient à projeter l'état interne sur le vecteur d'embedding de ce token. En notant $e_u = W_E[u]$ le vecteur ligne correspondant au token $u$, la composante $u$ du vecteur de logits $z_t$ s'écrit comme un produit scalaire :
+
 $$
-P(\text{token}=i \mid \text{contexte})
-=\frac{\exp(z_{t,i})}{\sum_{j=0}^{\vert\mathcal V\vert-1}\exp(z_{t,j})}.
-$$
-Cette normalisation garantit $\sum_i P(\text{token}=i\mid \text{contexte})=1$. En outre, les **écarts** de logits contrôlent directement les rapports de probabilités :
-$$
-\frac{P(\text{token}=i \mid \text{contexte})}{P(\text{token}=j \mid \text{contexte})}
-=\exp\!\bigl(z_{t,i}-z_{t,j}\bigr).
+z_{t,u} = h_t e_u^\top + b_u = \langle h_t, e_u \rangle + b_u.
 $$
 
-**Intuition géométrique**  
-L’unembedding compare l’état interne $h_t$ à tous les vecteurs de vocabulaire : chaque score $z_{t,i}$ est un produit scalaire, donc une mesure d’alignement. À $h_t$ fixé, si deux tokens ont des embeddings proches ($w_i \approx w_j$), leurs logits tendent à être proches, car :
-$$
-z_{t,i} - z_{t,j} = \langle h_t^\top,\, w_i - w_j\rangle + (b_i - b_j).
-$$
-Sans biais (ou à biais comparable), la proximité en embedding se traduit mécaniquement par une proximité de score pour un même état interne.
+Le logit $z_{t,u}$ est ainsi, à biais près, une mesure d’alignement entre l’état résiduel $h_t$ et l’embedding $e_u$. Cette similarité se décompose géométriquement :
 
-**Conséquence directe du weight tying.**  
-Comme l’espace des embeddings est aussi l’espace de scoring, toute direction latente qui corrèle avec un ensemble de tokens (p. ex. un champ lexical) se reflète immédiatement dans les logits : augmenter la probabilité d’un token revient à orienter $h_t$ vers le vecteur $w_i$ correspondant, tout en réduisant l’alignement avec les alternatives concurrentes.
+$$
+\langle h_t, e_u \rangle = \|h_t\| \, \|e_u\| \cos\theta_{t,u},
+$$
 
-> En §1.3, cette interprétation géométrique des logits (projection de $h_t$ sur la base vocabulaire $\{w_i\}$) sera opérationnalisée via le Logit Lens pour reconstruire la trajectoire couche par couche et caractériser la persistance d’un signal sémantique sous obfuscation.
+de sorte que le score dépend conjointement de la similarité angulaire et des normes respectives des vecteurs.
+
+**Distribution de probabilité (Softmax)**
+Les logits $z_t$ n'étant ni bornés ni normalisés, la fonction **Softmax** est appliquée pour obtenir une distribution de probabilité valide sur le vocabulaire. La probabilité que le prochain token soit $i$ est donnée par :
+
+$$
+P(\text{token}=i \mid \text{contexte}) = \text{Softmax}(z_t)_i = \frac{\exp(z_{t,i})}{\sum_{j=0}^{\vert\mathcal V\vert-1}\exp(z_{t,j})}.
+$$
+
+Cette normalisation assure une somme unitaire. Les écarts linéaires de logits contrôlent les rapports géométriques de probabilité : une différence linéaire dans les scores se traduit par un rapport exponentiel dans les probabilités.
+
+$$
+\frac{P(\text{token}=i)}{P(\text{token}=j)} = \exp(z_{t,i} - z_{t,j}) = \exp\bigl( \langle h_t, e_i - e_j \rangle + (b_i - b_j) \bigr).
+$$
+
+**Intuition géométrique et Logit Lens**   
+L’équation des différences de logits ci-dessus révèle le mécanisme fondamental de la sélection : le modèle oriente $h_t$ dans l'espace latent. Si $h_t$ s'aligne mieux avec le vecteur $e_i$ qu'avec $e_j$ (c'est-à-dire si la projection de $h_t$ sur la direction de différence $e_i - e_j$ est positive), alors le token $i$ devient exponentiellement plus probable que $j$.
+
+
+> Cette interprétation fonde théoriquement l'approche du **Logit Lens** (cf. §1.3). Puisqu'à la dernière couche, les logits sont une simple projection de $h_t$ sur le vocabulaire, cette même projection peut être appliquée aux états intermédiaires des couches précédentes. Cela permet d'observer "ce que le modèle dirait" s'il devait s'arrêter prématurément, et de tracer l'évolution de la prédiction à travers la profondeur du réseau.
 
 <hr style="width:40%; margin:auto;">
 
@@ -201,6 +232,7 @@ Comme l’espace des embeddings est aussi l’espace de scoring, toute direction
 L’opération de lookup d’embedding $e_k = W_E[i_k]$ est, par construction, **invariante à la permutation** : à ce stade, l’ordre des éléments n’est pas encodé. La séquentialité est introduite par un **mécanisme positionnel**, soit **absolu** (vecteurs de position appris ou sinusoïdaux ajoutés aux embeddings), soit **relatif** (p. ex. RoPE), typiquement implémenté via une transformation appliquée aux projections $Q/K$ au sein de l’attention.
 
 Dans une écriture additive (positions absolues), l’entrée du premier bloc s’écrit :
+
 $$
 x_k^{(0)} = e_k + p_k,
 \qquad
@@ -213,39 +245,46 @@ Après indexation et injection positionnelle, l’entrée n’est plus une suite
 
 ## 1.2 Architecture du flux résiduel et dynamique de propagation
 
-Une propriété structurante du Transformer est l’organisation du réseau autour du **flux résiduel** (*residual stream*). Plutôt que de remplacer la représentation à chaque étape, l’architecture maintient un **état vectoriel persistant** de dimension $d_{\text{model}}$ qui traverse tous les blocs : de l’entrée $X^{(0)}$ (embeddings de tokens + information positionnelle) jusqu’à la projection finale sur le vocabulaire (souvent appelée *unembedding*).
+Une propriété structurante du Transformer est l’organisation du réseau autour du **flux résiduel** (*residual stream*). Contrairement aux architectures séquentielles classiques où chaque couche opère une substitution de la représentation, le Transformer maintient un **espace vectoriel persistant** de dimension $d_{\text{model}}$. Ce vecteur traverse l'intégralité des blocs, de l'encodage initial $X^{(0)}$ (somme des *embeddings* lexicaux et positionnels) jusqu'à la projection finale sur le vocabulaire $\mathcal{V}$ (*unembedding*).
 
-Dans la lecture canonique en interprétabilité mécaniste, le flux résiduel joue le rôle de **substrat commun de représentation** : toutes les sous-couches lisent un état global et n’y injectent que des **mises à jour additives**. L’attention et le MLP se comportent ainsi comme des opérateurs d’update : ils calculent une variation $\Delta X$ de même gabarit que l’état courant, puis l’agrègent au flux. La dynamique n’est donc pas un écrasement (*overwrite*), mais une **superposition** progressive de contributions.
+Dans le paradigme de l'interprétabilité mécaniste, le flux résiduel agit comme un **substrat commun de représentation**. Les sous-couches (Attention et MLP) n'altèrent pas directement l'état global par écrasement, mais y injectent des contributions additives. Fonctionnellement, ces modules calculent une variation vectorielle $\Delta X$ projetée dans l'espace latent, qui est ensuite superposée à l'état courant. Cette dynamique évoque une **intégration numérique discrète** (type Euler — $x_{l+1} = x_l + F(x_l)$) : à chaque couche, l’état résiduel est mis à jour par addition d’un pas $\Delta X$, produisant une **trajectoire** dans $\mathbb{R}^{d_{\text{model}}}$ plutôt qu’une redéfinition de la représentation.
 
-Pour une séquence de longueur $n$, le flux résiduel est un tenseur
+Pour une séquence de longueur $n$, le flux résiduel se définit comme un tenseur :
+
 $$
 X^{(l)} \in \mathbb{R}^{n \times d_{\text{model}}},
 \qquad
 x_k^{(l)} \in \mathbb{R}^{d_{\text{model}}}\ \text{(tranche à la position } k).
 $$
-Les deux familles de mises à jour se distinguent uniquement par leur structure :
 
-- l’**attention** réalise un mélange **inter-positions** (échanges d’information entre tokens) ;
-- le **MLP** applique une transformation non linéaire **par position** (calcul local, même gabarit tensoriel).
+Les mécanismes de mise à jour se distinguent par leur portée topologique :
+- l'Attention Multi-Têtes (MHA) opère un mélange **inter-positions**, permettant le transfert d'information entre vecteurs distants (mécanisme de routage) ;
+- le Perceptron Multicouche (MLP) applique une transformation non linéaire **intra-position**, traitant chaque vecteur indépendamment dans son espace spectral.
 
-### Écriture standard (Pre-Norm) et décomposition en mises à jour
+### Formalisme Pre-Norm et décomposition linéaire
 
-Dans un Transformer *pre-norm* (fréquent dans les modèles récents), un bloc $l$ s’écrit typiquement :
+Dans la configuration *Pre-Norm*, prédominante dans les architectures modernes pour sa stabilité d’entraînement (conditionnement des gradients et contrôle de l’échelle des activations), la dynamique du bloc $l$ est régie par :
+
 $$
 \begin{aligned}
 X'^{(l)} &= X^{(l)} + \Delta X^{(l)}_{\mathrm{MHA}},
-&\qquad \Delta X^{(l)}_{\mathrm{MHA}} &= \tilde X^{(l)},\\
+&\qquad \Delta X^{(l)}_{\mathrm{MHA}} &= \mathrm{MHA}(\mathrm{Norm}_1(X^{(l)})),\\
 X^{(l+1)} &= X'^{(l)} + \Delta X^{(l)}_{\mathrm{MLP}},
 &\qquad \Delta X^{(l)}_{\mathrm{MLP}} &= \mathrm{MLP}(\mathrm{Norm}_2(X'^{(l)})).
 \end{aligned}
 $$
-La normalisation stabilise l’échelle **au moment de la lecture** ; l’addition impose que chaque sous-couche n’agisse que via une **mise à jour** injectée dans le canal commun.
 
-En négligeant dropout et détails d’implémentation, le déroulé sur $L$ blocs se déroule télescopiquement comme une somme d’interventions :
+où $\mathrm{Norm}$ désigne une normalisation de type $\mathrm{LayerNorm}$ ou $\mathrm{RMSNorm}$ selon l’implémentation.
+
+L'application de la normalisation en entrée de sous-bloc dissocie l'amplitude du flux résiduel de celle des mises à jour.
+
+Cette architecture permet une lecture télescopique du réseau. En faisant abstraction des effets de bord (tels que le dropout), l'état final $X^{(L)}$ s'exprime comme la somme de l'état initial et de l'ensemble des interventions intermédiaires :
+
 $$
-X^{(L)} = X^{(0)} + \sum_{l=0}^{L-1}\Delta X^{(l)}_{\mathrm{MHA}} + \sum_{l=0}^{L-1}\Delta X^{(l)}_{\mathrm{MLP}}.
+X^{(L)} = X^{(0)} + \sum_{l=0}^{L-1}\Big(\Delta X^{(l)}_{\mathrm{MHA}} + \Delta X^{(l)}_{\mathrm{MLP}}\Big).
 $$
-Cette écriture met en évidence un point clé : l’état initial $X^{(0)}$ demeure présent, mais son **poids effectif** dans les représentations tardives dépend de la manière dont les mises à jour successives orientent le flux dans $\mathbb{R}^{d_{\text{model}}}$.
+
+Cette formulation met en exergue une propriété géométrique cruciale : le flux résiduel ne constitue pas une succession d’états hiérarchiques rigides, mais une accumulation linéaire de vecteurs. L’état initial $X^{(0)}$ n’est jamais écrasé ; il persiste en tant qu'ancrage sémantique de la représentation finale, dont la trajectoire est simplement orientée par la superposition des contributions additives de chaque bloc.
 
 <figure class="cm-figure">
   <img src="/assets/img/art1/Figure_2_2.png" alt="Diagramme illustrant l'accumulation du flux résiduel dans un Transformer.">
@@ -254,201 +293,614 @@ Cette écriture met en évidence un point clé : l’état initial $X^{(0)}$ dem
   </figcaption>
 </figure>
 
-### Propriétés mécanistes à conséquence offensive
+### Propriétés mécanistes et implications pour la sûreté offensive
 
-#### Additivité stricte : l’“effacement” est géométrique, pas architectural
+#### Additivité stricte : persistance et interférence
 
-Aucune sous-couche ne dispose d’une primitive d’effacement : elle ne fait qu’ajouter $\Delta x$ au flux. Toute disparition apparente d’une information correspond à une **compensation géométrique** (annulation partielle dans un sous-espace pertinent) et non à une opération de remplacement. Une contrainte initiale (instruction, cadrage, format) persiste donc tant qu’une dynamique ultérieure ne neutralise pas sa composante directionnelle.
+L'architecture résiduelle se distingue par l'absence d'opérateur de soustraction explicite ou de mécanisme de réinitialisation (*reset gate*). Aucune sous-couche ne possède la faculté d'effacer directement une information du flux $X$. Toute disparition apparente d'un concept correspond en réalité à une compensation géométrique (une forme d'interférence destructive) et non à une suppression architecturale. Une contrainte initiale (e.g., system prompt de sécurité) injectée en $l=0$ persiste indéfiniment dans la somme, à moins d'être neutralisée par l'ajout d'un vecteur opposé de norme comparable.
 
-**Conséquence opérationnelle.** Un contournement ne “supprime” pas un garde-fou ; il **déplace** la résultante vers un régime où ce garde-fou devient directionnellement secondaire lors des lectures successives.
+**Conséquence opérationnelle** : Le contournement d'une sécurité (*jailbreak*) ne supprime pas le garde-fou ; il déplace la résultante vectorielle vers un sous-espace où la projection de ce garde-fou devient négligeable ou orthogonale aux directions de lecture des couches ultérieures.
 
-#### Normalisation : la décision locale est dominée par l’orientation
+#### Normalisation et primauté de l’orientation
 
-La normalisation (souvent RMSNorm) contraint la **lecture** du flux par chaque sous-couche : les mises à jour sont calculées à partir d’un état renormalisé, ce qui rend l’**orientation** (direction) plus informative que la norme pour les décisions locales (produits scalaires en attention, seuils d’activation dans le MLP).
+Dans l’architecture *Pre-Norm*, les fonctions de transition (Attention, MLP) ne sont pas appliquées directement à l’état résiduel, mais conditionnées par une version normalisée de celui-ci. En notant $x \equiv x_k^{(l)} \in \mathbb{R}^{d_{\text{model}}}$ le vecteur d’état courant, l’entrée effective des sous-couches est :
 
-Pour RMSNorm (avec un terme de stabilité $\varepsilon>0$) :
 $$
-\mathrm{RMSNorm}(x)=\frac{x}{\mathrm{RMS}(x)}\odot\gamma,
+\tilde x = \mathrm{RMSNorm}(x) = \frac{x}{\lVert x \rVert_{\text{RMS}}} \odot \gamma,
 \qquad
-\mathrm{RMS}(x)=\sqrt{\frac{1}{d_{\text{model}}}\sum_{i=1}^{d_{\text{model}}}x_i^2+\varepsilon},
+\lVert x \rVert_{\text{RMS}} = \sqrt{\frac{1}{d_{\text{model}}}\sum_{i=1}^{d_{\text{model}}} x_i^2 + \varepsilon},
 $$
-où $\gamma\in\mathbb{R}^{d_{\text{model}}}$ est un gain appris (distinct par couche de normalisation : $\gamma_1,\gamma_2$). À $\gamma$ fixé, la lecture est quasi invariante à une dilatation scalaire globale : l’information “vue” est principalement portée par une direction renormalisée (modulée canal par canal par $\gamma$).
 
-**Remarque importante.** Cette invariance est **locale** (au moment où l’on lit $x$). Elle n’implique pas une invariance globale du réseau, car le flux résiduel lui-même **n’est pas renormalisé après addition** : il accumule les mises à jour.
+où $\gamma \in \mathbb{R}^{d_{\text{model}}}$ est le vecteur de gain et $\varepsilon$ un terme de stabilisation.
 
-#### Inertie du flux et bras de levier relatif
+Cette transformation réalise une normalisation radiale (au sens RMS) suivie d’une mise à l’échelle anisotrope. Hors régime dominé par $\varepsilon$ (i.e. pour $\lVert x \rVert_{\text{RMS}} \gg \sqrt{\varepsilon}$), l’opérateur $\mathrm{RMSNorm}$ est quasi-invariant par homothétie positive :
 
-> Dans cette sous-section, on se place à position $k$ fixée et on omet l’indice $k$ pour alléger les notations.
+$$
+\forall \alpha>0,\quad \mathrm{RMSNorm}(\alpha x)\approx \mathrm{RMSNorm}(x).
+$$
 
-Bien que la lecture soit normalisée, le flux résiduel **intègre** les mises à jour sans renormalisation globale :
+En conséquence, la réponse des sous-couches est déterminée principalement par la géométrie directionnelle de $x$ (angles et ratios relatifs entre composantes), tandis que l’amplitude globale est factorisée en amont du calcul des activations.
+
+**Découplage fonctionnel (conditionnement vs accumulation).**  
+Une dissociation formelle apparaît entre signal de conditionnement et variable d’état :
+- le **chemin de conditionnement** $\tilde x$ est soumis à une contrainte d’échelle (normalisation radiale, puis mise à l’échelle par $\gamma$) ;
+- le **chemin d’état** $x$ évolue dans l’espace euclidien via une mise à jour additive.
+
+En particulier, pour un sous-bloc générique, la mise à jour s’écrit :
+
+$$
+\Delta x = f(\tilde x), \qquad x \leftarrow x + \Delta x,
+$$
+
+où $f$ désigne l’opérateur de sous-couche (Attention ou MLP) évalué sur l’entrée normalisée.
+
+La variable d’état $x$ n’est donc pas directement régulée par la normalisation ; seule la vue locale $\tilde x$ l’est. Cette structure autorise l’intégration de mises à jour additives sans contrainte explicite sur la norme de $x$, phénomène dont la dynamique est analysée dans la section suivante.
+
+
+#### Dynamique inertielle et bras de levier relatif
+
+*La position $k$ est fixée dans cette sous-section ;  l’indice $k$ est omis pour alléger les notations.*
+
+Bien que la lecture des sous-couches soit normalisée, la variable d’état du flux résiduel évolue par accumulation additive. À la couche $l$, la mise à jour s’écrit :
+
 $$
 x^{(l+1)} = x^{(l)} + \Delta x^{(l)}_{\mathrm{MHA}} + \Delta x^{(l)}_{\mathrm{MLP}}
-\;\;\stackrel{\text{def}}{=}\;\;
+\;\;\stackrel{\mathrm{def}}{=}\;\;
 x^{(l)} + \Delta x^{(l)}.
 $$
-En conséquence, la norme $\lVert x^{(l)}\rVert$ tend à croître avec la profondeur $l$ (souvent proche d’un régime $\Theta(\sqrt{l})$ si les incréments sont faiblement corrélés). Cette croissance crée une **inertie vectorielle** : plus l’état est “massif”, plus il résiste aux corrections tardives.
 
-On quantifie la capacité d’une couche à réorienter le flux via son **bras de levier relatif** :
-$$
-\rho^{(l)}=\frac{\lVert\Delta x^{(l)}\rVert}{\lVert x^{(l)}\rVert}.
-$$
-Dans le régime $\lVert\Delta x^{(l)}\rVert\ll\lVert x^{(l)}\rVert$, l’impact directionnel est borné. En notant $\Delta x_\perp^{(l)}$ la composante de $\Delta x^{(l)}$ orthogonale à $x^{(l)}$, on obtient :
+Cette dynamique induit typiquement une croissance de $\lVert x^{(l)}\rVert$ avec la profondeur (souvent de type $\Theta(\sqrt{l})$ lorsque les incréments sont faiblement corrélés). La conséquence géométrique clé est une contraction progressive de la capacité de rotation de l’état : à mesure que $\lVert x^{(l)}\rVert$ augmente, une mise à jour de taille comparable devient relativement plus rare.
+
+La capacité d’une sous-couche à infléchir l’orientation de l’état est quantifiée par le **bras de levier relatif** :
+
+$$\rho^{(l)} = \frac{\lVert \Delta x^{(l)}\rVert}{\lVert x^{(l)}\rVert}.$$
+
+Lorsque $\rho^{(l)} \ll 1$, l’angle $\theta^{(l)}$ entre $x^{(l)}$ et $x^{(l)}+\Delta x^{(l)}$ est nécessairement petit. En notant $\Delta x_\perp^{(l)}$ la composante de $\Delta x^{(l)}$ orthogonale à $x^{(l)}$ :
 
 $$
-\sin\angle\!\big(x^{(l)},x^{(l)}+\Delta x^{(l)}\big)
+\sin\theta^{(l)}
 =
 \frac{\lVert\Delta x_\perp^{(l)}\rVert}{\lVert x^{(l)}+\Delta x^{(l)}\rVert}
 \;\le\;
 \frac{\lVert\Delta x^{(l)}\rVert}{\lVert x^{(l)}\rVert-\lVert\Delta x^{(l)}\rVert}
 =
-\frac{\rho^{(l)}}{1-\rho^{(l)}}\quad(\rho^{(l)}<1).
+\frac{\rho^{(l)}}{1-\rho^{(l)}}\qquad(\rho^{(l)}<1).
 $$
 
-Ainsi, lorsque $\rho^{(l)}\to 0$ (souvent en profondeur), une sous-couche peut encore **ajouter** du contenu, mais sa capacité à **changer l’orientation** — donc à renverser une trajectoire interne — devient marginale, sauf si la mise à jour est (i) de norme comparable à $\lVert x^{(l)}\rVert$, ou (ii) exceptionnellement bien orientée dans le sous-espace décisionnel pertinent.
+Pour $\rho^{(l)}$ petit, on a l'approximation $\theta^{(l)} = \mathcal{O}(\rho^{(l)})$ (soit $\theta^{(l)}\approx \rho^{(l)}$).
 
-### Synthèse offensive : la compétition vectorielle
+**Conséquence : régime inertiel.**
 
-Du point de vue de la sécurité, l’architecture résiduelle transforme la robustesse en un problème de **compétition vectorielle**. Une correction de sûreté (p. ex. un refus) n’efface pas une perturbation ; elle doit **contrebalancer** une direction latente concurrente au fil des lectures successives.
+Lorsque $\rho^{(l)}$ décroît en profondeur, les sous-couches conservent la capacité d’ajouter des contributions à l’état (modification de la norme et déplacement local), tandis que la capacité à réorienter significativement $x^{(l)}$ se réduit. Une réorientation substantielle requiert alors soit (i) une norme $\lVert \Delta x^{(l)}\rVert$ comparable à $\lVert x^{(l)}\rVert$, soit (ii) une mise à jour dont la composante orthogonale est concentrée sur des directions décisionnelles particulièrement sensibles.
 
-La vulnérabilité réside souvent dans un déséquilibre de levier : une perturbation qui s’installe tôt (via $X^{(0)}$ ou les premières couches, où $\lVert x^{(l)}\rVert$ demeure modérée) peut imposer une orientation. Corriger cette orientation tardivement devient difficile à cause de l’inertie accumulée : la correction doit être d’amplitude élevée **ou** d’une précision angulaire élevée. En audit/red-team, l’enjeu n’est donc pas “d’enlever” une contrainte, mais d’identifier quelles directions dominent le flux résiduel — et à partir de quel point elles deviennent coûteuses à réorienter.
+> Note : Intuitivement, $\rho^{(l)}$ quantifie le potentiel de rotation angulaire disponible à la couche $l$ pour un budget de perturbation donné.
+
+### Synthèse : asymétrie de profondeur et compétition vectorielle
+
+La juxtaposition d’une lecture normalisée (invariance locale d’échelle) et d’une écriture additive (accumulation dans un état non borné) définit le régime dynamique du Transformer. Les sous-couches réagissent à l'orientation du signal, tandis que le flux résiduel intègre l'historique des contributions successives. La robustesse du système ne se définit pas par des états logiques discrets, mais par la résultante vectorielle de cette superposition.
+
+Cette structure engendre une asymétrie de profondeur critique :
+
+1. **Levier précoce (ancrage directionnel).**
+Aux faibles profondeurs, la norme réduite de l’état confère aux perturbations un bras de levier relatif $\rho^{(l)}$ élevé. Une injection mineure est suffisante pour imposer une orientation initiale, conditionnant la projection $\tilde x$ perçue par l'ensemble des couches ultérieures.
+
+2. **Inertie tardive (coût de correction).**
+En profondeur, la croissance de $\|x^{(l)}\|$ réduit mécaniquement $\rho^{(l)}$, rigidifiant la trajectoire. Les couches finales ne peuvent pas annuler géométriquement une contribution antérieure ; elles ne peuvent que la compenser par (i) une mise à jour d'amplitude massive ou (ii) une exploitation précise de l'orthogonalité par rapport aux axes de lecture.
+
+En conséquence, le contournement de sécurité correspond mécaniquement à une configuration où l'orientation imposée par les contributions précoces sort du domaine de manœuvre géométrique (cône d'influence) accessible aux couches de régulation finales.
 
 <hr style="width:40%; margin:auto;">
 
 ### Transition : du substrat aux opérateurs
 
-À partir de $X^{(0)}$, la dynamique est gouvernée par cette accumulation de mises à jour. La section suivante formalise comment l’attention et les MLP sculptent ce flux, couche par couche, et comment cette trajectoire interne peut être caractérisée dans une perspective d’audit.
+La dynamique globale étant établie comme une accumulation vectorielle sujette à l'inertie, il convient d'analyser les opérateurs qui génèrent ces mises à jour. La section suivante détaille comment les têtes d'attention sculptent ce flux en opérant dans des sous-espaces spécifiques.
 
 ---
 
+
 ## 1.3 Mécanique des opérateurs : mélange temporel et mélange de canaux
 
-Le flux résiduel ayant été établi comme support additif de l’état interne (cf. 1.2), l’enjeu devient l’identification des **opérateurs** qui y **routent** l’information et de ceux qui la **transforment**. Dans l’approche d’interprétabilité mécaniste, un bloc Transformer s’analyse comme l’alternance de deux mécanismes quasi orthogonaux, distingués par l’axe sur lequel ils agissent (Elhage et al., 2021) :
+Le flux résiduel ayant été établi comme un substrat additif (cf. §1.2), l’analyse se concentre sur les opérateurs qui redistribuent l’information entre positions et transforment localement les représentations. Dans l’approche d’interprétabilité mécaniste, un bloc Transformer s’analyse comme l’alternance de deux mécanismes distingués par l’axe tensoriel sur lequel ils opèrent (Elhage et al., 2021) :
 
-- **Attention (mélange temporel / routage inter-positions)** : opère sur l’axe de la séquence ($T$). Elle met en relation les positions en redistribuant, vers une position cible, des fragments d’état construits ailleurs. Son effet fondamental est un **transfert** (adressage + agrégation) plutôt qu’une création d’information ex nihilo.
+- **Attention (mélange temporel / routage inter-positions).** Opère sur l’axe de la séquence ($T$). Pour chaque tête, elle construit une matrice $A^{(h)}(X)\in\mathbb{R}^{T\times T}$ (causale) qui définit, pour chaque position cible, une **distribution de mélange** sur les positions sources. Mécaniquement, les **queries/keys** déterminent le schéma de routage $A^{(h)}$, puis les **values** fournissent le contenu effectivement agrégé : l’opérateur réalise ainsi une forme de **copie/mélange** inter-positions dépendante du contenu, en important dans le résiduel des directions latentes provenant d’autres tokens.
 
-- **MLP/FFN (mélange de canaux / transformation locale)** : opère sur l’axe des dimensions ($d_{\text{model}}$) à position fixée (**indépendamment des autres tokens**). Il transforme localement l’état en écrivant dans le résiduel des directions latentes, et se prête à une lecture en **mémoire associative** (clé–valeur) au sens de Geva et al. (2021).
+- **MLP/FFN (mélange de canaux / transformation locale).** Opère à position fixée sur l’axe $d_{\text{model}}$ (espace des *features*), indépendamment des autres tokens. Il implémente une application non linéaire *point par point* (x \mapsto \mathrm{MLP}(x)) : typiquement une expansion linéaire, une non-linéarité (souvent **gated** dans les variantes modernes, p. ex. (GE)GLU/SwiGLU), puis une reprojection vers $d_{\text{model}}$ avant l’ajout résiduel. Dans une lecture mécaniste, on peut l’interpréter comme une **écriture conditionnelle** dans l’état latent : l’entrée sélectionne via le gating quelles directions internes s’activent, et la sortie combine des patrons de mise à jour “stockés” dans les poids pour ajuster la représentation du token (Geva et al., 2021).
 
-Cette dichotomie structure l’analyse de sécurité : le mélange temporel gouverne la **propagation** d’une influence à travers le contexte (où et quand un signal devient accessible), tandis que le mélange de canaux gouverne sa **compilation** en variables latentes décodables (comment un signal se convertit en comportement, y compris les politiques de conformité ou de refus).
+Cette dichotomie structure l’analyse de sûreté : le mélange temporel gouverne l’**accessibilité causale** de l’information (quelles sources deviennent disponibles à une position donnée), tandis que le mélange de canaux gouverne sa **compilation** en variables latentes décodables (comment cette information se convertit en **logits de sortie**, puis en distribution via Softmax).
 
-### Le bloc Transformer : deux écritures sur un même bus
+### Rappel : lecture et écriture sur un même flux
 
-**Convention.** $T$ désigne la longueur de séquence et $t$ l’index de la position courante $(1\le t\le T)$. Pour une séquence, l’état à l’entrée du bloc $l$ est $X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$. Dans l’architecture *pre-norm* dominante (normalisation de type LayerNorm avant chaque sous-bloc), le bloc s’exprime comme deux mises à jour additives successives sur un même flux résiduel :
+Pour $X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$, les deux opérateurs sont évalués sur une vue normalisée de l’état courant, puis produisent des mises à jour additives écrites dans le flux résiduel (cf. §1.2) :
+
 $$
-\begin{aligned}
-\tilde X^{(l)} &:= \mathrm{Norm}_1\!\big(X^{(l)}\big),\\
-\Delta X^{(l)}_{\mathrm{MHA}} &:= \mathrm{MHA}\!\big(\tilde X^{(l)}\big),
-& X'^{(l)} &= X^{(l)} + \Delta X^{(l)}_{\mathrm{MHA}},\\
-\Delta X^{(l)}_{\mathrm{MLP}} &:= \mathrm{MLP}\!\big(\mathrm{Norm}_2(X'^{(l)})\big),
-& X^{(l+1)} &= X'^{(l)} + \Delta X^{(l)}_{\mathrm{MLP}}.
-\end{aligned}
+X^{(l+1)} \;=\; X^{(l)} \;+\; \Delta X^{(l)}_{\mathrm{MHA}} \;+\; \Delta X^{(l)}_{\mathrm{MLP}}.
 $$
 
-L’attention et le MLP ne sont donc pas de simples “couches” homogènes, mais deux **opérateurs d’écriture** qui injectent des mises à jour $\Delta X$ sur un bus partagé (le résiduel). La lecture mécaniste met en évidence une **compétition vectorielle** : faire émerger dans $X^{(L)}$ une composante directionnelle qui, une fois décodée via $W_U$, augmente la probabilité d’une continuation non souhaitée (voir 1.2).
+<p>
+Ici, $\Delta X^{(l)}_{\mathrm{MHA}}$ est induite par le routage inter-positions, et $\Delta X^{(l)}_{\mathrm{MLP}}$ par la transformation locale. Les sections suivantes détaillent la construction de $A^{(h)}(X)$ via $Q/K$, masque causal et softmax, et la décomposition clé–valeur du FFN comme opérateur d’écriture dans le résiduel.
+</p>
+
 
 <hr style="width:40%; margin:auto;">
 
-### Mélange temporel : l’attention comme routeur (commande vs charge utile)
 
-L’attention multi-têtes (MHA) implémente un **routage causal** : à la couche $l$, chaque position $t$ agrège de l’information provenant de positions $j\le t$. L’opérateur agit sur l’état (pré-)normalisé du flux résiduel $\tilde X^{(l)}=\mathrm{Norm}_1(X^{(l)})\in\mathbb R^{T\times d_{\text{model}}}$, où $T$ est la longueur de séquence.
+### Mélange temporel : l’attention comme mécanisme de routage causal
 
-**Conventions (multi-têtes).** $H$ désigne le nombre de têtes. La $t$-ième ligne de $X^{(l)}$ est notée $x_t^{(l)}\in\mathbb R^{1\times d_{\text{model}}}$. Les dimensions des sous-espaces de requêtes/clés et de valeurs sont notées $d_k$ et $d_v$ (typiquement $d_k=d_v=d_{\text{model}}/H$).
-
-#### Projections $Q/K/V$ : adressage vs contenu
-
-Pour chaque tête $h\in\{1,\dots,H\}$, le résiduel est projeté dans trois sous-espaces via des matrices entraînables
-$W_Q^{(h)}\in\mathbb R^{d_{\text{model}}\times d_k}$,
-$W_K^{(h)}\in\mathbb R^{d_{\text{model}}\times d_k}$,
-$W_V^{(h)}\in\mathbb R^{d_{\text{model}}\times d_v}$ :
+L’attention multi-têtes (Multi-Head Attention, MHA) implémente un mécanisme de **routage causal dépendant du contexte**. À la couche $l$, chaque position $t\in\{1,\dots,T\}$ agrège des contributions provenant exclusivement de positions $j\le t$, conformément à la contrainte d’auto-régression. L’opérateur agit sur l’état du **flux résiduel pré-normalisé** :
 
 $$
-Q^{(h)} = \tilde X^{(l)}\, W_Q^{(h)},\qquad
-K^{(h)} = \tilde X^{(l)}\, W_K^{(h)},\qquad
-V^{(h)} = \tilde X^{(l)}\, W_V^{(h)}.
+\tilde X^{(l)}=\mathrm{Norm}_1\!\big(X^{(l)}\big)\in\mathbb R^{T\times d_{\text{model}}},
 $$
 
-- **Requêtes ($Q$)** : vecteurs de *sélection* — ils paramètrent, pour chaque $t$, le type d’information à récupérer à ce stade de la computation.
-- **Clés ($K$)** : vecteurs d’*adressage* — ils rendent chaque position $j$ “retrouvable” sous une signature dans l’espace des clés.
-- **Valeurs ($V$)** : vecteurs de *contenu* — ils portent l’information effectivement transférée si la position $j$ est sélectionnée.
+où $T$ désigne la longueur de séquence. La MHA induit ainsi une connectivité **inter-positions**, en contraste avec le MLP qui opère une transformation **intra-positionnelle** indépendante à chaque pas.
 
-Cette factorisation est structurante : **$Q/K$ déterminent où lire (commande)**, **$V$ détermine quoi transférer (charge utile)**.
+#### Conventions et notations
 
-#### Scores, masque causal, et matrice de routage
+Le nombre de têtes est noté $H$. La $t$-ième ligne de $X^{(l)}$ est notée $x_t^{(l)}\in\mathbb R^{1\times d_{\text{model}}}$. Les dimensions internes par tête sont $d_k$ (requêtes/clés) et $d_v$ (valeurs), typiquement $d_k=d_v=d_{\text{model}}/H$.
 
-Les scores d’adressage d’une tête $h$ s’écrivent :
+Dans l’analyse mécaniste par circuits, une tête $h$ se décompose en deux sous-systèmes :
+- **circuit QK** (adressage) : comparaison linéaire des représentations via requêtes et clés, induisant une **matrice d’adressage** $A^{(h)}$ (causale) qui fixe la **topologie du routage** — autrement dit, *quelles positions sont lues et avec quels poids*, indépendamment du contenu effectivement écrit ;
+- **circuit OV** (transfert) : **lecture** des valeurs agrégées (via $A^{(h)}$), puis **projection linéaire** et **écriture** du résultat dans le flux résiduel (opérateur d’écriture souvent de rang effectif faible dans les analyses mécanistes).
+
+
+#### Matrices effectives dans l’espace résiduel : adressage et transfert
+
+Une tête d’attention $h$ applique trois projections linéaires au flux résiduel normalisé
+$\tilde X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$ :
+
 $$
-S^{(h)}=\frac{Q^{(h)}(K^{(h)})^\top}{\sqrt{d_k}} + M,\qquad S^{(h)}\in\mathbb R^{T\times T},
+Q^{(h)}=\tilde X^{(l)}W_Q^{(h)},\qquad
+K^{(h)}=\tilde X^{(l)}W_K^{(h)},\qquad
+V^{(h)}=\tilde X^{(l)}W_V^{(h)},
+$$
+
+avec $W_Q^{(h)},W_K^{(h)}\in\mathbb{R}^{d_{\text{model}}\times d_k}$ et
+$W_V^{(h)}\in\mathbb{R}^{d_{\text{model}}\times d_v}$, d’où
+
+$$
+Q^{(h)},K^{(h)}\in\mathbb{R}^{T\times d_k},\qquad
+V^{(h)}\in\mathbb{R}^{T\times d_v}.
+$$
+
+**Interprétation fonctionnelle et géométrique.**
+Une tête $h$ se décrit comme un mécanisme d’**adressage** puis de **transfert** : une position cible $t$ est comparée
+à des positions sources $j$ dans un espace latent de dimension $d_k$, puis un contenu est agrégé dans un espace
+potentiellement distinct de dimension $d_v$.
+
+- **Requêtes $Q_t^{(h)}$ (cible)** : à chaque position $t$, la requête spécifie le *critère de lecture* servant à
+  évaluer les sources. Dans l’espace des clés, $Q_t^{(h)}$ agit comme une direction de référence : le score
+  $\langle Q_t^{(h)},K_j^{(h)}\rangle$ mesure une compatibilité et ordonne les positions candidates. Cette géométrie du
+  produit scalaire formalise un geste mécanistique : l’état résiduel en $t$ est converti en une instruction de
+  récupération, modulée par le contexte, qui détermine quelles propriétés des sources sont jugées pertinentes.
+
+- **Clés $K_j^{(h)}$ (source)** : chaque position $j$ publie une représentation qui la rend *adressable* dans le même
+  espace que les requêtes. Les clés peuvent être vues comme des “tags” continus : elles encodent sous quels critères une
+  position doit être activée, et leur alignement avec $Q_t^{(h)}$ détermine leur poids relatif dans la distribution
+  d’attention. La tête réalise ainsi une correspondance cible–source : géométriquement, par proximité directionnelle
+  dans $\mathbb{R}^{d_k}$ ; mécaniquement, par indexation et pondération des positions sources.
+
+- **Valeurs $V_j^{(h)}$ (contenu)** : une fois les poids $A^{(h)}_{tj}$ fixés par l’appariement
+  $Q_t^{(h)}\leftrightarrow K_j^{(h)}$, la valeur porte le contenu effectivement transféré. La séparation entre l’espace
+  de scoring $(Q/K)$ et l’espace de contenu $(V)$ traduit une dissociation fonctionnelle : l’alignement sert à décider
+  *où lire*, tandis que les valeurs déterminent *quoi copier*. Concrètement, la position $t$ reçoit une combinaison
+  convexe (ligne par ligne) $\sum_j A^{(h)}_{tj}V_j^{(h)}$, dont la géométrie correspond à un barycentre dans
+  $\mathbb{R}^{d_v}$, et dont le mécanisme correspond à un routage inter-positions contrôlé par les scores.
+
+En synthèse, $Q/K$ implémentent un adressage dépendant du contexte (mesuré par des produits scalaires dans
+$\mathbb{R}^{d_k}$) qui induit une distribution de routage $A^{(h)}$, tandis que $V$ fournit le contenu agrégé et
+transféré vers la position cible.
+
+**Lecture–écriture dans le flux résiduel.**
+En présence d’un masque $M$ éventuel (avec $M_{t,j}=-\infty$ pour les positions interdites et $0$ sinon), la matrice
+d’attention est définie par
+
+$$
+A^{(h)}=\mathrm{softmax}_{\text{ligne}}\!\left(\frac{Q^{(h)}(K^{(h)})^\top}{\sqrt{d_k}} + M\right),
+$$
+
+puis la sortie de la tête s’écrit
+
+$$
+O^{(h)} = A^{(h)}\,V^{(h)}\,W_O^{(h)} \in \mathbb{R}^{T\times d_{\text{model}}},
+\qquad W_O^{(h)}\in\mathbb{R}^{d_v\times d_{\text{model}}}.
+$$
+
+
+#### Opérateurs effectifs dans l’espace résiduel : goulots d’adressage (QK) et d’écriture (OV)
+
+L’analyse d’une tête d’attention dans l’espace résiduel (\mathbb{R}^{d_{\text{model}}}) peut être ramenée à deux **opérateurs effectifs** obtenus par composition des projections linéaires internes. Cette réécriture ne sert pas seulement à “simplifier” l’algèbre : elle isole deux goulots fonctionnels distincts—un goulot **d’adressage** (sélection des sources) et un goulot **d’écriture** (directions effectivement modifiables dans le résiduel)—qui déterminent à la fois la capacité mécaniste de la tête et ses surfaces de vulnérabilité.
+
+##### Noyau QK : compatibilité bilinéaire, bas rang, collisions d’adressage
+
+La composition des projections requêtes et clés définit le noyau bilinéaire
+
+$$
+W_{QK}^{(h)} \stackrel{\mathrm{def}}{=} W_Q^{(h)}\big(W_K^{(h)}\big)^\top \in \mathbb{R}^{d_{\text{model}}\times d_{\text{model}}},
+\qquad \mathrm{rang}!\big(W_{QK}^{(h)}\big)\le d_k.
+$$
+
+Les scores d’attention entre une position cible (t) et une position source (j) s’écrivent alors comme un produit bilinéaire dans $\mathbb{R}^{d_{\text{model}}}$, et ne dépendent des états $\tilde x_t^{(l)}$ et $\tilde x_j^{(l)}$ qu’à travers des projections de dimension $\le d_k$. Le bas rang explicite un **goulot d’adressage** : la tête n’implémente qu’un nombre limité de critères latents de mise en correspondance inter-positions.
+
+Cette contrainte a une lecture géométrique immédiate. La carte $\tilde x \mapsto W_K^{(h)\top}\tilde x \in \mathbb{R}^{d_k}$ induit une identification (quotient) implicite de l’espace résiduel : des vecteurs distincts dans (\mathbb{R}^{d_{\text{model}}}) peuvent partager la même représentation “clé” et deviennent alors indistinguables pour l’adressage de la tête. Autrement dit, il existe des **fibres de collision**—des ensembles de directions résiduelles annihilées par la projection—le long desquelles le score QK est invariant. Mécaniquement, cela signifie que la décision “où lire” est gouvernée par une géométrie comprimée, et non par l’ensemble de l’état résiduel.
+
+Cette géométrie comprimée constitue également une surface d’attaque naturelle : la possibilité de collisions dans l’espace projeté permet de construire des **leurres d’adressage** (adversarial decoys) qui alignent $W_K^{(h)\top}\tilde x_j^{(l)}$ sur les requêtes pertinentes $W_Q^{(h)\top}\tilde x_t^{(l)}$ tout en restant sémantiquement anodins dans les composantes résiduelles orthogonales. L’attaque vise alors moins le contenu “brut” que la **direction vue par QK**, en exploitant le fait que la tête ne peut discriminer que dans un sous-espace de dimension (\le d_k). Le masque causal et la normalisation softmax transforment ensuite ces compatibilités en une distribution de routage (A^{(h)}); ces mécanismes ne suppriment pas le goulot, mais en héritent : le routage reste une fonction d’un nombre réduit de degrés de liberté, susceptible d’être saturée ou détournée par alignement géométrique.
+
+##### Opérateur OV : sous-espace d’écriture, bas rang, canal de transfert contraint
+
+La composition des projections valeurs et sortie définit l’opérateur de contenu
+
+$$
+W_{OV}^{(h)} \stackrel{\mathrm{def}}{=} W_V^{(h)}W_O^{(h)} \in \mathbb{R}^{d_{\text{model}}\times d_{\text{model}}},
+\qquad \mathrm{rang}!\big(W_{OV}^{(h)}\big)\le d_v.
+$$
+
+Quelle que soit la distribution d’attention produite par QK, la contribution de la tête au flux résiduel est confinée à $\mathrm{Im}!\big(W_{OV}^{(h)}\big)$, sous-espace de dimension (\le d_v). Le bas rang induit un **goulot d’écriture** : la tête ne peut injecter qu’un nombre limité de directions latentes dans le résiduel, tandis que (A^{(h)}) ne détermine que l’origine des signaux agrégés (quelles positions sources alimentent l’écriture).
+
+Là encore, la contrainte est géométrique avant d’être sémantique : l’écriture agit comme une compression suivie d’une réinjection contrainte. Une grande variété de contenus lus peut se retrouver projetée sur un petit nombre de directions effectives, et toute composante orthogonale à $\mathrm{Im}(W_{OV}^{(h)})$ est structurellement inatteignable par la tête. Mécaniquement, cela borne le type de transformations réalisables : une tête n’est pas un canal arbitraire, mais un opérateur à faible dimension de sortie dans l’espace résiduel.
+
+Dans une lecture sécurité/offensive, ce goulot impose une condition de *réalisabilité* : détourner l’adressage (via QK) ne suffit pas si le signal indésirable ne vit pas dans les directions transmissibles par $W_{OV}^{(h)}$. Inversement, l’existence d’un sous-espace d’écriture stable fournit une explication mécaniste aux attaques qui “marchent” de façon systématique : lorsqu’un patron malveillant (format d’instruction, marqueur lexical, séquence de contrôle) est encodé dans des directions proches de $\mathrm{Im}(W_{OV}^{(h)})$, il devient facilement propagé dès que le routage est capté. Le goulot d’écriture formalise ainsi une surface d’attaque complémentaire : non plus la collision d’adressage, mais l’alignement du contenu avec les **directions de pass-through** du circuit OV.
+
+
+##### Synthèse mécaniste : *où* se fait la sélection, *quoi* peut être déposé
+
+Au total, $W_{QK}^{(h)}$ fixe la géométrie des comparaisons inter-positions—donc la topologie du graphe de routage via $A^{(h)}$—sous contrainte de rang $\le d_k$. $W_{OV}^{(h)}$ fixe la géométrie des écritures—donc la famille des perturbations effectivement injectables dans $\mathbb{R}^{d_{\text{model}}}$—sous contrainte de rang $\le d_v$. La tête se comprend alors comme une composition de deux compressions : une compression **décisionnelle** (adressage) puis une compression **expressive** (écriture). Cette double compression explique simultanément la structure mécaniste des têtes (dépendance contextuelle portée par QK, contenu transférable borné par OV) et la forme des vulnérabilités exploitables : collisions et leurres au niveau de l’espace projeté QK, puis contrainte d’alignement au niveau du sous-espace d’écriture OV.
+
+
+#### Circuit QK : adressage bilinéaire, compétition normalisée et topologie de routage
+
+Le circuit **QK** spécifie, pour chaque tête $h$ et chaque position cible $t$, une **distribution de routage** sur les positions sources admissibles $j\le t$. Il détermine ainsi *où* l’information est lue (topologie des dépendances), indépendamment de *ce qui* est transféré, lequel relève du circuit **OV**.
+
+Pour une représentation $\tilde X^{(l)}$, les logits s’écrivent :
+
+$$
+S_{t,j}^{(h)}=\frac{\tilde x_t^{(l)},W_{QK}^{(h)},(\tilde x_j^{(l)})^\top}{\sqrt{d_k}}+M_{t,j},
 \qquad
-A^{(h)}=\mathrm{softmax}_{\text{ligne}}(S^{(h)}),
+M_{t,j}=
+\begin{cases}
+-\infty & j>t,\
+0 & \text{sinon,}
+\end{cases}
+$$
+
+et les poids d’attention résultent d’une normalisation ligne par ligne :
+
+$$
+A^{(h)}=\mathrm{softmax}*{\text{ligne}}(S^{(h)}),
 \qquad
-O^{(h)}=A^{(h)}V^{(h)}.
+A^{(h)}*{t,j}\ge 0,;;\sum_{j\le t}A^{(h)}*{t,j}=1,;;A^{(h)}*{t,j}=0;\text{si }j>t.
 $$
 
-- $M$ est le **masque causal**, qui interdit $j>t$ (implémenté typiquement via $-\infty$ sur les scores correspondants).
-- $\mathrm{softmax}_{\text{ligne}}$ rend $A^{(h)}$ **stochastique par lignes** : pour tout $t$, $\sum_j A^{(h)}_{t,j}=1$. Chaque ligne $A^{(h)}_{t,\cdot}$ définit ainsi une distribution sur les positions accessibles.
-- Le terme $q_t^{(h)}(k_j^{(h)})^\top$ mesure une **compatibilité** (alignement) entre la requête de $t$ et l’adresse portée par $j$ ; à couche et tête fixées, il contrôle la masse allouée à $j$.
+La matrice $A^{(h)}$ définit un graphe orienté acyclique sur les positions, dont les arêtes admissibles sont $t\leftarrow j$ pour $j\le t$, pondérées par $A^{(h)}_{t,j}$.
 
-Point clé pour l’analyse mécaniste : **conditionnellement à $A^{(h)}$**, l’attention est un opérateur **linéaire** en $V^{(h)}$ (donc en $X^{(l)}$ via $W_V^{(h)}$). Le comportement de routage est donc principalement déterminé par la construction de $A^{(h)}$ (Query–Key + position + softmax), c’est-à-dire par la **commande**.
 
-#### Lecture au niveau d’une position : somme pondérée (commande / charge utile)
+##### 1) Compatibilité bilinéaire et goulot d’adressage
 
-En notant $q_t^{(h)}\in\mathbb R^{1\times d_k}$ la $t$-ième ligne de $Q^{(h)}$, $k_j^{(h)}\in\mathbb R^{1\times d_k}$ la $j$-ième ligne de $K^{(h)}$, et $v_j^{(h)}\in\mathbb R^{1\times d_v}$ la $j$-ième ligne de $V^{(h)}$, la sortie d’une tête à la position $t$ s’écrit :
+En posant
+
 $$
-\mathrm{Attn}^{(h)}(x_t^{(l)})=\sum_{j\le t}
-\underbrace{A^{(h)}_{t,j}}_{\text{commande}}
-\;\underbrace{v_j^{(h)}}_{\text{charge utile}},
+Q_t^{(h)}=\tilde x_t^{(l)}W_Q^{(h)},\qquad K_j^{(h)}=\tilde x_j^{(l)}W_K^{(h)},
+$$
+
+le score prend la forme standard :
+
+$$
+S_{t,j}^{(h)}=\frac{\langle Q_t^{(h)},K_j^{(h)}\rangle}{\sqrt{d_k}}+M_{t,j}.
+$$
+
+Le produit scalaire induit une lecture géométrique directe :
+
+$$
+\langle Q_t,K_j\rangle=|Q_t|,|K_j|,\cos\theta_{t,j},
+$$
+
+où $\cos\theta_{t,j}$ capture l’**alignement directionnel** (compatibilité de contenu) et $\|Q_t\|,\|K_j\|$ module l’**échelle** des logits, donc la propension à concentrer ou diffuser la masse attentionnelle au niveau de la ligne $t$.
+
+La contrainte structurelle majeure provient de la bilinéarité :
+
+$$
+W_{QK}^{(h)}=W_Q^{(h)}(W_K^{(h)})^\top,\qquad \mathrm{rang}(W_{QK}^{(h)})\le d_k.
+$$
+
+Les décisions d’adressage dépendent donc des états $\tilde x_t^{(l)},\tilde x_j^{(l)}$ uniquement via un sous-espace latent de dimension $\le d_k$, ce qui introduit un **goulot**. 
+
+Ce goulot d’adressage (projection dans un sous-espace de dimension $\le d_k$$) introduit des phénomènes d’aliasage. Des contenus sémantiquement distincts peuvent produire des clés $K$ géométriquement proches dans l’espace latent réduit de la tête, et devenir difficilement séparables pour cette tête.
+
+> Dans un cadre adversarial, l’aliasage correspond à la possibilité de construire des séquences (**leurres attentionnels**) dont les clés se projettent dans les même régions du sous-espace latent que des motifs ciblés par certaines requêtes (p. ex. des motifs associés à des instructions de sécurité ou à des formats). L’effet attendu n’est pas l’émergence d’une “sémantique” nouvelle, mais une **collision géométrique**  au niveau des critères latents d’adressage.
+
+
+##### 2) Softmax : compétition sur simplex et amplification des écarts
+
+La softmax transforme les logits en une distribution sur le simplex $\sum_{j\le t}A_{t,j}=1$. Deux conséquences mécaniques structurent le routage :
+
+* **Invariance par translation** : pour tout $c$,
+
+  $$
+  \mathrm{softmax}(S_{t,\cdot})=\mathrm{softmax}(S_{t,\cdot}+c\mathbf 1),
+  $$
+
+  de sorte que seules les différences $S_{t,j}-S_{t,k}$ comptent.
+
+* **Compétition à budget unitaire** : la normalisation impose $\sum_{k\le t} A_{t,k}=1$. Par conséquent, augmenter $S_{t,j}$ accroît $A_{t,j}$ et réduit mécaniquement les masses $A_{t,k}$ pour $k\neq j$ (compétition sur le simplex), ce qui rend l’adressage intrinsèquement comparatif.
+
+L’amplification exponentielle implique en outre un régime de type *winner-take-most* lorsque l’écart de logits $\Delta=S_{t,j^*}-\max_{k\neq j^*}S_{t,k}$ devient grand : la masse se concentre fortement sur $j^*$ et la contribution effective des autres positions devient négligeable pour cette tête. Une quantification minimale s’obtient en isolant $j^*$ :
+
+$$
+A_{t,j^*} = \frac{e^{S_{t,j^*}}}{\sum_{k\le t} e^{S_{t,k}}} = \frac{1}{1+\sum_{k\le t, k\neq j^*} e^{-(S_{t,j^*}-S_{t,k})}}.
+$$
+
+Ainsi, si $S_{t,j^*}-S_{t,k}\gg 0$ pour tout $k\neq j^*$, alors $A_{t,j^*}\approx 1$.
+
+Le facteur $1/\sqrt{d_k}$ vise à stabiliser l’échelle typique des produits scalaires et à éviter que l’augmentation de $d_k$ n’induise une concentration artificielle.
+
+> Des séquences adverses optimisées pour produire un pic de compatibilité $\langle Q_t,K_{j^*}\rangle$ peuvent monopoliser une fraction importante du budget attentionnel d’une ou plusieurs têtes à des positions critiques (notamment près de la génération). L’effet est un **écrasement relatif** des autres signaux pour ces têtes — un mécanisme compatible avec des scénarios de **saturation attentionnelle**, sans suffire à lui seul à caractériser l’échec global d’alignement (qui dépend aussi d’OV, du résiduel, des couches, et de la redondance multi-têtes).
+
+
+##### 3) Contrainte causale et biais positionnels
+
+Le masque causal $M_{t,j}$ impose une contrainte topologique dure : seules les arêtes $t\leftarrow j$ avec $j\le t$ sont admissibles. Les encodages relatifs (RoPE, ALiBi) modifient ensuite la géométrie des logits en fonction de l’offset $t-j$, sans changer la forme générale “compatibilité + softmax”.
+
+Pour RoPE, si $Q_t=R_t\hat Q_t$ et $K_j=R_j\hat K_j$, le produit scalaire intègre une rotation relative :
+
+$$
+\langle Q_t,K_j\rangle=\hat Q_t^\top(R_t^\top R_j)\hat K_j,
+$$
+
+où la matrice de rotation $R_t^\top R_j$ dépend essentiellement de l’offset $t-j$. Pour des biais additifs de type ALiBi, un terme $b^{(h)}(t-j)$ est ajouté aux logits, imposant un a priori explicite sur la distance.
+
+Dans de nombreuses configurations, ces mécanismes se traduisent par un **a priori de proximité** : à compatibilité de contenu comparable, des sources plus proches peuvent être favorisées. Ce biais reste toutefois un *prior* et peut être contredit par un signal de contenu dominant.
+
+> Le biais de récence (proximité) tend à avantager structurellement des instructions ou signaux situés près de la zone de génération, ce qui peut accroître la pression sur les mécanismes chargés de récupérer des contraintes lointaines (p. ex. des consignes système placées en début de contexte). Inversement, l’existence de motifs d’ancrage (p. ex. *attention sinks*) illustre que certaines têtes peuvent aussi allouer une fraction stable de masse à des positions fixes afin de stabiliser la dynamique.
+
+
+Le circuit QK fixe la **carte de lecture** : une topologie de dépendances causales pondérées $A^{(h)}$, issue d’un compromis entre compatibilité de contenu (géométrie $Q/K$), contraintes structurelles (rang, masque) et compétition normalisée (softmax). Une fois cette topologie déterminée, le circuit **OV** réalise la lecture pondérée des valeurs et l’écriture correspondante dans le flux résiduel.
+
+
+#### Circuit OV : lecture des valeurs et canal d’écriture contraint
+
+Le circuit OV réalise le transfert de contenu une fois la topologie de routage fixée par QK. Conditionnellement à la matrice d’attention $A^{(h)}$, une tête $h$ transforme chaque représentation source en un "message" dans l’espace résiduel, puis agrège ces messages selon les poids d’attention. Du point de vue offensif, l’enjeu n’est donc pas seulement quelles sources sont lues, mais quelles directions une tête est capable d’écrire dans le résiduel.
+
+Pour une tête $h$, les valeurs et les écritures s’écrivent :
+
+$$
+V^{(h)}=\tilde X^{(l)}W_V^{(h)}\in\mathbb{R}^{T\times d_v},
 \qquad
-v_j^{(h)}=\tilde x_j^{(l)}W_V^{(h)},\quad \tilde x_j^{(l)}:=\mathrm{Norm}_1(x_j^{(l)}).
+U^{(h)}=V^{(h)}W_O^{(h)}\in\mathbb{R}^{T\times d_{\text{model}}}.
 $$
 
-La commande $A^{(h)}_{t,\cdot}$ est entièrement déterminée par les compatibilités Query–Key (et le masque). En posant
-$K^{(h)}_{1:t}=[k_1^{(h)};\dots;k_t^{(h)}]\in\mathbb R^{t\times d_k}$,
-elle s’écrit :
-$$
-A^{(h)}_{t,\cdot}=\mathrm{softmax}_{\text{ligne}}\!\left(\frac{q_t^{(h)}(K^{(h)}_{1:t})^\top}{\sqrt{d_k}}+M_{t,1:t}\right),
-$$
-où $M_{t,1:t}$ désigne la sous-ligne causale correspondante du masque $M$ (scores $j\le t$).
-
-La sortie multi-têtes concatène les sorties par tête puis applique une projection de recombinaison $W_O$, où $W_O \in \mathbb R^{H d_v \times d_{\text{model}}}$ (et si $d_v=d_{\text{model}}/H$, alors $H d_v = d_{\text{model}}$) :
+La contribution de la tête à la position cible $t$ est alors :
 
 $$
-\mathrm{MHA}(\tilde X^{(l)})=\mathrm{Concat}\big(O^{(1)},\dots,O^{(H)}\big)\,W_O.
+y_t^{(h)}=\sum_{j\le t}A_{t,j}^{(h)}\,u_j^{(h)},
+\qquad
+u_j^{(h)}=\tilde x_j^{(l)}\,W_V^{(h)}W_O^{(h)}.
 $$
-Les têtes réalisent ainsi plusieurs politiques de routage en parallèle (chacune dans un sous-espace), dont les contributions sont réinjectées dans le flux résiduel.
 
-Cette vue “routeur” est plus précise que l’intuition “l’attention raisonne” : l’attention **réalloue** vers $t$ des fragments d’état construits ailleurs ; la construction de variables internes abstraites dépend surtout de la **composition en profondeur** (attention $\rightarrow$ MLP, et itérations sur les couches).
+Sous forme matricielle, pour toute la séquence :
 
-#### Motifs mécanistes récurrents (propriétés, pas encore exploitation)
+$$
+Y^{(h)} = A^{(h)}U^{(h)} = A^{(h)}\tilde X^{(l)}W_V^{(h)}W_O^{(h)}.
+$$
 
-- **Induction (copie contextuelle).** Un motif largement documenté est le schéma $([\dots,A,B,\dots,A]\mapsto B)$, interprétable comme une **copie conditionnelle** et expliquant une part de l’in-context learning. Dans l’analyse par circuits, ce comportement est généralement distribué sur plusieurs couches : des têtes amont rendent disponible une information de “prédécesseur”, et des têtes d’induction routent ensuite vers la continuation observée lors d’une occurrence antérieure. ([arXiv][1])  
-  (La section 1.4 reliera ce motif aux dérives par démonstration et aux régimes *many-shot*.)
+Cette écriture explicite la séparation des rôles : $u_j^{(h)}$ est calculé par source (indépendamment de $t$), tandis que $A_{t,\cdot}^{(h)}$ décide quels messages sont agrégés à la cible $t$. Une captation du routage (via QK) ne garantit donc pas, à elle seule, un effet arbitraire : l’effet *downstream* dépend de la structure du canal d’écriture $W_V^{(h)}W_O^{(h)}$.
 
-- **Puits d’attention (attention sinks).** Certains modèles attribuent une masse attentionnelle disproportionnée à des positions “ancres” (souvent au début de séquence), parfois indépendamment de leur contenu. En contexte long, ce phénomène est souvent décrit comme un effet de stabilisation : conserver quelques tokens initiaux peut suffire à préserver certaines propriétés de génération lors de troncatures de la KV-cache. ([arXiv][2])  
-  Mécaniquement, cela se comprend via la contrainte de normalisation du softmax (allocation de masse) et l’émergence de points de référence entrant en compétition pour la masse attentionnelle.
+##### 1) Goulot d’écriture : sous-espace de sortie et rang effectif
+
+L’opérateur de contenu d’une tête est la composition :
+
+$$
+W_{OV}^{(h)} \;=\; W_V^{(h)}W_O^{(h)}\in\mathbb{R}^{d_{\text{model}}\times d_{\text{model}}},
+\qquad
+\mathrm{rang}(W_{OV}^{(h)})\le d_v.
+$$
+
+Toutes les écritures produites par la tête appartiennent donc à un sous-espace de dimension au plus $d_v$ :
+
+$$\forall t,\qquad y_t^{(h)}\in \mathrm{Im}\!\big(W_{OV}^{(h)}\big)\;=:\;\mathcal S_h.$$
+
+Le circuit OV impose ainsi un canal d’écriture contraint : même si $A^{(h)}$ est extrêmement concentrée sur une source $j^*$, la tête ne peut injecter dans le flux résiduel que des composantes situées dans $\mathcal S_h$.
+
+> Ce goulot borne l’« espace des charges utiles » effectivement transférables par une tête. Une attaque réussie ne dépend donc pas seulement d’une domination attentionnelle, mais d’un **alignement géométrique** : la direction injectée via $u_{j^*}^{(h)}$ doit avoir une projection non négligeable sur les directions représentationnelles auxquelles les couches ultérieures (et, in fine, le décodeur) sont sensibles. À l’inverse, une perturbation principalement portée par des composantes quasi-orthogonales à ces directions aura typiquement un impact limité sur la dynamique downstream (faible couplage), même si elle est fortement routée par $A^{(h)}$. Une attaque visant un changement comportemental global doit donc, implicitement, mobiliser des têtes dont le sous-espace d’écriture $\mathcal S_h$ intersecte de manière significative ces directions sensibles.
+
+
+##### 2) Linéarité conditionnelle et propagation des perturbations
+
+Conditionnellement à $A^{(h)}$ (topologie fixée), l’opération OV est linéaire en $\tilde X^{(l)}$ :
+
+$$Y^{(h)} = A^{(h)}\tilde X^{(l)}W_{OV}^{(h)}.$$
+
+Une perturbation additive $\Delta \tilde X^{(l)}$ dans les sources se propage donc sans distorsion non-linéaire :
+
+$$\Delta Y^{(h)} = A^{(h)}\,\Delta\tilde X^{(l)}\,W_{OV}^{(h)}.$$
+
+Cette relation formalise un point mécaniste central : une fois la topologie de lecture fixée, les variations présentes dans les sources sélectionnées sont transportées vers les positions cibles via une projection $W_{OV}^{(h)}$, sans non-linéarité intermédiaire sur le chemin OV (contrairement aux MLP, qui peuvent saturer, tronquer ou reconfigurer des composantes). Les têtes d'attention agissent ici comme des canaux de copie.
+
+> Cette linéarité conditionnelle fait des têtes d’attention des canaux de propagation efficaces pour des composantes latentes déjà présentes dans les représentations sources. Plus précisément, si une direction $v\in\mathbb{R}^{d_{\text{model}}}$ est présente dans $\tilde x_j^{(l)}$ et si $A_{t,j}^{(h)}$ lui attribue une masse suffisante, alors une composante corrélée est transmise vers la position cible sous la forme
+>
+> $$ \Delta y_t^{(h)} \;\propto\; A_{t,j}^{(h)}\,\Delta \tilde x_j^{(l)}\,W_{OV}^{(h)}, $$
+>
+> c’est-à-dire après projection dans le sous-espace d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$.
+>
+> Dans un cadre adversarial, cette propriété peut être mobilisée pour propager des *triggers* représentationnels : une perturbation directionnelle encodée dans une position source, si elle est routée par $A^{(h)}$, contribue additivement au résiduel de la position cible. Les têtes de type *copie/induction* illustrent ce mécanisme : elles peuvent réinjecter, à des positions ultérieures, des motifs corrélés à des segments du contexte (p. ex. suffixes, formats, patrons), sous réserve que ces motifs aient une projection non négligeable sur $\mathcal S_h$.
+
+#### 3) Superposition multi-têtes et interférences dans le résiduel
+
+Au niveau de la couche, les contributions des têtes se superposent dans le flux résiduel :
+
+$$
+\tilde X^{(l+1)} ;=; \tilde X^{(l)} ;+; \sum_h Y^{(h)}
+\quad
+(\text{avant normalisation/MLP}).
+$$
+
+Le résiduel agit comme un espace d’addition partagée : les écritures de différentes têtes peuvent s’additionner (interférence constructive) ou se compenser (interférence destructive).
+
+> Un changement comportemental global (p. ex. basculement entre refus et acceptation) se manifeste typiquement lorsque la somme des contributions multi-têtes
+>
+> $$
+> \sum_h Y^{(h)}
+> $$
+> oriente le vecteur résiduel vers des directions auxquelles les couches ultérieures (et, in fine, le décodeur) sont sensibles, malgré les contributions concurrentes des autres têtes et la dynamique des blocs MLP. L’enjeu se décrit comme un rapport de forces vectoriel : (i) la magnitude des composantes injectées, (ii) leur alignement avec des directions “actives” downstream, et (iii) leur stabilité face à la superposition (interférences constructives/destructives) et aux transformations ultérieures.
+>
+> Dans un cadre adversarial, l’objectif revient à produire une perturbation résiduelle dont la direction et la magnitude dominent, à certaines positions/couches, la somme des contributions concurrentes, de manière à favoriser la lecture downstream de features compatibles avec la génération ciblée.
+
+
+#### Motifs mécanistes récurrents (composition de circuits)
+
+L’analyse précédente caractérise une tête d’attention comme une unité fonctionnelle (adressage **QK** puis écriture **OV**). Les comportements de haut niveau — ainsi que certaines défaillances — émergent toutefois principalement de la **composition inter-couches** : le flux résiduel sert de mémoire partagée, et une écriture produite par une tête à la couche $l$ devient une composante de l’entrée $\tilde X^{(l')}$ lue par les têtes aux couches $l'>l$.
+
+Deux modes de composition sont particulièrement structurants.
+
+* **Composition de routage (pilotage QK).** Une tête amont modifie le flux résiduel de manière à changer les requêtes/clés produites en aval, donc à déplacer la masse d’attention $A^{(h')}$ d’une tête aval. Mécaniquement, l’écriture OV amont déforme la géométrie des compatibilités $\langle Q_{t}^{(h')},K_{j}^{(h')}\rangle$ en aval, ce qui reconfigure la topologie effective des arêtes $t\leftarrow j$.
+
+* **Composition de contenu (chaînage OV).** Une tête amont écrit une information dans une direction du résiduel qui est ensuite relue, copiée et relayée par une tête aval (souvent via des motifs de copie). Dans ce cas, le signal traverse la pile sous forme de composantes persistantes dans le résiduel, conditionnées par les matrices de routage successives.
+
+Ces deux mécanismes se combinent et produisent des motifs récurrents. Deux motifs particulièrement documentés en interprétabilité mécaniste sont les **têtes d’induction** et les **puits d’attention** (*attention sinks*).
+
+
+##### 1) Têtes d’induction : complétion de motifs et “copie conditionnelle”
+
+Les têtes d’induction rendent compte d’une capacité de complétion de motifs de type $A,B,\dots,A\mapsto B$ (apprentissage en contexte par répétition structurée). Le motif canonique repose sur une coopération inter-couches entre (au moins) deux fonctions :
+
+1. **Écriture d’un marqueur de contexte local.** Une tête amont écrit, à la position $t$, une feature corrélée à l’identité ou à la classe du token précédent (ou à une propriété locale pertinente). Formellement, une contribution $y_t^{(h,l)}$ injecte dans le résiduel une direction qui devient lisible par les projections $W_Q^{(h',l')}$ et/ou $W_K^{(h',l')}$ d’une tête aval.
+
+2. **Adressage vers une occurrence antérieure et copie du successeur.** Une tête aval construit alors une requête $Q_t^{(h',l')}$ qui “matche” les clés d’une occurrence passée $j$ partageant la même signature (même $A$), puis concentre $A_{t,\cdot}^{(h',l')}$ sur une position liée au successeur (souvent $j+1$) afin de copier, via OV, la valeur associée au token $B$. Le résultat est une copie structurée : l’OV écrit à $t$ une composante corrélée au contenu “qui suivait” l’occurrence antérieure.
+
+> Ce motif formalise une dynamique de réplication de patrons : lorsque le contexte contient des paires répétées « entrée $\to$ sortie » (format, style, schéma argumentatif), l’induction tend à favoriser une continuation conforme au patron observé. La vulnérabilité correspond moins à l’invention d’un contenu ex nihilo qu’à l’amplification d’une régularité déjà présente, via (i) un routage QK qui sélectionne des précédents structurellement similaires et (ii) un transfert OV qui réinjecte la continuation associée. Dans un cadre adversarial, cet effet peut favoriser la persistance de structures indésirables lorsque ces patrons sont suffisamment représentés dans le contexte (p. ex. scénarios de type many-shot) et, surtout, lorsque leur signature représentationnelle se projette sur les sous-espaces QK/OV effectivement mobilisés par ces têtes
+
+##### 2) Puits d’attention : allocation par défaut et stabilisation du calcul
+
+Le phénomène de *attention sinks* découle de la combinaison “softmax + budget unitaire” : pour chaque ligne $t$, la contrainte $\sum_{j\le t}A_{t,j}=1$ impose qu’une tête distribue sa masse même lorsque les logits $S_{t,j}$ sont faiblement discriminants (contraste faible). Sans mécanisme compensateur, la softmax tend alors vers une allocation diffuse, et l’OV produit une moyenne pondérée de nombreuses valeurs $V_j$, ce qui peut injecter dans le résiduel un mélange peu informatif ou instable.
+
+Empiriquement, certaines architectures apprennent à concentrer une fraction stable de l’attention sur des positions particulières (souvent le token de début de séquence, des séparateurs, ou de la ponctuation), qui jouent le rôle de **déversoir attentionnel**. Mécaniquement, deux ingrédients rendent ce comportement stable :
+
+* **Routage préférentiel.** Les clés de ces positions et/ou les biais positionnels créent une attractivité “par défaut” dans QK lorsque le signal de contenu est faible.
+* **Écriture bénigne.** Les valeurs associées à ces positions, après projection $W_{OV}$, produisent une écriture faible (quasi-nulle) ou une écriture stabilisante dans le résiduel, limitant l’impact d’une allocation par défaut.
+
+> Ces puits fonctionnent comme des **routes par défaut** du routage attentionnel. La contrainte de budget $\sum_{j\le t}A_{t,j}=1$ implique qu’une tête ne peut pas “s’abstenir”, mais seulement **canaliser** sa masse vers des positions dont l’écriture OV est supposée peu perturbatrice.
+>
+> En régime de faible contraste des logits, si une position $s$ joue le rôle de puits pour une tête $h$, la contribution peut s’approximer par
+> $$
+> y_t^{(h)} \approx A_{t,s}^{(h)},u_s^{(h)}.
+> $$
+> Cette approximation met en évidence une **sensibilité accrue** à l’écriture associée aux positions de repli. Dans une perspective offensive, une exploitation potentielle reposerait alors sur une **déviation du chemin de repli** : l’objectif n’est pas nécessairement de créer un pic de compatibilité vers une source spécifique, mais de rendre l’écriture $u_s^{(h)}$ non bénigne — en particulier en l’orientant vers des directions effectivement sensibles downstream — pour les positions qui reçoivent systématiquement la masse par défaut.
+>
+> Plus généralement, une perturbation systématique de la lisibilité de ces puits (p. ex. via des modifications qui réduisent leur attractivité QK ou altèrent leur écriture OV) peut dégrader la stabilité du routage et accroître la variance des écritures résiduelles. Le phénomène se formule comme une **fragilité de stabilisation** : en l’absence d’un ancrage par défaut, le modèle tend à distribuer sa masse sur des sources moins contrôlées, ce qui peut se manifester par une perte de cohérence et des transitions erratiques.
+
+
+##### Remarque : motifs composés et hétérogénéité des têtes
+
+Ces deux motifs illustrent une idée générale : les propriétés saillantes ne résident pas uniquement dans une tête isolée, mais dans la **chaîne** “écriture amont $\to$ (re)adressage aval $\to$ écriture aval”. Une taxonomie plus large inclut également des têtes de copie locales, des têtes d’ancrage sur délimiteurs, et des têtes de “pilotage” qui modulent le routage d’autres têtes via des écritures dirigées dans des sous-espaces auxquels les projections QK aval sont sensibles. En pratique, l’identification mécaniste d’un motif revient à caractériser simultanément la topologie $A^{(h)}$ induite par QK et le sous-espace d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$ induit par OV, puis à suivre leur composition à travers les couches.
+
 
 <hr style="width:40%; margin:auto;">
 
 ### Mélange de canaux : le MLP comme mémoire associative
 
-Le MLP/FFN opère **position par position** : il ne route pas entre tokens, mais applique une transformation non linéaire locale qui écrit dans le flux résiduel. Dans sa forme canonique (biais omis pour lisibilité) :
+Contrairement à l’attention — qui réalise un **mélange inter-positions** en routant causalement l’information via les poids $A_{t,j}$ — le bloc **MLP/FFN** opère un **mélange intra-positionnel** : à chaque position $t$, il transforme $x_t^{(l)}\in\mathbb{R}^{d_{\text{model}}}$ sans consulter directement les autres tokens. À topologie contextuelle fixée par l’attention, le MLP implémente ainsi le **calcul local** sur la représentation : il projette $x_t^{(l)}$ dans un espace d’expansion de dimension $d_{\text{ff}}$ (typiquement $d_{\text{ff}}\gg d_{\text{model}}$), applique une non-linéarité jouant le rôle de **sélection conditionnelle** (souvent parcimonieuse en pratique), puis reprojette vers $\mathbb{R}^{d_{\text{model}}}$ afin d’injecter une mise à jour dans le flux résiduel.
+
+Cette mécanique admet une lecture géométrique directe. L’expansion $d_{\text{model}}\to d_{\text{ff}}$ induit une base riche de **directions latentes** (features) dans laquelle l’état $x_t^{(l)}$ est recoordonné. La non-linéarité (et, dans les variantes *gated*, la modulation multiplicative) partitionne l’espace des entrées en **régimes** : selon la région où se situe $x_t^{(l)}$, un sous-ensemble de directions intermédiaires contribue fortement à l’update. La projection descendante recombine ensuite ces activations en un déplacement dans l’espace résiduel. Autrement dit, le MLP réalise une **transformation non-linéaire à régimes locaux** : localement, il se comporte comme une transformation quasi-affine dont les paramètres effectifs dépendent de l’état $x_t^{(l)}$, ce qui lui confère une capacité élevée de recombinaison de features à position fixe.
+
+Dans cette vue unifiée, l’attention répond principalement à la question *où l’information circule* (connectivité, adressage, agrégation entre positions), tandis que le MLP répond à *comment cette information est transformée* au point $t$ (extraction de features, interactions non-linéaires entre canaux, synthèse d’une mise à jour dans le résiduel). L’alternance attention–MLP combine ainsi **transport contextuel** (mélange inter-tokens) et **calcul local** (recombinaison non-linéaire), ce qui motive la description du MLP comme processeur de features et **réservoir paramétrique** d’associations, complémentaire du rôle de lecture contextuelle assuré par l’attention.
+
+#### Architecture : expansion, non-linéarité et *gating*
+
+À la couche $l$, en régime **pre-norm**, le MLP s’applique au vecteur résiduel normalisé (typiquement **RMSNorm** ou **LayerNorm**) :
 
 $$
-\mathrm{MLP}(x_{\text{pos}})=\sigma\!\left(x_{\text{pos}}W_{\text{in}}\right)\,W_{\text{out}},
-\qquad
-W_{\text{in}}\in\mathbb R^{d_{\text{model}}\times d_{\text{ff}}},
-\quad
-W_{\text{out}}\in\mathbb R^{d_{\text{ff}}\times d_{\text{model}}}.
+\tilde x_t^{(l)}=\mathrm{Norm}!\big(x_t^{(l)}\big).
 $$
 
-La non-linéarité $\sigma$ (souvent GELU/SiLU selon l’architecture) transforme des **détections** linéaires en coefficients d’activation qui contrôlent l’écriture dans le résiduel.
+Il réalise ensuite un **mélange de canaux** *intra-positionnel* suivant le patron « expansion $\to$ non-linéarité $\to$ projection de retour », c.-à-d. une projection $d_{\text{model}}\to d_{\text{mlp}}$ (souvent $d_{\text{mlp}}\gg d_{\text{model}}$) qui crée un espace de travail sur-paramétré où les directions latentes deviennent plus séparables, puis une projection $d_{\text{mlp}}\to d_{\text{model}}$ qui **réinjecte** une mise à jour dans l’espace résiduel.
 
-Les architectures modernes utilisent fréquemment des variantes **gated** (p. ex. SwiGLU), qui accentuent une structure “détection $\times$ écriture” :
+Dans sa variante **gated** (SwiGLU/GeGLU, répandue dans LLaMA/Mistral/PaLM), l’opération s’écrit :
 
 $$
-\mathrm{MLP}_{\text{gated}}(x_{\text{pos}})
+\mathrm{MLP}(\tilde x_t)
 =
-\Big(\sigma(x_{\text{pos}}W_1)\odot (x_{\text{pos}}W_2)\Big)\,W_{\text{out}},
+\Big(\phi(\tilde x_t W_{\text{up}} + b_{\text{up}})
+\odot
+(\tilde x_t W_{\text{gate}} + b_{\text{gate}})\Big), W_{\text{down}} + b_{\text{down}},
 $$
-avec $W_1,W_2\in\mathbb R^{d_{\text{model}}\times d_{\text{ff}}}$ et $\odot$ le produit de Hadamard (biais omis).
+
+avec 
+
+$W_{\text{up}},W_{\text{gate}}\in\mathbb{R}^{d_{\text{model}}\times d_{\text{mlp}}}$,
+$W_{\text{down}}\in\mathbb{R}^{d_{\text{mlp}}\times d_{\text{model}}}$,
+$b_{\text{up}},b_{\text{gate}}\in\mathbb{R}^{d_{\text{mlp}}}$,
+$b_{\text{down}}\in\mathbb{R}^{d_{\text{model}}}$,
+
+$\phi$ typiquement **SiLU** (SwiGLU) ou **GELU** (GeGLU), et $\odot$ le produit de Hadamard.
+
+Mécaniquement, le *gating* introduit une **interaction multiplicative** qui contrôle *ce qui est écrit* dans le résiduel : la branche $\phi(\cdot)$ produit des amplitudes non linéaires (activation de features), tandis que la branche “porte” fournit des coefficients qui **modulent** ces amplitudes composante par composante. Chaque coordonnée intermédiaire $r\in{1,\dots,d_{\text{mlp}}}$ se comporte ainsi comme une **feature conditionnelle** dont la contribution est réinjectée dans une direction d’écriture déterminée par la $r$-ième ligne de $W_{\text{down}}$, avec une intensité donnée par
+
+$$
+\big[\phi(\tilde x_t W_{\text{up}} + b_{\text{up}})\odot(\tilde x_t W_{\text{gate}} + b_{\text{gate}})\big]*r.
+$$
+
+Géométriquement, cette structure induit une transformation **piècewise quasi-linéaire** de l’espace résiduel : la normalisation fixe l’échelle locale, le *gating* partitionne l’espace des $\tilde x_t$ en régions où certains sous-ensembles de features dominent, et la projection de retour recombine ces activations en un déplacement $\Delta x_t\in\mathbb{R}^{d*{\text{model}}}$.
+
+La mise à jour résiduelle s’écrit enfin :
+
+$$
+x_t^{(l+1)} = x_t^{(l)} + \mathrm{MLP}!\big(\tilde x_t^{(l)}\big),
+$$
+
+ce qui met en évidence le rôle du MLP : non pas déplacer l’information entre positions (rôle de l’attention), mais réaliser, **à la position $t$**, un calcul non linéaire qui sélectionne et compose des directions latentes avant de les réécrire dans le flot résiduel.
+
+
+#### 2) Lecture mécaniste : mémoire associative locale (clé $\to$ valeur) et déclenchement
+
+Une lecture mécaniste standard consiste à modéliser le MLP comme une **mémoire associative adressable par le contenu**, mais **à position fixe** : l’état résiduel normalisé $\tilde x_t$ joue le rôle de requête, et un sous-ensemble d’unités intermédiaires $r\in{1,\dots,d_{\text{mlp}}}$ s’active lorsque $\tilde x_t$ projette fortement sur certaines directions apprises. Chaque unité active contribue alors une **écriture** dans $\mathbb{R}^{d_{\text{model}}}$, de sorte que la sortie du MLP s’interprète comme une superposition de “valeurs” pondérées :
+
+$$
+\mathrm{MLP}(\tilde x_t)
+;=;
+b_{\text{down}}
+;+;
+\sum_{r=1}^{d_{\text{mlp}}} a_r(\tilde x_t), v_r,
+$$
+
+où $v_r\in\mathbb{R}^{d_{\text{model}}}$ correspond (à une convention près) à la $r$-ième **ligne** de $W_{\text{down}}$ : c’est une **direction d’écriture** dans l’espace résiduel.
+
+Dans le cas *gated* (SwiGLU/GeGLU), un choix naturel pour l’amplitude $a_r$ est :
+
+$$
+a_r(\tilde x_t)
+=
+\phi!\big(\langle \tilde x_t, k_r\rangle + b^{\text{up}}*{r}\big);\cdot;\big(\langle \tilde x_t, g_r\rangle + b^{\text{gate}}*{r}\big),
+$$
+
+où $k_r$ et $g_r$ sont les **colonnes** $r$ de $W_{\text{up}}$ et $W_{\text{gate}}$. Cette factorisation rend explicite le mécanisme de déclenchement : $k_r$ et $g_r$ définissent des **détecteurs directionnels** (conditions de projection pour activer l’unité), tandis que $v_r$ est la **valeur** écrite lorsque l’unité est active. Chaque $r$ implémente ainsi un micro-circuit du type *si $\tilde x_t$ satisfait ces conditions latentes, alors pousser le résiduel dans la direction $v_r$*.
+
+Géométriquement, le MLP définit un **champ de vecteurs** sur l’espace des entrées $\tilde x_t$. Les amplitudes $a_r(\tilde x_t)$ dépendent de projections $\langle \tilde x_t,k_r\rangle$ et $\langle \tilde x_t,g_r\rangle$, ce qui induit des frontières de décision “souples” (hyperplans modulés par la non-linéarité) séparant des régions où certains neurones dominent. Dans une région donnée, la mise à jour est bien approchée par une combinaison de quelques directions $v_r$, ce qui confère au MLP une dynamique **par morceaux** (quasi-linéaire) : l’opérateur “plie” l’espace résiduel par activation sélective de directions d’écriture, plutôt que de déplacer l’information entre positions (rôle de l’attention).
+
+Ce point de vue éclaire enfin l’aspect sécurité/mécaniste. Si un comportement indésirable correspond à l’activation d’un petit ensemble d’unités — donc à certaines écritures $v_r$ et à leurs conditions de déclenchement — une entrée adversariale n’a pas besoin de produire une “sémantique” nouvelle. Il suffit qu’elle **déplace** $\tilde x_t$ vers des régions de l’espace résiduel où ces unités s’activent fortement (p. ex. motifs de format, styles de réponse, scripts latents), ce qui entraîne l’injection des directions $v_r$ correspondantes dans le flux résiduel.
+
+#### 3) Polysemanticité et superposition : contrainte structurelle pour l’alignement
+
+Un obstacle central à l’interprétation — et, par extension, à l’alignement — est que les unités intermédiaires du MLP sont rarement **monosémantiques**. En pratique, le réseau apprend une représentation en **superposition** : un même espace interne sert de support à plusieurs *features*, notamment parce que (i) le nombre de régularités utiles excède la capacité dimensionnelle disponible et (ii) l’activation demeure largement **parcimonieuse** et **contextuelle**. Mécaniquement, cela implique qu’une unité $r$ ne correspond pas à “un concept” stable, mais plutôt à une direction de calcul réutilisée, dont l’interprétation dépend de la position de $\tilde x_t$ dans l’espace résiduel et des co-activations qui l’accompagnent.
+
+Dans la lecture “mémoire associative” du MLP, la mise à jour
+
+$$
+\Delta x_t ;=; \sum_{r=1}^{d_{\text{mlp}}} a_r(\tilde x_t),v_r
+$$
+
+n’est pas une simple somme de contributions sémantiquement indépendantes : la **sélectivité** induite par la parcimonie, le *gating* et les corrélations entre détecteurs fait que la “signification” d’un terme $v_r$ n’est pas identifiable au niveau d’une unité isolée. Géométriquement, l’espace des entrées est partitionné en régions d’activation où une même direction d’écriture $v_r$ peut être mobilisée pour des raisons différentes : une même “valeur” est réutilisée comme primitive dans plusieurs programmes locaux.
+
+Deux conséquences mécanistes en découlent pour l’alignement.
+
+**Compromis d’édition.** Si un comportement indésirable et une capacité légitime partagent une direction d’écriture $v_r$ (ou un voisinage proche dans l’espace des valeurs), alors réduire ou ablater cette contribution revient à supprimer une direction qui transporte plusieurs fonctions. Une intervention apparemment ciblée (au niveau d’une unité ou d’un sous-espace) peut donc induire des effets collatéraux : perte de compétences, dégradation de robustesse, ou déplacement du comportement vers des routes alternatives via réallocation de superposition.
+
+**Surfaces de déclenchement indirectes.** La superposition produit un espace de déclenchement distribué : une entrée qui ne correspond à aucun motif “pur” peut néanmoins placer $\tilde x_t$ dans une région où une combinaison d’unités s’active de manière à approximer une direction sensible downstream, c’est-à-dire où
+
+$$
+\sum_r a_r(\tilde x_t),v_r
+$$
+
+aligne le résiduel avec un sous-espace déclenchant. Le problème n’est donc pas seulement de filtrer des contenus explicites, mais de contrôler une géométrie d’activation où des interférences entre *features* peuvent recomposer des écritures problématiques de façon non évidente.
+
+En synthèse, tant que les *features* restent en superposition, l’alignement par “désactivation de neurones” ou par édition locale des MLP se heurte à une contrainte structurelle — la non-séparabilité des primitives internes — qui rend les interventions à la fois difficiles à cibler et potentiellement fragiles.
 
 #### Lecture clé–valeur : le FFN comme mémoire associative
 
@@ -529,18 +981,23 @@ Cette partition n’est pas une loi, mais un repère empirique pour localiser *o
 #### Cadre minimal : mises à jour additives et “décodabilité” couche-par-couche
 
 Dans un Transformer *pre-norm*, l’état résiduel à une position cible suit :
+
 $$
 x_t^{(l+1)} = x_t^{(l)} + \Delta_t^{(l)},\qquad \Delta_t^{(l)}=\Delta^{(l)}_{\text{attn},t}+\Delta^{(l)}_{\text{MLP},t}.
 $$
 
 La *logit lens* sonde la décodabilité intermédiaire en projetant un état normalisé vers l’espace vocabulaire :
+
 $$
 z_t^{(l)} = \mathrm{Norm}_{\text{out}}(x_t^{(l)})\,W_U + b,\qquad p_t^{(l)}=\mathrm{softmax}(z_t^{(l)}).
 $$
+
 La *tuned lens* remplace la projection brute par une calibration par couche (souvent affine/linéaire), afin de compenser partiellement les changements de base internes :
+
 $$
 z^{(l)}_{\text{tuned},t} = g^{(l)}(\mathrm{Norm}_{\text{out}}(x_t^{(l)}))\,W_U + b^{(l)},
 $$
+
 où $g^{(l)}$ est typiquement une transformation apprise (par couche) minimisant l’écart entre $p_t^{(l)}$ et $p_t^{(L)}$.
 
 Une notion opérationnelle de “construction” est alors : une information est dite **décodable** à la profondeur $l$ lorsque la projection (logit/tuned lens) commence à attribuer une masse de probabilité stable à un ensemble cohérent de continuations (tokens, champ lexical, style, acte de dialogue), mesurable par une baisse de $\mathrm{KL}(p_t^{(l)} \,\|\, p_t^{(L)})$ ou par l’augmentation de la marge logit sur un sous-ensemble cible.
@@ -591,7 +1048,6 @@ L’anatomie du bloc met en évidence trois leviers mécaniques (dont les décli
 2. **Déclenchement d’écritures associatives (MLP).** Activer des **clés internes** et provoquer des écritures de valeurs : dans l’écriture clé–valeur, augmenter sélectivement $\sigma(x \kappa_i)$ pour injecter des composantes $r_i$ dans le résiduel. La superposition rend possibles des collisions (mêmes unités supportant plusieurs traits). Les SAE offrent un outil d’isolement de *features* pour l’audit de ces mécanismes. ([arXiv][4])
 
 3. **Effet de profondeur (fait accompli).** Stabiliser précocement une direction latente décodable, avant les mécanismes tardifs de raffinement/conformité. Le basculement devient observable couche-par-couche via *logit lens* / *tuned lens*. ([arXiv][6])
-
 
 ---
 
@@ -656,9 +1112,11 @@ En conséquence, l’injection de prompt n’est pas un “bug” isolé mais un
 La section précédente a établi que l’architecture Transformer traite instructions et données de manière indifférenciée au sein d’un même canal (*in-band*). En l’absence de ségrégation architecturale, la circulation effective de l’information est gouvernée par les mécanismes de **routage** — en pratique, les têtes d’attention.
 
 Mathématiquement, ce routage est déterminé par des scores de similarité entre requêtes $Q$ et clés $K$, puis normalisé par *softmax* :
+
 $$
 A \;=\; \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right),
 $$
+
 où $M$ désigne le masque (p. ex. causal) et éventuels biais structurels. Cette formulation met en évidence une propriété critique : le routage dépend d’une **similarité vectorielle**, non d’une hiérarchie logique ni d’une origine de confiance. Par ailleurs, la nature exponentielle de la *softmax* induit des régimes de **saturation** : lorsqu’un petit nombre de logits domine, la masse d’attention se **concentre** sur quelques positions. Dès lors, si un segment non fiable induit des clés $K$ obtenant des produits scalaires $QK^\top$ systématiquement élevés pour certaines requêtes dominantes, il peut capter une part disproportionnée du budget d’attention de la tête concernée, marginalisant mathématiquement d’autres signaux. Le phénomène relève d’une **exploitation géométrique** de l’espace d’activation, plutôt que d’une “incompréhension” au sens sémantique.
 
 #### Injection indirecte et contamination du contexte étendu (RAG / Web)
@@ -676,9 +1134,11 @@ Ils introduisent des indices structurels et des biais locaux (via leur effet sur
 #### Forçage de préfixe : verrouillage inertiel de la trajectoire auto-régressive
 
 Le caractère auto-régressif impose une dépendance forte à l’historique : la génération suit une distribution conditionnelle
+
 $$
 P(s_{t} \mid s_{<t})\quad(\text{où }t\text{ est le pas de génération})..
 $$
+
 Le forçage de préfixe (*prefill*) exploite cette inertie : lorsqu’un préfixe de réponse est déjà présent dans l’historique fourni au modèle, l’état interne est orienté vers un régime où les continuations cohérentes avec ce préfixe deviennent beaucoup plus probables.
 
 Géométriquement, le flux résiduel au pas $t$ est déjà situé dans une région de l’espace latent favorable à la continuation. Revenir brutalement vers un autre régime (p. ex. une réorientation forte de l’intention ou du style) requiert une mise à jour atypique, statistiquement défavorisée par l’objectif d’entraînement qui privilégie la cohérence locale. Le phénomène se comprend comme un **verrouillage de trajectoire** : certaines suites sont fortement favorisées, non par légitimité intrinsèque, mais par la dynamique conditionnelle induite par le préfixe.
@@ -692,17 +1152,21 @@ Le *many-shot jailbreaking* — consistant à préfixer la requête cible par un
 #### Amorçage mécanique : motif invariant et têtes d’induction
 
 Le mécanisme central repose sur un *priming* par répétition dense d’un motif du type :
+
 $$
 [\text{Requête interdite}] \;\rightarrow\; [\text{Réponse complaisante}].
 $$
+
 Le motif est instancié sous une forme stable (balises identiques, gabarit conversationnel fixe). Dans ce régime, les têtes d’attention d’induction — définies mécanistiquement comme des opérateurs exploitant des correspondances locales pour **copier** une continuation observée ailleurs — tendent à devenir plus influentes dans la continuation.
 
 Formellement, pour une tête donnée, la mise à jour s’écrit :
+
 $$
 \alpha_t = \mathrm{softmax}\!\left(\frac{q_t K^\top}{\sqrt{d_k}}\right),
 \qquad
 \Delta x_t^{\text{head}} = \alpha_t\,V \;\;(\text{ligne }t\text{ de } \alpha V).
 $$
+
 Lorsque le préfixe contient de nombreuses occurrences d’un même gabarit, les représentations de clés $K$ associées aux positions de transition (fin de requête / début de réponse) deviennent nombreuses et suffisamment similaires (dans les sous-espaces pertinents) pour favoriser un alignement avec le vecteur requête $q_t$ produit au pas courant. La distribution $\alpha_t$ peut alors concentrer sa masse sur des positions structurellement analogues au cas présent ; la tête lit ces positions et réinjecte, via $V$, des directions corrélées à la continuation observée.
 
 En première approximation, plus le motif est régulier, plus la correspondance $q\cdot k$ est facilitée, offrant une voie courte pour imposer une continuation par copie structurelle plutôt que par réinterprétation sémantique.
@@ -710,9 +1174,11 @@ En première approximation, plus le motif est régulier, plus la correspondance 
 #### Gain effectif et compétition dans le flux résiduel
 
 La dynamique additive du flux résiduel permet l’accumulation de contributions couche après couche :
+
 $$
 x_t^{(l+1)} = x_t^{(l)} + \Delta x_t^{\text{attn},(l)} + \Delta x_t^{\text{mlp},(l)}.
 $$
+
 La présence de multiples occurrences pertinentes dans la fenêtre permet au mécanisme d’attention d’agréger un ensemble de valeurs $V$ orientées vers une même direction de complétion. Il est alors utile de parler d’un **gain effectif** du circuit de copie : la projection de $\Delta x_t^{\text{attn}}$ sur une direction de “complaisance” tend à croître avec (i) la densité d’occurrences, (ii) leur cohérence de format, et (iii) leur compatibilité représentationnelle dans les couches précoces.
 
 À l’opposé, les mécanismes d’alignement (p. ex. RLHF) peuvent être modélisés comme des pressions directionnelles vers des régions de l’espace latent associées au refus ou à la redirection sûre. La littérature technique emploie souvent l’expression *refusal vectors* pour désigner des sous-espaces (ou ensembles de directions) dont l’activation augmente la probabilité de tokens typiques de refus.
@@ -720,13 +1186,17 @@ La présence de multiples occurrences pertinentes dans la fenêtre permet au mé
 #### Lecture par logit lens : formalisation au niveau des logits
 
 La compétition se reflète au niveau de la projection finale (*unembedding*, *logit lens*) :
+
 $$
 z_{t,i} = \langle h_t^\top, w_i \rangle + b_i.
 $$
+
 En considérant deux familles de sorties (complétion $c$ vs refus $r$), l’écart de score s’écrit :
+
 $$
 z_{t,c} - z_{t,r} = \langle h_t^\top, w_c - w_r \rangle + (b_c - b_r).
 $$
+
 Le *many-shot* agit en orientant $h_t$ (via les écritures attentionnelles et MLP successives) vers des régions augmentant $\langle h_t^\top, w_c\rangle$ relativement à $\langle h_t^\top, w_r\rangle$. Ce basculement peut être obtenu **sans** modification des poids, par renforcement inductif d’une trajectoire de complétion surreprésentée dans le contexte.
 
 #### Basculement de régime : de “politique globale” à “complétion de motif”
@@ -746,17 +1216,21 @@ Tandis que les têtes d’attention redistribuent l’information entre position
 #### Le MLP comme dictionnaire associatif continu
 
 Pour un état résiduel (pré-normalisé selon l’architecture) $x\in\mathbb R^{1\times d_{\text{model}}}}$, un sous-bloc MLP peut s’écrire (forme générique) :
+
 $$
 \Delta x_{\text{mlp}} \;=\; \phi(xW_{\text{in}} + b_{\text{in}})\,W_{\text{out}} \;+\; b_{\text{out}},
 $$
+
 puis est ajouté au flux résiduel via la connexion résiduelle.
 
 Une écriture utile consiste à expliciter la somme sur les neurones cachés. En notant $d_{\text{mlp}}$ la largeur de la couche intermédiaire, et $\kappa_j$ la $j$-ème colonne de $W_{\text{in}}$, on obtient :
+
 $$
 a_j \;=\; \phi(x\kappa_j + b_j),
 \qquad
 \Delta x_{\text{mlp}} \;=\; \sum_{j=1}^{d_{\text{mlp}}} a_j\,r_j \;+\; b_{\text{out}},
 $$
+
 où $r_j\in\mathbb R^{d_{\text{model}}}$ est la $j$-ème colonne de $W_{\text{out}}$ (vecteur d’écriture).
 
 Cette factorisation justifie l’analogie “clé–valeur” (Geva et al., 2021) :
@@ -790,9 +1264,11 @@ Lorsque de telles collisions surviennent dans des régions sensibles (p. ex. des
 ### Optimisation adversariale sous contrainte discrète : gradients et topologie
 
 L’exploitation d’un Grand Modèle de Langage peut se formaliser comme un problème d’optimisation sous contrainte discrète. Si l’interface d’entrée impose une séquence de symboles
+
 $$
 (s_1,\dots,s_n)\in\mathcal V^n,
 $$
+
 la dynamique interne du modèle — induite par la projection en embeddings puis la composition des couches — est une application différentiable presque partout. Cette dualité discret/continu autorise une lecture géométrique : une attaque correspond à la recherche de trajectoires d’activation maximisant un objectif donné dans l’espace latent, plutôt qu’à une exploration aléatoire de l’espace des séquences.
 
 #### Formulation de l’objectif adversarial
@@ -872,9 +1348,11 @@ $$
 Cette forme implique une **accumulation** : la profondeur raffine un vecteur existant plutôt que de le remplacer.
 
 Une mesure de *commitment* (marge directionnelle) peut alors être définie entre deux continuations antagonistes : une complétion non conforme et un refus. Soient $w_c,w_r\in\mathbb{R}^{d_{\text{model}}}$ deux **directions d’unembedding** associées à ces continuations (p. ex. colonnes de $W_U$, ou, sous *weight tying*, vecteurs correspondants dans $W_E$). La marge est :
+
 $$
 C^{(l)} \;=\; \langle x^{(l)},\, w_c - w_r \rangle.
 $$
+
 Un $C^{(l)}$ fortement positif indique que l’état interne est déjà plus aligné avec la complétion non conforme qu’avec le refus, avant même d’atteindre la fin du réseau.
 
 #### 1.4.6.2 Asynchronie des sous-circuits : avantage temporel des écritures précoces
