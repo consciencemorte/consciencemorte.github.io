@@ -236,7 +236,7 @@ $$
 \frac{\mathbb{P}(\text{token}=i)}{\mathbb{P}(\text{token}=j)} = \exp(z_{t,i} - z_{t,j}) = \exp\bigl( \langle x_t^{(L)}, e_i - e_j \rangle + (b_i - b_j) \bigr).
 $$
 
-**Intuition géométrique et Logit Lens**   
+**Intuition géométrique**   
 L’équation des différences de logits ci-dessus révèle le mécanisme fondamental de la sélection : le modèle oriente $x_t^{(L)}$ dans l'espace latent. Si $x_t^{(L)}$ s'aligne mieux avec le vecteur $e_i$ qu'avec $e_j$ (c'est-à-dire si la projection de $x_t^{(L)}$ sur la direction de différence $e_i - e_j$ est positive), alors le token $i$ devient exponentiellement plus probable que $j$.
 
 
@@ -418,7 +418,7 @@ de sorte que l’effet directionnel d’une sous-couche est contraint : les incr
 
 La diminution typique de $\rho^{(l)}$ avec la profondeur—lorsque $\lVert x^{(l)}\rVert$ croît plus régulièrement que $\lVert \Delta x^{(l)}\rVert$—implique une rigidification progressive de l’orientation de $x^{(l)}$. Ce phénomène est intrinsèquement **local** : $\lVert \Delta x^{(l)}\rVert$ dépend des poids (attention/FFN), du gating et du contenu, de sorte que certaines couches peuvent présenter un levier plus élevé que d’autres. Le formalisme via $\rho^{(l)}$ et $\Delta x^{(l)}_{\perp}$ capture précisément cette hétérogénéité : une réorientation substantielle requiert soit $\rho^{(l)}=\Omega(1)$, soit une perturbation à faible norme mais dont la composante orthogonale est alignée sur des directions de lecture particulièrement sensibles.
 
-> **Note** : $\rho^{(l)}$ fournit un \textbf{proxy (et un majorant au pire cas)} du budget de rotation disponible à la couche $l$ ; la rotation effective est plus finement contrôlée par $\lVert \Delta x^{(l)}_\perp \rVert / \lVert x^{(l)} \rVert$.
+> **Note** : $\rho^{(l)}$ fournit un **proxy (et un majorant au pire cas)** du budget de rotation disponible à la couche $l$ ; la rotation effective est plus finement contrôlée par $\lVert \Delta x^{(l)}_\perp \rVert / \lVert x^{(l)} \rVert$.
 
 
 ### Synthèse : asymétrie de profondeur, superposition additive et interférences
@@ -514,8 +514,9 @@ La suite décrit la construction de $A^{(h)}$ via le circuit QK, le transfert et
 
 #### Matrices effectives dans l’espace résiduel : adressage et transfert
 
-Une tête d’attention $h$ applique trois projections linéaires au flux résiduel normalisé
-$\tilde X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$ :
+Une tête d’attention $h$ opère sur le flux résiduel normalisé
+$\tilde X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$ en le factorisant en trois familles de vecteurs via des
+projections linéaires distinctes :
 
 $$
 Q^{(h)}=\tilde X^{(l)}W_Q^{(h)},\qquad
@@ -531,93 +532,131 @@ Q^{(h)},K^{(h)}\in\mathbb{R}^{T\times d_k},\qquad
 V^{(h)}\in\mathbb{R}^{T\times d_v}.
 $$
 
-**Interprétation fonctionnelle et géométrique.**
-Une tête $h$ se décrit comme un mécanisme d’**adressage** puis de **transfert** : une position cible $t$ est comparée
-à des positions sources $j$ dans un espace latent de dimension $d_k$, puis un contenu est agrégé dans un espace
-potentiellement distinct de dimension $d_v$.
+Cette factorisation impose une **dissociation structurelle** entre un espace de **score**
+$\mathbb{R}^{d_k}$ (porté par $Q$ et $K$) et un espace de **contenu** $\mathbb{R}^{d_v}$ (porté par $V$).
+L’adressage inter-positions est déterminé exclusivement par la géométrie dans $\mathbb{R}^{d_k}$, tandis que le signal
+effectivement transféré est déterminé dans $\mathbb{R}^{d_v}$ puis ré-encodé dans l’espace résiduel.
 
-- **Requêtes $Q_t^{(h)}$ (cible)** : à chaque position $t$, la requête spécifie le *critère de lecture* servant à
-  évaluer les sources. Dans l’espace des clés, $Q_t^{(h)}$ agit comme une direction de référence : le score
-  $\langle Q_t^{(h)},K_j^{(h)}\rangle$ mesure une compatibilité et ordonne les positions candidates. Cette géométrie du
-  produit scalaire formalise un geste mécanistique : l’état résiduel en $t$ est converti en une instruction de
-  récupération, modulée par le contexte, qui détermine quelles propriétés des sources sont jugées pertinentes.
+Les matrices de projection $W_Q^{(h)}$ et $W_K^{(h)}$ construisent l’espace de comparaison (ou espace de score) de la tête.
+Pour une cible $t$, le vecteur $Q_t^{(h)}=\tilde x_t^{(l)}W_Q^{(h)}$ définit une direction de référence dans $\mathbb{R}^{d_k}$.
+Pour chaque source $j$, le score $Q_t^{(h)}(K_j^{(h)})^\top$ mesure la composante de $K_j^{(h)}$ le long de la direction $Q_t^{(h)}$ (projection scalaire non normalisée). Cette mesure est modulée par les normes des vecteurs et ajustée par le facteur d'échelle $1/\sqrt{d_k}$.
+La softmax convertit ensuite ces scores (après masquage $M$) en une distribution de mélange $A^{(h)}_{t,\cdot}$.
+La matrice résultante $A^{(h)}$, souvent appelée **pattern d'attention**, constitue un opérateur de pondération indépendant du contenu transporté, qui sera appliqué aux valeurs $V^{(h)}$ via l'opération $H^{(h)}=A^{(h)}V^{(h)}$.
 
-- **Clés $K_j^{(h)}$ (source)** : chaque position $j$ publie une représentation qui la rend *adressable* dans le même
-  espace que les requêtes. Les clés peuvent être vues comme des “tags” continus : elles encodent sous quels critères une
-  position doit être activée, et leur alignement avec $Q_t^{(h)}$ détermine leur poids relatif dans la distribution
-  d’attention. La tête réalise ainsi une correspondance cible–source : géométriquement, par proximité directionnelle
-  dans $\mathbb{R}^{d_k}$ ; mécaniquement, par indexation et pondération des positions sources.
+À l’inverse, $W_V^{(h)}$ paramétrise le message associé à chaque source dans l’espace de contenu $\mathbb{R}^{d_v}$.
+Il en résulte que les variables qui déterminent la masse attentionnelle $A^{(h)}_{t,j}$
+(coordonées $Q/K$ dans $\mathbb{R}^{d_k}$) sont, en général, distinctes des variables qui déterminent le contenu
+transféré (coordonnées $V$ dans $\mathbb{R}^{d_v}$). Dans l’analyse des flux, cette dissociation implique qu’une source
+peut être fortement pondérée par le mécanisme d’indexation tout en injectant, via $V$, un signal dont la nature (au sens
+des directions écrites après $W_O^{(h)}$) n’est pas contrainte par les seules caractéristiques qui ont déterminé
+l’adressage.
 
-- **Valeurs $V_j^{(h)}$ (contenu)** : une fois les poids $A^{(h)}_{tj}$ fixés par l’appariement
-  $Q_t^{(h)}\leftrightarrow K_j^{(h)}$, la valeur porte le contenu effectivement transféré. La séparation entre l’espace
-  de scoring $(Q/K)$ et l’espace de contenu $(V)$ traduit une dissociation fonctionnelle : l’alignement sert à décider
-  *où lire*, tandis que les valeurs déterminent *quoi copier*. Concrètement, la position $t$ reçoit une combinaison
-  convexe (ligne par ligne) 
-
-  $$
-  \sum_j A^{(h)}_{tj}V_j^{(h)}
-  $$, 
-  
-  dont la géométrie correspond à un barycentre dans
-  $\mathbb{R}^{d_v}$, et dont le mécanisme correspond à un routage inter-positions contrôlé par les scores.
-
-En synthèse, $Q/K$ implémentent un adressage dépendant du contexte (mesuré par des produits scalaires dans
-$\mathbb{R}^{d_k}$) qui induit une distribution de routage $A^{(h)}$, tandis que $V$ fournit le contenu agrégé et
-transféré vers la position cible.
-
-**Lecture–écriture dans le flux résiduel.**
-En présence d’un masque $M$ éventuel (avec $M_{t,j}=-\infty$ pour les positions interdites et $0$ sinon), la matrice
-d’attention est définie par
+Le routage est défini par des logits et une normalisation softmax ligne par ligne :
 
 $$
-A^{(h)}=\mathrm{softmax}_{\text{ligne}}\!\left(\frac{Q^{(h)}(K^{(h)})^\top}{\sqrt{d_k}} + M\right),
+S^{(h)}=\frac{Q^{(h)}(K^{(h)})^\top}{\sqrt{d_k}}+M,\qquad
+A^{(h)}=\mathrm{softmax}_{\text{ligne}}(S^{(h)}),
 $$
 
-puis la sortie de la tête s’écrit
+où $M$ encode les contraintes (p.\,ex. causalité). Pour une cible $t$ fixée, la ligne $S^{(h)}_{t,\cdot}$ mesure la
+compatibilité entre $Q_t^{(h)}$ et les clés $\{K_j^{(h)}\}$ par produit scalaire dans $\mathbb{R}^{d_k}$ :
 
 $$
-O^{(h)} = A^{(h)}\,V^{(h)}\,W_O^{(h)} \in \mathbb{R}^{T\times d_{\text{model}}},
-\qquad W_O^{(h)}\in\mathbb{R}^{d_v\times d_{\text{model}}}.
+S^{(h)}_{t,j}-M_{t,j}=\frac{Q_t^{(h)}(K_j^{(h)})^\top}{\sqrt{d_k}}
+=\frac{\|Q_t^{(h)}\|\,\|K_j^{(h)}\|\cos\theta_{t,j}}{\sqrt{d_k}}.
 $$
+
+Le terme directionnel $\cos\theta_{t,j}$ discrimine les sources par alignement dans l’espace de score. Les normes
+$\|Q_t^{(h)}\|$ et $\|K_j^{(h)}\|$ contrôlent l’échelle des logits : à $t$ fixé, une augmentation de $\|Q_t^{(h)}\|$
+amplifie les écarts $S_{t,j}-S_{t,k}$ et tend à concentrer $A^{(h)}_{t,\cdot}$, tandis que des normes plus faibles
+tendent à diffuser la masse sur davantage de sources. Le facteur $1/\sqrt{d_k}$ stabilise l’échelle typique des
+produits scalaires lorsque $d_k$ varie.
+
+Une fois $A^{(h)}$ déterminée, le transfert de contenu ne dépend plus de $Q$ ni de $K$ : il consiste à agréger les
+valeurs dans $\mathbb{R}^{d_v}$,
+
+$$
+H^{(h)}=A^{(h)}V^{(h)}\in\mathbb{R}^{T\times d_v},\qquad
+H_t^{(h)}=\sum_j A^{(h)}_{t,j}\,V_j^{(h)}\in\mathbb{R}^{1\times d_v}.
+$$
+
+Comme $A^{(h)}_{t,\cdot}$ est une distribution, $H_t^{(h)}$ est un barycentre des $V_j^{(h)}$ sur le support autorisé
+par $M$ : une distribution piquée privilégie un petit nombre de sources, tandis qu’une distribution diffuse produit une
+moyenne pondérée de nombreuses sources.
+
+Le message agrégé est enfin ré-encodé dans l’espace résiduel via une projection de sortie :
+
+$$
+O^{(h)}=H^{(h)}W_O^{(h)}\in\mathbb{R}^{T\times d_{\text{model}}},
+\qquad
+W_O^{(h)}\in\mathbb{R}^{d_v\times d_{\text{model}}},
+$$
+
+soit, en une seule expression,
+
+$$
+O^{(h)} = A^{(h)}\,V^{(h)}\,W_O^{(h)}.
+$$
+
+La non-linéarité de la tête est entièrement portée par la softmax (construction de $A^{(h)}$) ; conditionnellement à
+$A^{(h)}$, l’agrégation $A^{(h)}V^{(h)}$ et la projection $W_O^{(h)}$ sont linéaires.
+
+Cette séparation $(Q,K)$ vs $V$ est centrale pour l’analyse des flux : les variables qui déterminent la sélection des
+sources (géométrie dans $\mathbb{R}^{d_k}$) sont, en général, distinctes des variables qui déterminent le contenu ré-encodé dans l’état de la cible (géométrie dans $\mathbb{R}^{d_v}$). 
+
+Il est crucial de noter que typiquement $d_k, d_v \ll d_{\text{model}}$. Par conséquent, bien que les vecteurs d'entrée et de sortie résident dans $\mathbb{R}^{d_{\text{model}}}$, les opérations internes de la tête passent par un **goulot d’étranglement de rang faible** (*low-rank bottleneck*).
+
+Géométriquement, cela implique que la tête ne peut lire l'information (pour calculer l'attention) que si elle se trouve dans le sous-espace engendré par les lignes de $W_Q$ et $W_K$, et ne peut écrire de l'information (via $O^{(h)}$) que dans le sous-espace engendré par les colonnes de $W_O$. La tête agit donc comme un filtre qui projette, traite dans une dimension réduite, puis réinjecte le résultat dans une direction spécifique de l'espace résiduel.
+
+L’analyse par circuits formalise ce découplage en regroupant les projections en deux opérateurs effectifs,
+$W_{QK}^{(h)}=W_Q^{(h)}(W_K^{(h)})^\top$ et $W_{OV}^{(h)}=W_V^{(h)}W_O^{(h)}$,
+étudiés dans la section suivante.
 
 
 #### Opérateurs effectifs dans l’espace résiduel : goulots d’adressage (QK) et d’écriture (OV)
 
-L’analyse d’une tête d’attention dans l’espace résiduel (\mathbb{R}^{d_{\text{model}}}) peut être ramenée à deux **opérateurs effectifs** obtenus par composition des projections linéaires internes. Cette réécriture ne sert pas seulement à “simplifier” l’algèbre : elle isole deux goulots fonctionnels distincts—un goulot **d’adressage** (sélection des sources) et un goulot **d’écriture** (directions effectivement modifiables dans le résiduel)—qui déterminent à la fois la capacité mécaniste de la tête et ses surfaces de vulnérabilité.
+Dans l’espace résiduel $\mathbb{R}^{d_{\text{model}}}$, une tête d’attention $h$ peut être caractérisée par deux
+opérateurs effectifs obtenus par composition des projections internes. Cette représentation explicite deux contraintes
+structurelles distinctes : un goulot d’**adressage**, qui borne la complexité des compatibilités utilisées pour
+former $A^{(h)}$, et un goulot d’**écriture**, qui borne le sous-espace des mises à jour injectées dans le flux
+résiduel.
 
-Dans l’analyse mécaniste par circuits, une tête $h$ se décompose en deux sous-systèmes :
-- **circuit QK** (adressage) : comparaison linéaire des représentations via requêtes et clés, induisant une **matrice d’adressage** $A^{(h)}$ (causale) qui fixe la **topologie du routage** — autrement dit, *quelles positions sont lues et avec quels poids*, indépendamment du contenu effectivement écrit ;
-- **circuit OV** (transfert) : **lecture** des valeurs agrégées (via $A^{(h)}$), puis **projection linéaire** et **écriture** du résultat dans le flux résiduel (opérateur d’écriture souvent de rang effectif faible dans les analyses mécanistes).
+Le premier correspond au circuit **QK** (construction des logits puis de la topologie de routage), le second au
+circuit **OV** (transfert du contenu agrégé et ré-encodage dans le résiduel). La suite introduit les matrices
+effectives $W_{QK}^{(h)}=W_Q^{(h)}(W_K^{(h)})^\top$ et $W_{OV}^{(h)}=W_V^{(h)}W_O^{(h)}$, puis analyse les contraintes de
+rang et les sous-espaces induits.
 
 
 #### Circuit QK : adressage bilinéaire, compétition normalisée et topologie de routage
 
-Le circuit **QK** spécifie, pour chaque tête $h$ et chaque position cible $t$, une **distribution de routage** sur les positions sources admissibles $j\le t$. Il détermine ainsi *où* l’information est lue (topologie des dépendances), indépendamment de *ce qui* est transféré, lequel relève du circuit **OV**.
+Le circuit **QK** paramétrise les logits $S^{(h)}$ et donc la matrice d’attention $A^{(h)}$, qui pondère les
+sources admissibles $j\le t$ pour chaque position cible $t$. Il fixe ainsi la topologie effective du routage
+inter-positions, indépendamment du contenu transféré par le circuit **OV**.
 
 Pour une représentation $\tilde X^{(l)}$, les logits s’écrivent :
 
 $$
-S_{t,j}^{(h)}=\frac{\tilde x_t^{(l)},W_{QK}^{(h)},(\tilde x_j^{(l)})^\top}{\sqrt{d_k}}+M_{t,j},
+S_{t,j}^{(h)}=\frac{\tilde x_t^{(l)}\,W_{QK}^{(h)}\,(\tilde x_j^{(l)})^\top}{\sqrt{d_k}}+M_{t,j},
 \qquad
 M_{t,j}=
 \begin{cases}
--\infty & j>t,\
-0 & \text{sinon,}
+  -\infty & j>t,\\
+  0 & \text{sinon.}
 \end{cases}
 $$
 
-et les poids d’attention résultent d’une normalisation ligne par ligne :
+Les poids d’attention résultent d’une normalisation ligne par ligne :
 
 $$
-A^{(h)}=\mathrm{softmax}*{\text{ligne}}(S^{(h)}),
+A^{(h)}=\mathrm{softmax}_{\text{ligne}}(S^{(h)}),
 \qquad
-A^{(h)}*{t,j}\ge 0,;;\sum_{j\le t}A^{(h)}*{t,j}=1,;;A^{(h)}*{t,j}=0;\text{si }j>t.
+A^{(h)}_{t,j}\ge 0,\quad \sum_{j\le t}A^{(h)}_{t,j}=1,\quad A^{(h)}_{t,j}=0\ \text{si }j>t.
 $$
 
-La matrice $A^{(h)}$ définit un graphe orienté acyclique sur les positions, dont les arêtes admissibles sont $t\leftarrow j$ pour $j\le t$, pondérées par $A^{(h)}_{t,j}$.
+La causalité ($j\le t$) induit une structure acyclique sur les dépendances $t\leftarrow j$, pondérées par
+$A^{(h)}_{t,j}$.
 
-
-##### 1) Compatibilité bilinéaire et goulot d’adressage
+##### Compatibilité bilinéaire et goulot d’adressage
 
 En posant
 
@@ -628,16 +667,20 @@ $$
 le score prend la forme standard :
 
 $$
-S_{t,j}^{(h)}=\frac{\langle Q_t^{(h)},K_j^{(h)}\rangle}{\sqrt{d_k}}+M_{t,j}.
+S_{t,j}^{(h)}=\frac{\langle Q_t^{(h)},K_j^{(h)}\rangle}{\sqrt{d_k}}+M_{t,j},
+\qquad
+\langle Q_t^{(h)},K_j^{(h)}\rangle = Q_t^{(h)}(K_j^{(h)})^\top.
 $$
 
-Le produit scalaire induit une lecture géométrique directe :
+Le produit scalaire admet la décomposition géométrique :
 
 $$
-\langle Q_t,K_j\rangle=|Q_t|,|K_j|,\cos\theta_{t,j},
+\langle Q_t,K_j\rangle=\|Q_t\|\,\|K_j\|\,\cos\theta_{t,j},
 $$
 
-où $\cos\theta_{t,j}$ capture l’**alignement directionnel** (compatibilité de contenu) et $\|Q_t\|,\|K_j\|$ module l’**échelle** des logits, donc la propension à concentrer ou diffuser la masse attentionnelle au niveau de la ligne $t$.
+où $\cos\theta_{t,j}$ capture l’alignement directionnel dans $\mathbb{R}^{d_k}$, tandis que $\|Q_t\|$ et $\|K_j\|$
+contrôlent l’échelle des logits. À $t$ fixé, l’échelle des écarts $S_{t,j}-S_{t,k}$ gouverne directement la
+concentration de $A^{(h)}_{t,\cdot}$ après softmax.
 
 La contrainte structurelle majeure provient de la bilinéarité :
 
@@ -645,202 +688,300 @@ $$
 W_{QK}^{(h)}=W_Q^{(h)}(W_K^{(h)})^\top,\qquad \mathrm{rang}(W_{QK}^{(h)})\le d_k.
 $$
 
-Les décisions d’adressage dépendent donc des états $\tilde x_t^{(l)},\tilde x_j^{(l)}$ uniquement via un sous-espace latent de dimension $\le d_k$, ce qui introduit un **goulot**. 
+Les décisions d’adressage ne dépendent donc de $\tilde x_t^{(l)}$ et $\tilde x_j^{(l)}$ qu’au travers de leurs
+coordonnées projetées dans un espace de dimension $\le d_k$, ce qui introduit un goulot d’adressage. En particulier,
+des sources distinctes peuvent devenir difficilement séparables pour cette tête lorsque leurs clés projetées
+$K_j^{(h)}$ sont géométriquement proches dans $\mathbb{R}^{d_k}$ (collisions dans l’espace de score).
 
-Ce goulot d’adressage (projection dans un sous-espace de dimension $\le d_k$$) introduit des phénomènes d’aliasage. Des contenus sémantiquement distincts peuvent produire des clés $K$ géométriquement proches dans l’espace latent réduit de la tête, et devenir difficilement séparables pour cette tête.
+> **Note (aliasage / leurres attentionnels).** Une collision dans l’espace de score permet qu’un motif injecté
+> produise des clés $K$ proches de celles associées à des motifs fréquemment sélectionnés par la tête (p.\,ex. formats,
+> séparateurs, ou instructions de haut niveau). Le routage devient alors peu discriminant à l’échelle de la tête, même
+> lorsque le contenu porté par $V$ diffère fortement.
 
-> Dans un cadre adversarial, l’aliasage correspond à la possibilité de construire des séquences (**leurres attentionnels**) dont les clés se projettent dans les même régions du sous-espace latent que des motifs ciblés par certaines requêtes (p. ex. des motifs associés à des instructions de sécurité ou à des formats). L’effet attendu n’est pas l’émergence d’une “sémantique” nouvelle, mais une **collision géométrique**  au niveau des critères latents d’adressage.
+##### Softmax : compétition sur simplex et amplification des écarts
 
+La softmax transforme les logits en une distribution sur le simplex $\sum_{j\le t}A_{t,j}=1$. Deux propriétés
+mécaniques structurent le routage :
 
-##### 2) Softmax : compétition sur simplex et amplification des écarts
-
-La softmax transforme les logits en une distribution sur le simplex $\sum_{j\le t}A_{t,j}=1$. Deux conséquences mécaniques structurent le routage :
-
-* **Invariance par translation** : pour tout $c$,
-
-  $$
-  \mathrm{softmax}(S_{t,\cdot})=\mathrm{softmax}(S_{t,\cdot}+c\mathbf 1),
-  $$
-
-  de sorte que seules les différences $S_{t,j}-S_{t,k}$ comptent.
-
-* **Compétition à budget unitaire** : la normalisation impose $\sum_{k\le t} A_{t,k}=1$. Par conséquent, augmenter $S_{t,j}$ accroît $A_{t,j}$ et réduit mécaniquement les masses $A_{t,k}$ pour $k\neq j$ (compétition sur le simplex), ce qui rend l’adressage intrinsèquement comparatif.
-
-L’amplification exponentielle implique en outre un régime de type *winner-take-most* lorsque l’écart de logits
-
-$\Delta=S_{t,j^\*}-\max_{k\neq j^*}S_{t,k}$ 
+* **Invariance par translation** : pour tout $c$, $\mathrm{softmax}(S_{t,\cdot})=\mathrm{softmax}(S_{t,\cdot}+c\mathbf 1)$,
+  de sorte que seules les différences $S_{t,j}-S_{t,k}$ importent.
 
 
-devient grand : la masse se concentre fortement sur $j^\*$ et la contribution effective des autres positions devient négligeable pour cette tête. Une quantification minimale s’obtient en isolant $j^\*$ :
+* **Compétition à budget unitaire** : la contrainte $\sum_{k\le t} A_{t,k}=1$ implique qu’augmenter $S_{t,j}$
+  accroît $A_{t,j}$ et réduit mécaniquement les masses $A_{t,k}$ pour $k\neq j$.
 
+
+L’amplification exponentielle induit un régime de concentration lorsque l’écart
+$\Delta=S_{t,j^\*}-\max_{k\neq j^*}S_{t,k}$ devient grand. En isolant $j^\*$ :
 $$
-A_{t,j^*} = \frac{e^{S_{t,j^*}}}{\sum_{k\le t} e^{S_{t,k}}} = \frac{1}{1+\sum_{k\le t, k\neq j^*} e^{-(S_{t,j^*}-S_{t,k})}}.
+A_{t,j^*} = \frac{e^{S_{t,j^*}}}{\sum_{k\le t} e^{S_{t,k}}}
+= \frac{1}{1+\sum_{k\le t, k\neq j^*} e^{-(S_{t,j^*}-S_{t,k})}}.
 $$
-
 Ainsi, si $S_{t,j^\*}-S_{t,k}\gg 0$ pour tout $k\neq j^\*$, alors $A_{t,j^\*}\approx 1$.
-Le facteur $1/\sqrt{d_k}$ vise à stabiliser l’échelle typique des produits scalaires et à éviter que l’augmentation de $d_k$ n’induise une concentration artificielle.
+Le facteur $1/\sqrt{d_k}$ stabilise l’échelle typique des produits scalaires et limite une concentration artificielle
+lorsque $d_k$ augmente.
 
-> Des séquences adverses optimisées pour produire un pic de compatibilité $\langle Q_t,K_{j^*}\rangle$ peuvent monopoliser une fraction importante du budget attentionnel d’une ou plusieurs têtes à des positions critiques (notamment près de la génération). L’effet est un **écrasement relatif** des autres signaux pour ces têtes — un mécanisme compatible avec des scénarios de **saturation attentionnelle**, sans suffire à lui seul à caractériser l’échec global d’alignement (qui dépend aussi d’OV, du résiduel, des couches, et de la redondance multi-têtes).
+> **Note (écrasement relatif / saturation attentionnelle).** Une configuration où une source $j^\*$ monopolise
+> $A^{(h)}_{t,\cdot}$ induit un écrasement relatif des autres signaux \emph{pour cette tête} : même si des sources
+> alternatives restent compatibles, leur contribution devient négligeable dans $H_t^{(h)}=\sum_j A_{t,j}^{(h)}V_j^{(h)}$.
+> En contexte adversarial, ce mécanisme se manifeste comme une forme de \emph{saturation} du budget attentionnel local,
+> où une forte disparité de logits rend l’agrégation quasi-monocanal.
+> Deux mécanismes distincts peuvent conduire à cette saturation : une augmentation de $\|Q_t^{(h)}\|$, qui amplifie 
+> globalement les écarts de logits sur la ligne $t$ (gain de ligne), et une augmentation de $\|K_{j^\*}^{(h)}\|$,
+> qui accroît sélectivement les logits associés à une source $j^\*$ et favorise une concentration sur celle-ci.
 
 
-##### 3) Contrainte causale et biais positionnels
+##### Contrainte causale et biais positionnels
 
-Le masque causal $M_{t,j}$ impose une contrainte topologique dure : seules les arêtes $t\leftarrow j$ avec $j\le t$ sont admissibles. Les encodages relatifs (RoPE, ALiBi) modifient ensuite la géométrie des logits en fonction de l’offset $t-j$, sans changer la forme générale “compatibilité + softmax”.
+Le masque causal $M_{t,j}$ impose une contrainte topologique dure : seules les arêtes $t\leftarrow j$ avec $j\le t$
+sont admissibles. Les encodages relatifs (RoPE, ALiBi) modifient ensuite la géométrie des logits en fonction de
+l’offset $t-j$, sans changer la forme générale “compatibilité + softmax”.
 
-Pour RoPE, si $Q_t=R_t\hat Q_t$ et $K_j=R_j\hat K_j$, le produit scalaire intègre une rotation relative :
+Pour RoPE, le produit scalaire s’interprète comme une similarité après une rotation relative dépendant de $t-j$ :
 
 $$
-\langle Q_t,K_j\rangle=\hat Q_t^\top(R_t^\top R_j)\hat K_j,
+Q_t^{(h)}(K_j^{(h)})^\top = \hat Q_t^{(h)}\,\big(R_{t-j}\big)\,(\hat K_j^{(h)})^\top,
 $$
 
-où la matrice de rotation $R_t^\top R_j$ dépend essentiellement de l’offset $t-j$. Pour des biais additifs de type ALiBi, un terme $b^{(h)}(t-j)$ est ajouté aux logits, imposant un a priori explicite sur la distance.
+où $R_{t-j}$ désigne une transformation orthogonale qui encode la distance relative. Contrairement à un biais additif (comme ALiBi), RoPE préserve la norme des vecteurs mais modifie leur alignement angulaire $\cos\theta_{t,j}$ en fonction de la distance.
 
-Dans de nombreuses configurations, ces mécanismes se traduisent par un **a priori de proximité** : à compatibilité de contenu comparable, des sources plus proches peuvent être favorisées. Ce biais reste toutefois un *prior* et peut être contredit par un signal de contenu dominant.
+Dans de nombreuses configurations, ces mécanismes induisent un a priori de proximité : à compatibilité de contenu
+comparable, des sources plus proches tendent à être favorisées. Ce biais reste toutefois un prior et peut être contredit
+par un signal de contenu dominant.
 
-> Le biais de récence (proximité) tend à avantager structurellement des instructions ou signaux situés près de la zone de génération, ce qui peut accroître la pression sur les mécanismes chargés de récupérer des contraintes lointaines (p. ex. des consignes système placées en début de contexte). Inversement, l’existence de motifs d’ancrage (p. ex. *attention sinks*) illustre que certaines têtes peuvent aussi allouer une fraction stable de masse à des positions fixes afin de stabiliser la dynamique.
+> **Note (biais de récence).** Un a priori de proximité renforce structurellement l’influence des segments récents
+> du contexte. Dans une lecture sûreté, cela accentue la difficulté de maintenir une contrainte injectée loin en amont
+> lorsque des motifs concurrents apparaissent près de la zone de génération.
 
-
-Le circuit QK fixe la **carte de lecture** : une topologie de dépendances causales pondérées $A^{(h)}$, issue d’un compromis entre compatibilité de contenu (géométrie $Q/K$), contraintes structurelles (rang, masque) et compétition normalisée (softmax). Une fois cette topologie déterminée, le circuit **OV** réalise la lecture pondérée des valeurs et l’écriture correspondante dans le flux résiduel.
+Le circuit QK fixe ainsi une carte de lecture : une topologie de dépendances causales pondérées $A^{(h)}$, issue d’un
+compromis entre compatibilité géométrique ($Q/K$), contraintes structurelles (masque, rang) et compétition normalisée
+(softmax). Une fois cette topologie déterminée, le circuit \textbf{OV} réalise le transfert du contenu agrégé et
+l’écriture correspondante dans le flux résiduel.
 
 
 #### Circuit OV : lecture des valeurs et canal d’écriture contraint
 
-Le circuit OV réalise le transfert de contenu une fois la topologie de routage fixée par QK. Conditionnellement à la matrice d’attention $A^{(h)}$, une tête $h$ transforme chaque représentation source en un "message" dans l’espace résiduel, puis agrège ces messages selon les poids d’attention. Du point de vue offensif, l’enjeu n’est donc pas seulement quelles sources sont lues, mais quelles directions une tête est capable d’écrire dans le résiduel.
+Le circuit **OV** réalise le transfert de contenu une fois la topologie de routage fixée par **QK**.
+Conditionnellement à la matrice d’attention $A^{(h)}$, une tête $h$ associe à chaque source $j$ une mise à jour dans
+l’espace résiduel, puis agrège ces mises à jour selon les poids d’attention. L’analyse se déplace ainsi de la
+*sélection* (structure de $A^{(h)}$) vers la *capacité d’écriture* (directions accessibles dans le résiduel).
 
-Pour une tête $h$, les valeurs et les écritures s’écrivent :
+Pour une tête $h$, les valeurs et les mises à jour s’écrivent :
 
 $$
 V^{(h)}=\tilde X^{(l)}W_V^{(h)}\in\mathbb{R}^{T\times d_v},
 \qquad
-U^{(h)}=V^{(h)}W_O^{(h)}\in\mathbb{R}^{T\times d_{\text{model}}}.
+U^{(h)}=V^{(h)}W_O^{(h)}\in\mathbb{R}^{T\times d_{\text{model}}},
 $$
 
-La contribution de la tête à la position cible $t$ est alors :
+où la ligne $u_j^{(h)}\in\mathbb{R}^{1\times d_{\text{model}}}$ est la contribution associée à la source $j$ :
 
 $$
-y_t^{(h)}=\sum_{j\le t}A_{t,j}^{(h)}\,u_j^{(h)},
-\qquad
 u_j^{(h)}=\tilde x_j^{(l)}\,W_V^{(h)}W_O^{(h)}.
 $$
 
-Sous forme matricielle, pour toute la séquence :
+La sortie de la tête à la position cible $t$ est alors :
 
 $$
-Y^{(h)} = A^{(h)}U^{(h)} = A^{(h)}\tilde X^{(l)}W_V^{(h)}W_O^{(h)}.
+O_t^{(h)}=\sum_{j\le t}A_{t,j}^{(h)}\,u_j^{(h)},
+\qquad
+O^{(h)}=A^{(h)}U^{(h)}=A^{(h)}\tilde X^{(l)}W_V^{(h)}W_O^{(h)}.
 $$
 
-Cette écriture explicite la séparation des rôles : $u_j^{(h)}$ est calculé par source (indépendamment de $t$), tandis que $A_{t,\cdot}^{(h)}$ décide quels messages sont agrégés à la cible $t$. Une captation du routage (via QK) ne garantit donc pas, à elle seule, un effet arbitraire : l’effet *downstream* dépend de la structure du canal d’écriture $W_V^{(h)}W_O^{(h)}$.
+Cette écriture rend explicite la séparation des rôles : $u_j^{(h)}$ est déterminé par la source (indépendamment de $t$),
+tandis que $A_{t,\cdot}^{(h)}$ fixe la combinaison agrégée. Une concentration du routage (via **QK**) ne suffit donc
+pas à garantir un effet marqué : l’impact dépend de la structure du canal d’écriture $W_V^{(h)}W_O^{(h)}$.
 
-##### 1) Goulot d’écriture : sous-espace de sortie et rang effectif
+##### Goulot d’écriture : sous-espace de sortie et rang effectif
 
-L’opérateur de contenu d’une tête est la composition :
+L’opérateur effectif d’écriture d’une tête est la composition :
 
 $$
-W_{OV}^{(h)} \;=\; W_V^{(h)}W_O^{(h)}\in\mathbb{R}^{d_{\text{model}}\times d_{\text{model}}},
+W_{OV}^{(h)} = W_V^{(h)}W_O^{(h)}\in\mathbb{R}^{d_{\text{model}}\times d_{\text{model}}},
 \qquad
 \mathrm{rang}(W_{OV}^{(h)})\le d_v.
 $$
 
-Toutes les écritures produites par la tête appartiennent donc à un sous-espace de dimension au plus $d_v$ :
+Cette contrainte de rang ($d_v \ll d_{\text{model}}$) borne la capacité d’écriture : dans la convention vecteur-ligne
+($xW$), toute écriture produite par la tête appartient au sous-espace de sortie
 
-$$\forall t,\qquad y_t^{(h)}\in \mathrm{Im}\!\big(W_{OV}^{(h)}\big)\;=:\;\mathcal S_h.$$
+$$
+\mathcal S_{\text{out}}^{(h)} \;=\; \mathrm{Row}\!\big(W_{OV}^{(h)}\big)
+\;=\; \mathrm{Im}\!\big((W_{OV}^{(h)})^\top\big),
+\qquad
+\dim(\mathcal S_{\text{out}}^{(h)})\le d_v.
+$$
 
-Le circuit OV impose ainsi un canal d’écriture contraint : même si $A^{(h)}$ est extrêmement concentrée sur une source $j^*$, la tête ne peut injecter dans le flux résiduel que des composantes situées dans $\mathcal S_h$.
+Même si le routage $A^{(h)}_{t,\cdot}$ est fortement concentré (p.,ex. $A^{(h)}_{t,j^\*}\approx 1$), la tête ne peut écrire dans le flux résiduel que dans $\mathcal S_{\text{out}}^{(h)}$. La concentration de la matrice d'attention $A$ détermine quelle source domine l'entrée, mais ne modifie pas l’ensemble des directions accessibles en sortie, fixé structurellement par $W_{OV}^{(h)}$.
 
-> Ce goulot borne l’« espace des charges utiles » effectivement transférables par une tête. Une attaque réussie ne dépend donc pas seulement d’une domination attentionnelle, mais d’un **alignement géométrique** : la direction injectée via $u_{j^*}^{(h)}$ doit avoir une projection non négligeable sur les directions représentationnelles auxquelles les couches ultérieures (et, in fine, le décodeur) sont sensibles. À l’inverse, une perturbation principalement portée par des composantes quasi-orthogonales à ces directions aura typiquement un impact limité sur la dynamique downstream (faible couplage), même si elle est fortement routée par $A^{(h)}$. Une attaque visant un changement comportemental global doit donc, implicitement, mobiliser des têtes dont le sous-espace d’écriture $\mathcal S_h$ intersecte de manière significative ces directions sensibles.
+Au-delà de cette contrainte de sortie, $W_{OV}^{(h)}$ définit un filtrage linéaire entre les directions d’entrée et les directions écrites. Pour une variation $\delta x\in\mathbb{R}^{1\times d_{\text{model}}}$ sur une source, l’effet propagé sur le chemin OV est $\delta x\,W_{OV}^{(h)}$. Par le théorème du rang,
+
+$$
+\dim\ker(W_{OV}^{(h)})=d_{\text{model}}-\mathrm{rang}(W_{OV}^{(h)})\ge d_{\text{model}}-d_v,
+$$
+
+de sorte que lorsque $d_v\ll d_{\text{model}}$, une grande partie de l’espace d’entrée est projetée dans le noyau (variation nulle en sortie), indépendamment de la masse attentionnelle allouée.
+
+Une analyse spectrale s’obtient via la décomposition en valeurs singulières (SVD) $W_{OV}^{(h)}=U\Sigma V^\top$ (de rang $r\le d_v$), soit
+
+$$
+W_{OV}^{(h)}=\sum_{k=1}^{r}\sigma_k\,u_k v_k^\top.
+$$
+
+Dans la convention vecteur-ligne ($\delta x W$), l'opération s'écrit :
+
+$$\delta x\,W_{OV}^{(h)}=\sum_{k=1}^{r}\sigma_k\,(\delta x \cdot u_k)\,v_k^\top ,$$
+
+où :
+
+* $u_k$ (colonne de $U$) est une direction du sous-espace sensible (entrée).
+* $v_k^\top$ (ligne de $V^\top$) est une direction du sous-espace d'écriture (sortie).
+* Le produit scalaire $(\delta x\cdot u_k)$ mesure la projection de la variation incidente $\delta x$ sur la direction sensible $u_k$.
 
 
-##### 2) Linéarité conditionnelle et propagation des perturbations
+Chaque terme $k$ correspond à un canal singulier de $W_{OV}^{(h)}$ : la composante de $\delta x$ alignée avec $u_k$ est transmise avec un gain $\sigma_k$, puis réorientée en sortie selon $v_k^\top$ dans le résiduel.
+Les grandes valeurs singulières $\sigma_k$ identifient les couples $(u_k, v_k)$ pour lesquels le couplage entrée-sortie est maximal. Réciproquement, si $\delta x$ est orthogonale à l'espace engendré par les $\{u_k\}_{\sigma_k>0}$, alors $\delta x\in\ker(W_{OV}^{(h)})$ : la tête est insensible à cette variation et l'écriture résultante est nulle.
+
+> L’effet d’une source fortement pondérée par $A^{(h)}$ dépend donc de la convolution de trois facteurs : la masse attentionnelle, la projection du signal source sur les directions sensibles de fort gain (grandes $\sigma_k$), et l’alignement des directions écrites (dans $\mathcal S_{\text{out}}^{(h)}$) avec les sous-espaces lus par les couches avales ou le unbedding.
+
+--- 
+
+(check)
+Soit $(u_k)*{k=1}^r$ une base orthonormée du sous-espace sensible, $\mathcal S=\mathrm{Im}(W*{OV}^{(h)\top})$ (p. ex. vecteurs singuliers gauche associés aux plus grandes valeurs singulières) : $\delta x,W_{OV}^{(h)}$ dépend uniquement de la projection de $\delta x$ sur $\mathcal S$. En particulier, si $\delta x\perp u_k$ pour tout $k$, alors $\delta x\in\ker(W_{OV}^{(h)})$ et $\delta x,W_{OV}^{(h)}=0$ ; la tête est aveugle à cette variation.
+
+Une lecture spectrale s’obtient via la SVD $W_{OV}^{(h)}=U\Sigma V^\top$ (rang $r\le d_v$), soit
+
+$$W_{OV}^{(h)}=\sum_{k=1}^{r}\sigma_k\,u_k v_k^\top.$$
+
+Dans la convention vecteur-ligne ($\delta x W$),
+
+$$
+\delta x\,W_{OV}^{(h)}=\sum_{k=1}^{r}\sigma_k\,(\delta x u_k)\,v_k^\top ,
+$$
+
+
+où le coefficient scalaire ($\delta x\cdot u_k$) mesure la projection de la variation $\delta x$ sur la direction $u_k$ de l’espace d’entrée « vue » par la tête.
+
+Chaque terme $k$ correspond à une composante singulière de $W_{OV}^{(h)}$ : la partie $\delta x$ alignée avec $u_k$ est transmise
+avec un gain $\sigma_k$, puis elle apparaît en sortie comme une écriture dans le résiduel orientée selon $v_k^\top$.
+Les grandes valeurs singulières $\sigma_k$ mettent ainsi en évidence les couples de directions $(u_k, v_k)$ pour lesquels la tête couple le plus fortement une direction d’entrée à une direction d’écriture. Réciproquement, si $\delta x$ est orthogonale à tous les $u_k$ associés à $\sigma_k>0$, alors $\delta x\in\ker(W_{OV}^{(h)})$ et $\delta x,W_{OV}^{(h)}=0$ : la tête est aveugle à cette variation.
+
+
+> L’effet d’une source fortement pondérée par $A^{(h)}$ dépend non seulement de cette masse, mais aussi de la projection du signal source sur les directions d’entrée de grand gain (grandes $\sigma_k$) et de l’alignement des directions écrites (dans $\mathcal S_h$) avec les sous-espaces auxquels les couches suivantes et le readout sont sensibles.
+
+(end check)
+
+##### Linéarité conditionnelle, copie sélective et surface d’influence
+
 
 Conditionnellement à $A^{(h)}$ (topologie fixée), l’opération OV est linéaire en $\tilde X^{(l)}$ :
 
-$$Y^{(h)} = A^{(h)}\tilde X^{(l)}W_{OV}^{(h)}.$$
-
-Une perturbation additive $\Delta \tilde X^{(l)}$ dans les sources se propage donc sans distorsion non-linéaire :
-
-$$\Delta Y^{(h)} = A^{(h)}\,\Delta\tilde X^{(l)}\,W_{OV}^{(h)}.$$
-
-Cette relation formalise un point mécaniste central : une fois la topologie de lecture fixée, les variations présentes dans les sources sélectionnées sont transportées vers les positions cibles via une projection $W_{OV}^{(h)}$, sans non-linéarité intermédiaire sur le chemin OV (contrairement aux MLP, qui peuvent saturer, tronquer ou reconfigurer des composantes). Les têtes d'attention agissent ici comme des canaux de copie.
-
-> Cette linéarité conditionnelle fait des têtes d’attention des canaux de propagation efficaces pour des composantes latentes déjà présentes dans les représentations sources. Plus précisément, si une direction $v\in\mathbb{R}^{d_{\text{model}}}$ est présente dans $\tilde x_j^{(l)}$ et si $A_{t,j}^{(h)}$ lui attribue une masse suffisante, alors une composante corrélée est transmise vers la position cible sous la forme
->
-> $$ \Delta y_t^{(h)} \;\propto\; A_{t,j}^{(h)}\,\Delta \tilde x_j^{(l)}\,W_{OV}^{(h)}, $$
->
-> c’est-à-dire après projection dans le sous-espace d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$.
->
-> Dans un cadre adversarial, cette propriété peut être mobilisée pour propager des *triggers* représentationnels : une perturbation directionnelle encodée dans une position source, si elle est routée par $A^{(h)}$, contribue additivement au résiduel de la position cible. Les têtes de type *copie/induction* illustrent ce mécanisme : elles peuvent réinjecter, à des positions ultérieures, des motifs corrélés à des segments du contexte (p. ex. suffixes, formats, patrons), sous réserve que ces motifs aient une projection non négligeable sur $\mathcal S_h$.
-
-#### 3) Superposition multi-têtes et interférences dans le résiduel
-
-Au niveau de la couche, les contributions des têtes se superposent dans le flux résiduel :
-
 $$
-\tilde X^{(l+1)} ;=; \tilde X^{(l)} ;+; \sum_h Y^{(h)}
-\quad
-(\text{avant normalisation/MLP}).
+O^{(h)} = A^{(h)}\tilde X^{(l)}W_{OV}^{(h)}.
 $$
 
-Le résiduel agit comme un espace d’addition partagée : les écritures de différentes têtes peuvent s’additionner (interférence constructive) ou se compenser (interférence destructive).
+Une perturbation additive $\Delta \tilde X^{(l)}$ dans les sources se propage alors linéairement :
 
-> Un changement comportemental global (p. ex. basculement entre refus et acceptation) se manifeste typiquement lorsque la somme des contributions multi-têtes
+$$
+\Delta O^{(h)} = A^{(h)}\,\Delta\tilde X^{(l)}\,W_{OV}^{(h)}.
+$$
+
+Cette formulation isole la non-linéarité : elle est confinée dans la construction de $A^{(h)}$ via le circuit QK.
+Une fois la matrice d’attention $A^{(h)}$ fixé, le chemin OV réalise un **transport linéaire** de contenu, contraint par le canal $W_{OV}^{(h)}$. Dans la convention vecteur-ligne ($xW$) l’écriture est au sous-espace engendré par les lignes de la matrice :
+
+$$
+\mathcal S_h=\mathrm{Row}!\big(W_{OV}^{(h)}\big)=\mathrm{Im}!\big((W_{OV}^{(h)})^\top\big)
+$$
+
+La tête implémente ainsi un schéma *collecte–agrégation* : chaque source $j$ produit un message
+$u_j^{(h)}=\tilde x_j^{(l)}W_{OV}^{(h)}$, puis la cible $t$ agrège ces messages via les poids $A^{(h)}*{t,\cdot}$.
+L’analyse se découple :
+- **routage (QK)**  quelles arêtes $t\leftarrow j$ dominent (structure de $A^{(h)}$ - quels liens du graphe d'attention sont actifs) ?
+- **transfert (OV)** : quelles directions sont effectivement transmises et avec quel gain (spectre de $W_{OV}^{(h)}$) ?
+
+
+> **Note (régime concentré et copie sélective).** Lorsque le routage est fortement concentré sur une source $j^*$ (p. ex. $A^{(h)}*{t,j^*}\approx 1)$, on obtient
 >
 > $$
-> \sum_h Y^{(h)}
+> O_t^{(h)}\approx u_{j^*}^{(h)}=\tilde x_{j^*}^{(l)}W_{OV}^{(h)}.
 > $$
-> oriente le vecteur résiduel vers des directions auxquelles les couches ultérieures (et, in fine, le décodeur) sont sensibles, malgré les contributions concurrentes des autres têtes et la dynamique des blocs MLP. L’enjeu se décrit comme un rapport de forces vectoriel : (i) la magnitude des composantes injectées, (ii) leur alignement avec des directions “actives” downstream, et (iii) leur stabilité face à la superposition (interférences constructives/destructives) et aux transformations ultérieures.
 >
-> Dans un cadre adversarial, l’objectif revient à produire une perturbation résiduelle dont la direction et la magnitude dominent, à certaines positions/couches, la somme des contributions concurrentes, de manière à favoriser la lecture downstream de features compatibles avec la génération ciblée.
+> Si, sur un sous-espace d’intérêt (composantes pertinentes pour la prédiction), l’action de $W_{OV}^{(h)}$ est proche
+> d’une identité à une projection/échelle près (i.e. ces composantes sont largement préservées), alors la contribution
+> écrite à $t$ **reproduit principalement** les composantes de la source : c’est une **copie sélective** (cas particulier
+> de propagation). Cette intuition est mobilisée, par exemple, dans l’analyse des motifs d’inductions (cf. **têtes d'induction** - mécanisme de copier-coller contextuel).
 
+La linéarité conditionnelle rend explicite la surface d’influence  d'une source. Pour qu’une perturbation $\Delta \tilde x_j^{(l)}$ impacte fortement une cible $t$ via la tête $h$, deux conditions doivent être réunies simultanément : 
+* **capture attentionnelle (QK)** :  Le poids $A^{(h)}_{t,j}$ doit être significatif (le canal est ouvert).,
+* **alignement OV** : La perturbation $\Delta \tilde x_j^{(l)}$ doit se projeter fortement sur les directions d’entrée à grand gain de $W_{OV}^{(h)}$ (les vecteurs singuliers $u_k$ associés aux grandes valeurs singulières $\sigma_k$). De sorte que $\|\Delta \tilde x_j^{(l)}W_{OV}^{(h)}\|$ soit grande
+et orientée dans des directions effectivement exploitées en aval.
+
+Si $\Delta \tilde x_j^{(l)}$ est orthogonale à ces directions sensibles, elle est mécaniquement filtrée par le canal OV (atténuation spectrale), même si l’attention portée à la source est maximale.
+
+##### Superposition multi-têtes et interférences dans le résiduel
+
+Au niveau de la sous-couche MHA, les contributions des têtes se superposent additivement dans le flux résiduel :
+
+$$
+X'^{(l)} = X^{(l)} + \sum_h O^{(h)}.
+$$
+
+Le résiduel étant un espace d’addition partagée, les écritures de différentes têtes peuvent s’additionner (interférence
+constructive) ou se compenser (interférence destructive).
+
+> **Note (Compétition vectorielle et Logits) :** L'effet final d'une tête ne se mesure pas uniquement à sa magnitude dans le résiduel, mais à sa projection sur la matrice de sortie (Unembedding) $W_U$. L'analyse de l'Attribution Directe aux Logits consiste à projeter $W_{OV}^{(h)}$ sur $W_U$ pour identifier quels tokens du vocabulaire sont promus ou inhibés par l'activation de cette tête, indépendamment des couches suivantes.
 
 #### Motifs mécanistes récurrents (composition de circuits)
 
-L’analyse précédente caractérise une tête d’attention comme une unité fonctionnelle (adressage **QK** puis écriture **OV**). Les comportements de haut niveau — ainsi que certaines défaillances — émergent toutefois principalement de la **composition inter-couches** : le flux résiduel sert de mémoire partagée, et une écriture produite par une tête à la couche $l$ devient une composante de l’entrée $\tilde X^{(l')}$ lue par les têtes aux couches $l'>l$.
+Les sections précédentes isolent la tête d’attention comme une unité fonctionnelle (adressage via **QK**, écriture via **OV**). Les comportements de plus haut niveau émergent surtout de la **composition inter-couches** : une écriture produite à la couche $l$ devient une composante de l’entrée $\tilde X^{(l')}$ lue à une couche $l'>l$ (après normalisation), et peut modifier soit le routage (QK) soit le contenu transmis (OV).
 
-Deux modes de composition sont particulièrement structurants.
+Deux modes de composition sont particulièrement structurants :
 
-* **Composition de routage (pilotage QK).** Une tête amont modifie le flux résiduel de manière à changer les requêtes/clés produites en aval, donc à déplacer la masse d’attention $A^{(h')}$ d’une tête aval. Mécaniquement, l’écriture OV amont déforme la géométrie des compatibilités $\langle Q_{t}^{(h')},K_{j}^{(h')}\rangle$ en aval, ce qui reconfigure la topologie effective des arêtes $t\leftarrow j$.
+* **Composition de routage (pilotage QK).**
+Une écriture amont $\Delta X^{(l)}$ modifie les états résiduels et donc les requêtes/clés produites en aval. Les logits $S_{t,j}^{(h',l')}$ et la distribution $A_{t,\cdot}^{(h',l')}$ peuvent ainsi être déplacés, reconfigurant la topologie effective des arêtes $t\leftarrow j$.
 
-* **Composition de contenu (chaînage OV).** Une tête amont écrit une information dans une direction du résiduel qui est ensuite relue, copiée et relayée par une tête aval (souvent via des motifs de copie). Dans ce cas, le signal traverse la pile sous forme de composantes persistantes dans le résiduel, conditionnées par les matrices de routage successives.
+* **Composition de contenu (chaînage OV).**
+Une écriture amont injecte une composante dans le résiduel qui est ensuite relayée via des chemins OV successifs, conditionnée par les routages $A^{(h)}$ et confinée par les sous-espaces d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$.
 
-Ces deux mécanismes se combinent et produisent des motifs récurrents. Deux motifs particulièrement documentés en interprétabilité mécaniste sont les **têtes d’induction** et les **puits d’attention** (*attention sinks*).
+Ces deux mécanismes se combinent et produisent des motifs récurrents. Deux motifs particulièrement documentés en interprétabilité mécaniste sont les **têtes d’induction** et les **puits d’attention** (attention sinks).
+
+##### Têtes d’induction : complétion de motifs via un circuit inter-couches
+
+Les têtes d’induction expliquent une complétion de motifs de type $A,B,\dots,A\mapsto B$ (répétition structurée en contexte). Le schéma canonique s’interprète comme une composition inter-couches en deux étapes, qui évite de postuler un « décalage » implicite du focus attentionnel.
+
+** Étape amont (écriture d’un successeur local).**
+Une tête $h_1$ à la couche $l$ produit une écriture $O^{(h_1,l)}$ telle que, pour des positions $j$, une composante du résiduel à $j$ devienne corrélée au token (ou à une signature) de la position $j+1$. Autrement dit, l’état à $j$ contient désormais une trace du successeur local, rendue accessible dans le résiduel par une écriture OV.
+
+**Étape aval (adressage vers un précédent et copie via OV).**
+Une tête $h_2$ à la couche $l'>l$ construit, à la position cible $t$, une requête $Q_t^{(h_2,l')}$ qui concentre $A_{t,\cdot}^{(h_2,l')}$ sur une occurrence passée $j$ dont la clé $K_j^{(h_2,l')}$ correspond à une signature analogue (p. ex. même $A$). Le transfert OV de $h_2$ copie alors vers $t$ une composante présente à $j$ ; si l’étape amont a injecté au résiduel de $j$ une information corrélée à $j+1$, la copie en aval réinjecte effectivement une information corrélée à $B$.
+
+> Note (Amplification de régularités). Le motif d’induction amplifie des régularités présentes dans le contexte : un routage QK sélectionne des précédents structurellement similaires et un chemin OV réinjecte une continuation corrélée. Une vulnérabilité structurelle apparaît lorsque des régularités indésirables sont fortement représentées et se projettent sur les sous-espaces QK/OV effectivement mobilisés par ces têtes, ce qui peut imposer une continuation conforme à un patron au détriment d’autres signaux concurrents.
 
 
-##### 1) Têtes d’induction : complétion de motifs et “copie conditionnelle”
+##### Puits d’attention : allocation de masse en régime peu discriminant
 
-Les têtes d’induction rendent compte d’une capacité de complétion de motifs de type $A,B,\dots,A\mapsto B$ (apprentissage en contexte par répétition structurée). Le motif canonique repose sur une coopération inter-couches entre (au moins) deux fonctions :
+Le phénomène de attention sinks découle de la contrainte simplex imposée par la softmax : $\sum_{j\le t}A_{t,j}=1$. Lorsque les logits $S_{t,j}$ sont faiblement discriminants, la distribution tend vers une allocation diffuse ; l’agrégation OV devient alors une moyenne pondérée de nombreuses sources, susceptible d’injecter dans le résiduel un mélange de variance élevée et de faible spécificité.
 
-1. **Écriture d’un marqueur de contexte local.** Une tête amont écrit, à la position $t$, une feature corrélée à l’identité ou à la classe du token précédent (ou à une propriété locale pertinente). Formellement, une contribution $y_t^{(h,l)}$ injecte dans le résiduel une direction qui devient lisible par les projections $W_Q^{(h',l')}$ et/ou $W_K^{(h',l')}$ d’une tête aval.
+Dans plusieurs architectures, une fraction stable de masse est allouée à un petit ensemble de positions (souvent BOS, séparateurs, ponctuation). Deux conditions rendent ce comportement stable :
 
-2. **Adressage vers une occurrence antérieure et copie du successeur.** Une tête aval construit alors une requête $Q_t^{(h',l')}$ qui “matche” les clés d’une occurrence passée $j$ partageant la même signature (même $A$), puis concentre $A_{t,\cdot}^{(h',l')}$ sur une position liée au successeur (souvent $j+1$) afin de copier, via OV, la valeur associée au token $B$. Le résultat est une copie structurée : l’OV écrit à $t$ une composante corrélée au contenu “qui suivait” l’occurrence antérieure.
+* **Biais de routage (QK).** Les clés de ces positions et/ou des biais positionnels induisent une attractivité persistante lorsque le signal de contenu est faible.
 
-> Ce motif formalise une dynamique de réplication de patrons : lorsque le contexte contient des paires répétées « entrée $\to$ sortie » (format, style, schéma argumentatif), l’induction tend à favoriser une continuation conforme au patron observé. La vulnérabilité correspond moins à l’invention d’un contenu ex nihilo qu’à l’amplification d’une régularité déjà présente, via (i) un routage QK qui sélectionne des précédents structurellement similaires et (ii) un transfert OV qui réinjecte la continuation associée. Dans un cadre adversarial, cet effet peut favoriser la persistance de structures indésirables lorsque ces patrons sont suffisamment représentés dans le contexte (p. ex. scénarios de type many-shot) et, surtout, lorsque leur signature représentationnelle se projette sur les sous-espaces QK/OV effectivement mobilisés par ces têtes
+* **Écriture à faible impact (OV).**
+  Les valeurs associées, après projection $W_{OV}^{(h)}$, produisent une écriture de faible norme ou orientée vers des directions faiblement couplées aux lectures aval, de sorte qu’une allocation récurrente perturbe peu le résiduel.
 
-##### 2) Puits d’attention : allocation par défaut et stabilisation du calcul
+Dans un régime de faible contraste, si une position $s$ reçoit systématiquement une masse dominante, la contribution s’approxime par :
 
-Le phénomène de *attention sinks* découle de la combinaison “softmax + budget unitaire” : pour chaque ligne $t$, la contrainte $\sum_{j\le t}A_{t,j}=1$ impose qu’une tête distribue sa masse même lorsque les logits $S_{t,j}$ sont faiblement discriminants (contraste faible). Sans mécanisme compensateur, la softmax tend alors vers une allocation diffuse, et l’OV produit une moyenne pondérée de nombreuses valeurs $V_j$, ce qui peut injecter dans le résiduel un mélange peu informatif ou instable.
+$$O_t^{(h)} \approx A_{t,s}^{(h)}\,u_s^{(h)}.$$
 
-Empiriquement, certaines architectures apprennent à concentrer une fraction stable de l’attention sur des positions particulières (souvent le token de début de séquence, des séparateurs, ou de la ponctuation), qui jouent le rôle de **déversoir attentionnel**. Mécaniquement, deux ingrédients rendent ce comportement stable :
-
-* **Routage préférentiel.** Les clés de ces positions et/ou les biais positionnels créent une attractivité “par défaut” dans QK lorsque le signal de contenu est faible.
-* **Écriture bénigne.** Les valeurs associées à ces positions, après projection $W_{OV}$, produisent une écriture faible (quasi-nulle) ou une écriture stabilisante dans le résiduel, limitant l’impact d’une allocation par défaut.
-
-> Ces puits fonctionnent comme des **routes par défaut** du routage attentionnel. La contrainte de budget $\sum_{j\le t}A_{t,j}=1$ implique qu’une tête ne peut pas “s’abstenir”, mais seulement **canaliser** sa masse vers des positions dont l’écriture OV est supposée peu perturbatrice.
->
-> En régime de faible contraste des logits, si une position $s$ joue le rôle de puits pour une tête $h$, la contribution peut s’approximer par
-> $$
-> y_t^{(h)} \approx A_{t,s}^{(h)},u_s^{(h)}.
-> $$
-> Cette approximation met en évidence une **sensibilité accrue** à l’écriture associée aux positions de repli. Dans une perspective offensive, une exploitation potentielle reposerait alors sur une **déviation du chemin de repli** : l’objectif n’est pas nécessairement de créer un pic de compatibilité vers une source spécifique, mais de rendre l’écriture $u_s^{(h)}$ non bénigne — en particulier en l’orientant vers des directions effectivement sensibles downstream — pour les positions qui reçoivent systématiquement la masse par défaut.
->
-> Plus généralement, une perturbation systématique de la lisibilité de ces puits (p. ex. via des modifications qui réduisent leur attractivité QK ou altèrent leur écriture OV) peut dégrader la stabilité du routage et accroître la variance des écritures résiduelles. Le phénomène se formule comme une **fragilité de stabilisation** : en l’absence d’un ancrage par défaut, le modèle tend à distribuer sa masse sur des sources moins contrôlées, ce qui peut se manifester par une perte de cohérence et des transitions erratiques.
+> Note (Stabilisation et sensibilité). Une allocation récurrente vers un petit ensemble de positions stabilise le calcul lorsque les logits sont peu informatifs. La contrepartie est une sensibilité accrue à l’écriture associée à ces positions : toute variation de $u_s^{(h)}$ (après $W_{OV}^{(h)}$) se répercute sur de nombreuses cibles $t$ par le facteur $A_{t,s}^{(h)}$. Symétriquement, si l’attractivité QK de ces positions diminue, la masse peut se redistribuer sur un support plus large, augmentant la variance des écritures OV agrégées et dégradant la stabilité du routage.
 
 
 ##### Remarque : motifs composés et hétérogénéité des têtes
 
-Ces deux motifs illustrent une idée générale : les propriétés saillantes ne résident pas uniquement dans une tête isolée, mais dans la **chaîne** “écriture amont $\to$ (re)adressage aval $\to$ écriture aval”. Une taxonomie plus large inclut également des têtes de copie locales, des têtes d’ancrage sur délimiteurs, et des têtes de “pilotage” qui modulent le routage d’autres têtes via des écritures dirigées dans des sous-espaces auxquels les projections QK aval sont sensibles. En pratique, l’identification mécaniste d’un motif revient à caractériser simultanément la topologie $A^{(h)}$ induite par QK et le sous-espace d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$ induit par OV, puis à suivre leur composition à travers les couches.
-
+Ces motifs illustrent une idée générale : les propriétés saillantes résident dans des chaînes de composition « écriture amont $\rightarrow$ reconfiguration QK aval et/ou transport OV aval ». Une taxonomie plus large inclut des têtes de copie locales, des têtes d’ancrage sur délimiteurs, et des têtes de pilotage qui modulent le routage d’autres têtes via des écritures dirigées dans des sous-espaces auxquels les projections QK aval sont sensibles. L’identification mécaniste d’un motif revient à caractériser simultanément la topologie $A^{(h)}$ induite par QK et le sous-espace d’écriture $\mathcal S_h=\mathrm{Im}(W_{OV}^{(h)})$ induit par OV, puis à suivre leur composition à travers les couches.
 
 <hr style="width:40%; margin:auto;">
+
 
 ### Mélange de canaux : le MLP comme mémoire associative
 
