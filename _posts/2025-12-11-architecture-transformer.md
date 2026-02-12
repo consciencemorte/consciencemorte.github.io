@@ -105,9 +105,10 @@ Dans les déploiements effectifs, la défense périmétrique s’appuie sur une 
 
 > **Rappel —** Ce développement se limite aux garde-fous périmétriques ; la politique de refus “centrale” est généralement implémentée dans le modèle (alignement), via sa dynamique latente et la distribution des logits.
 
-Cependant, une asymétrie fondamentale subsiste : alors que ces garde-fous filtre à partir des représentations externes (surface $\mathcal{S}$, séquences discrètes $(i_1,\dots,i_T)\in\\\{0,\dots,\vert\mathcal V\vert-1\\}^T$, ou embeddings/encodeurs auxiliaires), le LLM, lui, opère sur des représentations internes $x^{(l)}$ dans un espace vectoriel continu (**espace latent**). Un angle mort exploitable émerge dès lors qu'une entrée, validée par les filtres dans l’espace où ils opèrent, encode une intention adversariale une fois projetée dans les vecteurs d'*embedding* et traitée par le flux résiduel du modèle.
+Cependant, une asymétrie fondamentale subsiste : alors que ces garde-fous filtre à partir des représentations externes (surface $\mathcal{S}$, séquences discrètes $(i_1,\dots,i_T)\in\\\{0,\dots,\vert\mathcal V\vert-1\\}^T$, ou embeddings/encodeurs auxiliaires), le LLM, lui, opère sur des représentations internes $x^{(l)}$ dans un espace vectoriel continu (**espace latent**).Un angle mort exploitable émerge lorsqu’une entrée, validée par les filtres dans leur espace d’opération, encode néanmoins une intention adversariale au niveau latent, après encodage en embeddings et propagation dans les représentations internes $x^{(l)}$. 
 
-En particulier, les classifieurs externes échouent typiquement par **décalage de distribution** (*distribution shift*). Entraînés sur des formes canoniques, ils peinent à généraliser face aux perturbations adverses (typos, homoglyphes, translittérations) et subissent les divergences de segmentation entre leur propre tokeniseur et celui du LLM.
+En particulier, les classifieurs externes échouent typiquement par **décalage de distribution** (*distribution shift*) : entraînés sur des formes canoniques, ils peinent à généraliser face aux perturbations adverses (typos, homoglyphes, translittérations) et subissent, en outre, un décalage de représentation dû aux divergences de tokenisation entre leur propre tokeniseur et celui du LLM.
+
 
 Cette surface d’obfuscation se structure autour des mécanismes suivants :
 
@@ -177,7 +178,9 @@ $$
 e_t = W_E[i_t] = \delta_{i_t} W_E \in \mathbb{R}^{1\times d_{\text{model}}}.
 $$
 
-Les vecteurs de $W_E$ sont appris par rétropropagation dans l’objectif de **prédiction du token suivant** (*Causal Language Modeling*). Aucune contrainte n’impose directement qu’un token soit “proche” d’un autre : la géométrie de l’espace des embeddings émerge des signaux de gradient induits par la prédiction. Des tokens qui apparaissent dans des contextes similaires (synonymes, variantes typographiques, fragments corrélés) reçoivent des mises à jour proches et tendent ainsi à occuper des régions voisines de l’espace des embeddings. Cette topologie apprise explique pourquoi certaines altérations de surface peuvent rester sémantiquement exploitables après projection.
+
+ Les vecteurs de $W_E$ sont optimisés par rétropropagation avec pour seul objectif la prédiction du token suivant (Causal Language Modeling). Aucune contrainte métrique n'est imposée a priori : la géométrie de l'espace latent émerge organiquement de la descente de gradient. Mécaniquement, des tokens interchangeables dans des contextes similaires génèrent des gradients colinéaires, forçant leurs représentations à converger vers les mêmes régions de l'espace. C'est cette topologie induite qui confère au modèle sa robustesse : une variation de surface projetée dans le même voisinage vectoriel préserve la trajectoire sémantique des activations ultérieures.
+
 
 Cette observation est cohérente avec l’**hypothèse distributionnelle** : sous un objectif de prédiction, si deux tokens $v_1,v_2$ induisent des distributions de contextes proches, leurs embeddings tendent à satisfaire la relation :
 
@@ -185,13 +188,13 @@ $$
 \mathbb{P}(C \mid v_1) \approx \mathbb{P}(C \mid v_2) \;\Longrightarrow\; W_E[\iota(v_1)] \approx W_E[\iota(v_2)].
 $$
 
-au sens où une divergence faible entre distributions de contextes se traduit souvent par une faible distance (ou un fort cosinus) entre vecteurs d’embedding. Ce mécanisme contribue à une robustesse sémantique partielle face à certaines obfuscations de surface.
+au sens où la proximité statistique (divergence faible entre distributions de contextes) se projette en proximité géométrique (fort alignement vectoriel). Le modèle tend donc à capturer l'équivalence sémantique dans sa structure métrique, rendant la représentation interne résiliente aux substitutions de surface.
 
 <hr style="width:40%; margin:auto;">
 
 ### Unembedding et weight tying : logits, alignement et couplage entrée/sortie
 
-À l’issue des couches de transformation, le modèle dispose de l’état final du flux résiduel **à la position** $t$, noté $x_t^{(L)} \in \mathbb{R}^{1\times d_{\text{model}}}$. Pour prédire le token suivant, cet état continu doit être projeté vers l’espace discret du vocabulaire $\mathcal{V}$.
+À l’issue des couches de transformation, le modèle dispose de l’état final du flux résiduel à la position $t$, noté $x_t^{(L)} \in \mathbb{R}^{1\times d_{\text{model}}}$. Pour prédire le token suivant, cet état continu doit être projeté vers l’espace discret du vocabulaire $\mathcal{V}$.
 
 Cette opération est réalisée par une transformation affine via une matrice d’**unembedding** $W_U$, produisant un vecteur de logits $z_t$ (scores non normalisés avant application de la Softmax) correspondant à la distribution du prochain token $v_{t+1}$ :
 
@@ -207,9 +210,9 @@ $$
 W_U = W_E^\top \in \mathbb{R}^{d_{\text{model}}\times\vert\mathcal{V}\vert}.
 $$
 
-C'est le principe du **weight tying**. Cette contrainte porte une implication sémantique majeure : l'espace d'"encodage" (*input*) et l'espace de "décodage" (*output*) sont identiques. Pour prédire un token, le modèle doit produire un état $x_t^{(L)}$ géométriquement proche de l'embedding de ce token.
+C'est le principe du ***weight tying***. Cette contrainte porte une implication sémantique majeure : l'espace d'"encodage" (*input*) et l'espace de "décodage" (*output*) sont identiques. Pour prédire un token $v$, le modèle doit produire un état $x_t^{(L)}$ géométriquement proche de l'embedding de ce token. Autrement dit, connaître la représentation d'entrée d'un token cible donne une information directe sur la direction à atteindre en sortie pour le générer.
 
-Sous l'hypothèse du weight tying, le calcul du logit pour un token candidat $v$ d'ID $i$ (où $i = \iota(v) \in \{0,\dots,\vert\mathcal{V}\vert-1\}$) revient à projeter l'état interne sur le vecteur d'embedding de ce token. En notant $e_i = W_E[i]$ le vecteur ligne correspondant au token $i$, la composante $i$ du vecteur de logits $z_t$ s'écrit comme un produit scalaire :
+Sous l'hypothèse du *weight tying*, le calcul du logit pour un token candidat $v$ d'ID $i$ (où $i = \iota(v) \in \{0,\dots,\vert\mathcal{V}\vert-1\}$) revient à projeter l'état interne sur le vecteur d'embedding de ce token. En notant $e_i = W_E[i]$ le vecteur ligne correspondant au token $i$, la composante $i$ du vecteur de logits $z_t$ s'écrit comme un produit scalaire :
 
 $$
 z_{t,i} = x_t^{(L)} e_i^\top + b_i = \langle x_t^{(L)}, e_i \rangle + b_i.
@@ -224,10 +227,10 @@ $$
 où $\theta_{t,i}$ est l’angle entre $x_t^{(L)}$ et $e_i$ dans $\mathbb R^{d_{\text{model}}}$, de sorte que le score dépend conjointement de la similarité angulaire et des normes respectives des vecteurs.
 
 **Distribution de probabilité (Softmax)**
-Les logits $z_t$ n'étant ni bornés ni normalisés, la fonction **Softmax** est appliquée pour obtenir une distribution de probabilité valide sur le vocabulaire. La probabilité que le prochain token soit $i$ est donnée par :
+Les logits $z_t$ n'étant ni bornés ni normalisés, la fonction **Softmax** est appliquée pour obtenir une distribution de probabilité valide sur le vocabulaire. La probabilité que le prochain token soit $v$ ($i = \iota(v)$) est donnée par :
 
 $$
-\mathbb{P}(\text{token}=i \mid \text{contexte}) = \text{Softmax}(z_t)_i = \frac{\exp(z_{t,i})}{\sum_{r=0}^{\vert\mathcal V\vert-1}\exp(z_{t,r})}.
+\mathbb{P}(\text{token}=v \mid \text{contexte}) = \text{Softmax}(z_t)_i = \frac{\exp(z_{t,i})}{\sum_{r=0}^{\vert\mathcal V\vert-1}\exp(z_{t,r})}.
 $$
 
 Cette normalisation assure une somme unitaire. Les écarts linéaires de logits contrôlent les rapports géométriques de probabilité : une différence linéaire dans les scores se traduit par un rapport exponentiel dans les probabilités.
@@ -236,7 +239,6 @@ $$
 \frac{\mathbb{P}(\text{token}=i)}{\mathbb{P}(\text{token}=j)} = \exp(z_{t,i} - z_{t,j}) = \exp\bigl( \langle x_t^{(L)}, e_i - e_j \rangle + (b_i - b_j) \bigr).
 $$
 
-**Intuition géométrique**   
 L’équation des différences de logits ci-dessus révèle le mécanisme fondamental de la sélection : le modèle oriente $x_t^{(L)}$ dans l'espace latent. Si $x_t^{(L)}$ s'aligne mieux avec le vecteur $e_i$ qu'avec $e_j$ (c'est-à-dire si la projection de $x_t^{(L)}$ sur la direction de différence $e_i - e_j$ est positive), alors le token $i$ devient exponentiellement plus probable que $j$.
 
 
@@ -244,31 +246,23 @@ L’équation des différences de logits ci-dessus révèle le mécanisme fondam
 
 <hr style="width:40%; margin:auto;">
 
-### Encodage positionnel
+### Injection de la position et initialisation du flux
 
-L’opération de lookup d’embedding $e_t = W_E[i_t]$ est, par construction, **invariante à la permutation** : à ce stade, l’ordre des éléments n’est pas encodé. La séquentialité est introduite par un **mécanisme positionnel**, soit **absolu** (vecteurs de position appris ou sinusoïdaux ajoutés aux embeddings), soit **relatif** (p. ex. RoPE), typiquement implémenté via une transformation appliquée aux projections $Q/K$ au sein de l’attention.
+L’opération de lookup ($e_t = W_E[i_t]$) est, par nature, **invariante à la permutation** : à ce stade, le modèle ne distingue pas l'ordre des mots. La séquentialité est introduite par un **encodage positionnel**, qui permet de briser cette symétrie.
 
-Dans une écriture additive (positions absolues), on définit un vecteur positionnel $p_t\in\mathbb{R}^{1\times d_{\text{model}}}$ et :
+Dans les architectures modernes, cela se fait souvent via des mécanismes relatifs (comme **RoPE**) appliqués directement dans les couches d'attention, ou par des vecteurs de position absolus ajoutés aux embeddings. Quel que soit le mécanisme, l'effet est identique pour l'analyse : l'état du modèle dépend désormais conjointement de l'identité du token et de sa position $t$.
 
-$$
-x_t^{(0)} = e_t + p_t,
-$$
-
-où $p_t\in\mathbb{R}^{1\times d_{\text{model}}}$ est le vecteur positionnel. En empilant sur $t=1,\dots,T$ et en notant $E=[e_1;\dots;e_T]\in\mathbb{R}^{T\times d_{\text{model}}}$ et $P=[p_1;\dots;p_T]\in\mathbb{R}^{T\times d_{\text{model}}}$, on obtient  :
-
-$$
-X^{(0)} = E + P \in \mathbb{R}^{T\times d_{\text{model}}}.
-$$
-
-Après indexation et injection positionnelle, l’entrée n’est plus une suite d’entiers mais une suite de vecteurs denses $x_t^{(0)}$ alimentant le **flux résiduel**. À partir de ce point, l’analyse se déplace de la chaîne symbolique (normalisation, segmentation, indexation) vers la dynamique continue (produits scalaires, normalisations, attention et MLP) en haute dimension, où se joue l’essentiel des effets exploitables par une perspective offensive.
+C’est cette représentation vectorielle, combinant sémantique et position, qui initialise le **flux résiduel** ($x_t^{(0)}$). L’analyse se déplace alors de la chaîne symbolique vers la dynamique continue en haute dimension, où les couches successives (Attention et MLP) transformeront ces états pour construire la prédiction finale.
 
 ---
 
 ## 1.2 Architecture du flux résiduel et dynamique de propagation
 
-Une propriété structurante du Transformer est l’organisation du réseau autour du **flux résiduel** (*residual stream*). Contrairement aux architectures séquentielles classiques où chaque couche opère une substitution de la représentation, le Transformer maintient un **espace vectoriel persistant** de dimension $d_{\text{model}}$. Ce vecteur traverse l'intégralité des blocs, de l'encodage initial $X^{(0)}$ (somme des *embeddings* lexicaux et positionnels) jusqu'à la projection finale sur le vocabulaire $\mathcal{V}$ (*unembedding*).
+Une propriété structurante du Transformer est l’organisation du réseau autour du **flux résiduel** (*residual stream*). Contrairement aux architectures séquentielles classiques où chaque couche opère une substitution de la représentation, le Transformer maintient un **espace vectoriel** persistant de dimension $d_{\text{model}}$. Ce vecteur traverse l'intégralité des blocs, de l'encodage initial $X^{(0)}$ (somme des embeddings lexicaux et positionnels) jusqu'à la projection finale sur le vocabulaire $\mathcal{V}$ (*unembedding*).
 
-Dans le paradigme de l'interprétabilité mécaniste, le flux résiduel agit comme un **substrat commun de représentation**. Les sous-couches (Attention et MLP) n'altèrent pas directement l'état global par écrasement, mais y injectent des contributions additives. Fonctionnellement, ces modules calculent une variation vectorielle $\Delta X$ projetée dans l'espace latent, qui est ensuite superposée à l'état courant. Cette dynamique évoque une **intégration numérique discrète** (type Euler — $x_{l+1} = x_l + F(x_l)$) : à chaque couche, l’état résiduel est mis à jour par addition d’un pas $\Delta X$, produisant une **trajectoire** dans $\mathbb{R}^{d_{\text{model}}}$ plutôt qu’une redéfinition de la représentation.
+Dans le paradigme de l'interprétabilité mécaniste, le flux résiduel est conceptualisé comme un **substrat commun de représentation** (ou canal de communication partagé). Une information "écrite" par une couche reste intelligible et accessible à toutes les couches ultérieures. Ce substrat agit comme une mémoire de travail cumulative à bande passante fixe, où les features s'accumulent en **superposition**.
+
+Les sous-couches du modèle (Attention et MLP) fonctionnent en mode lecture-écriture : elles lisent l'état global via des projections linéaires, calculent une variation $\Delta X$, et l'injectent additivement dans le flux. Cette dynamique s'apparente à une intégration numérique discrète (type Euler — $x_{l+1} = x_l + F(x_l)$) : le modèle ne "calcule" pas tant une nouvelle représentation qu'il ne **pilote une trajectoire** dans $\mathbb{R}^{d_{\text{model}}}$, affinant progressivement le vecteur jusqu'à l'aligner avec la cible de sortie.
 
 Pour une séquence de longueur $T$, le flux résiduel se définit comme un tenseur :
 
@@ -277,10 +271,6 @@ X^{(l)} \in \mathbb{R}^{T \times d_{\text{model}}},
 \qquad
 x_t^{(l)} \in \mathbb{R}^{1\times d_{\text{model}}}\ \text{(tranche à la position } t).
 $$
-
-Les mécanismes de mise à jour se distinguent par leur portée topologique :
-- l'Attention Multi-Têtes (MHA) opère un mélange **inter-positions**, permettant le transfert d'information entre vecteurs distants (mécanisme de routage) ;
-- le Perceptron Multicouche (MLP) applique une transformation non linéaire **intra-position**, traitant chaque vecteur indépendamment dans son espace spectral.
 
 ### Formalisme Pre-Norm et décomposition linéaire
 
@@ -297,8 +287,6 @@ $$
 
 où $\mathrm{Norm}$ désigne une normalisation de type $\mathrm{LayerNorm}$ ou $\mathrm{RMSNorm}$ selon l’implémentation.
 
-L'application de la normalisation en entrée de sous-bloc dissocie l'amplitude du flux résiduel de celle des mises à jour.
-
 Cette architecture permet une lecture télescopique du réseau. En faisant abstraction des effets de bord (tels que le dropout), l'état final $X^{(L)}$ s'exprime comme la somme de l'état initial et de l'ensemble des interventions intermédiaires :
 
 $$
@@ -307,20 +295,14 @@ $$
 
 Cette formulation met en exergue une propriété géométrique cruciale : le flux résiduel ne constitue pas une succession d’états hiérarchiques rigides, mais une accumulation linéaire de vecteurs. L’état initial $X^{(0)}$ n’est jamais écrasé ; il persiste en tant qu'ancrage sémantique de la représentation finale, dont la trajectoire est simplement orientée par la superposition des contributions additives de chaque bloc.
 
-<figure class="cm-figure">
-  <img src="/assets/img/art1/Figure_2_2.png" alt="Diagramme illustrant l'accumulation du flux résiduel dans un Transformer.">
-  <figcaption>
-    Fig. 2 — L’“autoroute” résiduelle : l’état initial $X^{(0)}$ demeure présent, tandis que chaque sous-couche ajoute une mise à jour $\Delta X$ au flux résiduel.
-  </figcaption>
-</figure>
 
 ### Propriétés mécanistes et implications pour la sûreté offensive
 
 #### Additivité stricte : persistance et interférence
 
-L'architecture résiduelle se distingue par l'absence d'opérateur de soustraction explicite ou de mécanisme de réinitialisation (*reset gate*). Aucune sous-couche ne possède la faculté d'effacer explicitement une information du flux $X$. Toute disparition apparente d'un concept correspond en réalité à une **compensation géométrique** (une forme d'interférence destructive) et non à un effacement structurel. Une contrainte initiale (e.g., system prompt de sécurité) injectée en $l=0$ persiste comme composante de la somme, à moins d'être neutralisée par l'ajout d'un vecteur opposé de norme comparable.
+L'architecture résiduelle se distingue par l'absence d'opérateur de soustraction explicite ou de mécanisme de réinitialisation (*reset gate*). Aucune sous-couche ne possède la faculté d'effacer structurellement une information du flux $X$. Toute disparition apparente d'un concept correspond en réalité à une **compensation géométrique** (une forme d'interférence destructive/compensation projective). Une contrainte initiale (e.g., *system prompt* de sécurité) injectée en $l=0$ persiste comme composante de la somme, à moins d'être neutralisée par l'ajout d'un vecteur opposé de norme comparable.
 
-**Conséquence opérationnelle** : Le contournement adversarial (jailbreak) n’efface pas la contrainte ; il déplace la résultante vectorielle vers une région de l’espace latent où la projection sur la direction associée au refus devient négligeable, soit parce qu’elle est faible, soit parce qu’elle devient orthogonale aux axes de lecture mobilisés par les couches ultérieures.
+**Conséquence opérationnelle** : Le contournement adversarial (*jailbreak*) n’efface pas la contrainte ; il déplace la résultante vectorielle vers une région de l’espace latent où la projection sur la direction associée au refus devient négligeable, soit parce qu’elle est faible, soit parce qu’elle devient orthogonale aux axes de lecture mobilisés par les couches ultérieures.
 
 #### Normalisation et primauté de l’orientation
 
@@ -332,7 +314,7 @@ $$
 \lVert x \rVert_{\text{RMS}} = \sqrt{\frac{1}{d_{\text{model}}}\sum_{r=1}^{d_{\text{model}}} x_r^2 + \varepsilon},
 $$
 
-où $\gamma \in \mathbb{R}^{1\times d_{\text{model}}}$ est le vecteur de gain et $\varepsilon$ un terme de stabilisation. (Le même point — lecture d’une version normalisée du résiduel — vaut qualitativement pour **LayerNorm**, qui applique en plus un **centrage** $x \mapsto x-\mu(x)$.)
+où $\gamma \in \mathbb{R}^{1\times d_{\text{model}}}$ est le vecteur de gain et $\varepsilon$ un terme de stabilisation.
 
 Cette transformation réalise une normalisation radiale (au sens RMS) suivie d’une mise à l’échelle anisotrope. Hors régime dominé par $\varepsilon$ (i.e. pour $\lVert x \rVert_{\text{RMS}} \gg \sqrt{\varepsilon}$), l’opérateur $\mathrm{RMSNorm}$ est quasi-invariant par homothétie positive :
 
@@ -345,7 +327,7 @@ En conséquence, la réponse des sous-couches dépend principalement de la **str
 **Découplage fonctionnel (conditionnement vs accumulation).**  
 Une dissociation formelle apparaît entre signal de conditionnement et variable d’état :
 - le **chemin de conditionnement** $\tilde x$ est soumis à une contrainte d’échelle (normalisation radiale, puis mise à l’échelle par $\gamma$) ;
-- le **chemin d’état** $x$ évolue dans l’espace euclidien via une mise à jour additive.
+- le **chemin d’état** $x$ évolue dans l’espace euclidien via une mise à jour additive (sans borne explicite).
 
 En particulier, pour un sous-bloc générique, la mise à jour s’écrit :
 
@@ -368,7 +350,7 @@ x^{(l+1)} = x^{(l)} + \Delta x^{(l)}_{\mathrm{MHA}} + \Delta x^{(l)}_{\mathrm{ML
 x^{(l)} + \Delta x^{(l)}.
 $$
 
-Cette écriture met en évidence une propriété géométrique : l’état $x^{(l)}$ agit comme une variable d’accumulation, tandis que $\Delta x^{(l)}$ est une perturbation locale. Lorsque les incréments ne se compensent pas systématiquement, $\lVert x^{(l)}\rVert$ tend à croître avec la profondeur (régime compatible avec une croissance de type $\Theta(\sqrt{l})$ sous hypothèses de faible corrélation). Dans ce cadre, l’effet d’une mise à jour sur l’**orientation** de l’état devient naturellement relatif à la norme déjà accumulée.
+Cette écriture met en évidence une propriété géométrique : l’état $x^{(l)}$ agit comme une variable d’accumulation, tandis que $\Delta x^{(l)}$ est une perturbation locale. Lorsque les incréments ne se compensent, $\lVert x^{(l)}\rVert$ tend à croître avec la profondeur (régime compatible avec une croissance de type $\Theta(\sqrt{l})$ sous hypothèses de faible corrélation). Dans ce cadre, l’effet d’une mise à jour sur l’**orientation** de l’état devient naturellement relatif à la norme déjà accumulée.
 
 L’amplitude relative de la perturbation est mesurée par le **bras de levier relatif** :
 
@@ -377,15 +359,10 @@ $$
 \qquad \lVert\cdot\rVert \text{ norme euclidienne }(L_2).
 $$
 
-La quantité pertinente pour la rotation n’est toutefois pas $\Delta x^{(l)}$ dans son ensemble mais sa composante orthogonale à $x^{(l)}$. En introduisant la décomposition :
 
-$$
-\Delta x^{(l)}=\Delta x^{(l)}_{\parallel}+\Delta x^{(l)}_{\perp},
-\qquad
-\Delta x^{(l)}_{\perp}\perp x^{(l)},
-$$
 
-la rotation angulaire entre $x^{(l)}$ et $x^{(l+1)}$ se contrôle directement via $\Delta x^{(l)}_{\perp}$. En notant $\theta^{(l)}$ l’angle entre $x^{(l)}$ et $x^{(l)}+\Delta x^{(l)}$, une identité géométrique (triangle vectoriel) donne :
+La rotation angulaire dépend spécifiquement de la composante de la mise à jour orthogonale à l'état courant. En décomposant $\Delta x^{(l)}=\Delta x^{(l)}_{\parallel}+\Delta x^{(l)}_{\perp}$ (avec $\Delta x^{(l)}_{\perp}\perp x^{(l)}$), l'angle $\theta^{(l)}$ entre l'ancien et le nouvel état vérifie :
+
 
 $$
 \sin\theta^{(l)}
@@ -393,7 +370,7 @@ $$
 \frac{\lVert\Delta x_\perp^{(l)}\rVert}{\lVert x^{(l)}+\Delta x^{(l)}\rVert}. \tag{1}
 $$
 
-L’égalité isole explicitement le mécanisme de rotation : seule une énergie injectée **hors de** $\mathrm{span}(x^{(l)})$ modifie la direction, tandis qu’une mise à jour colinéaire affecte principalement la norme. L’équation fournit donc un critère direct : la rotation est bornée par la taille de la composante orthogonale relativement à la taille du nouvel état.
+Cette égalité isole explicitement le mécanisme de rotation : seule une énergie injectée **hors de** $\mathrm{span}(x^{(l)})$ modifie la direction, tandis qu’une mise à jour colinéaire affecte principalement la norme. L’équation fournit donc un critère direct : la rotation est bornée par la taille de la composante orthogonale relativement à la taille du nouvel état.
 
 Une borne exploitable indépendante de la direction fine de $\Delta x^{(l)}$ s’obtient en combinant (1) avec $\lVert\Delta x^{(l)}_{\perp}\rVert\le \lVert\Delta x^{(l)}\rVert$ et l’inégalité triangulaire $\lVert x^{(l)}+\Delta x^{(l)}\rVert\ge \lVert x^{(l)}\rVert-\lVert\Delta x^{(l)}\rVert$ :
 
@@ -411,79 +388,89 @@ $$
 \theta^{(l)} \;\lesssim\; \rho^{(l)},
 $$
 
-de sorte que l’effet directionnel d’une sous-couche est contraint : les incréments peuvent modifier l’état (notamment sa norme) mais ne peuvent réorienter $x^{(l)}$ que dans une mesure proportionnelle à $\rho^{(l)}$. Cela formalise l’existence d’un budget angulaire local gouvernant la capacité de correction en profondeur.
+de sorte que l’effet directionnel d’une sous-couche est contraint : les incréments peuvent modifier l’état (notamment sa norme) mais ne peuvent réorienter $x^{(l)}$ que dans une mesure proportionnelle à $\rho^{(l)}$. Cela formalise l’existence d’un **budget angulaire local** gouvernant la capacité de correction en profondeur.
 
 
 **Conséquence : régime inertiel (couche-dépendant).**
 
-La diminution typique de $\rho^{(l)}$ avec la profondeur—lorsque $\lVert x^{(l)}\rVert$ croît plus régulièrement que $\lVert \Delta x^{(l)}\rVert$—implique une rigidification progressive de l’orientation de $x^{(l)}$. Ce phénomène est intrinsèquement **local** : $\lVert \Delta x^{(l)}\rVert$ dépend des poids (attention/FFN), du gating et du contenu, de sorte que certaines couches peuvent présenter un levier plus élevé que d’autres. Le formalisme via $\rho^{(l)}$ et $\Delta x^{(l)}_{\perp}$ capture précisément cette hétérogénéité : une réorientation substantielle requiert soit $\rho^{(l)}=\Omega(1)$, soit une perturbation à faible norme mais dont la composante orthogonale est alignée sur des directions de lecture particulièrement sensibles.
+La diminution typique de $\rho^{(l)}$ avec la profondeur implique une **rigidification progressive** de l’orientation de $x^{(l)}$. Ce phénomène est intrinsèquement **local** : $\lVert \Delta x^{(l)}\rVert$ dépend des poids (attention/FFN), du *gating* $\gamma$ et du contenu, de sorte que certaines couches peuvent présenter un levier plus élevé que d’autres. Le formalisme via $\rho^{(l)}$ et $\Delta x^{(l)}_{\perp}$ capture précisément cette hétérogénéité : une réorientation substantielle requiert soit $\rho^{(l)}=\Omega(1)$, soit une perturbation à faible norme mais dont la composante orthogonale est alignée sur des directions de lecture particulièrement sensibles.
 
 > **Note** : $\rho^{(l)}$ fournit un **proxy (et un majorant au pire cas)** du budget de rotation disponible à la couche $l$ ; la rotation effective est plus finement contrôlée par $\lVert \Delta x^{(l)}_\perp \rVert / \lVert x^{(l)} \rVert$.
 
 
-### Synthèse : asymétrie de profondeur, superposition additive et interférences
+### Synthèse : asymétrie de profondeur et visibilité fonctionnelle
 
-Les résultats précédents se condensent en une contrainte géométrique locale sur la **réorientabilité** du flux résiduel. À la couche $l$, l’angle $\theta^{(l)}$ entre $x^{(l)}$ et $x^{(l+1)} = x^{(l)} + \Delta x^{(l)}$ est gouverné par la composante **orthogonale** $\Delta x_\perp^{(l)}$ (Eq. (1)), tandis que le levier global
-
-$$
-\rho^{(l)} = \frac{\lVert \Delta x^{(l)} \rVert}{\lVert x^{(l)} \rVert}
-$$
-
-n’induit qu’un contrôle majorant au pire cas via $\lVert \Delta x_\perp^{(l)} \rVert \le \lVert \Delta x^{(l)} \rVert$ (Eq. (2)). La capacité directionnelle de couche est donc naturellement caractérisée par le **budget angulaire**
+Les mécanismes inertiels précédents se résument en une contrainte géométrique locale sur la **réorientabilité** du flux résiduel. À la couche $l$, l’angle $\theta^{(l)}$ entre l’état $x^{(l)}$ et l’état suivant $x^{(l+1)} = x^{(l)} + \Delta x^{(l)}$ est contrôlé, au premier ordre, par la composante orthogonale $\Delta x_\perp^{(l)}$. On peut ainsi définir le budget angulaire effectif :
 
 $$
 \rho_\perp^{(l)} \stackrel{\mathrm{def}}{=} \frac{\lVert \Delta x_\perp^{(l)} \rVert}{\lVert x^{(l)} \rVert},
 $$
 
-qui capture directement la marge de rotation disponible lorsque l’état accumulé $\lVert x^{(l)} \rVert$ domine la perturbation.
+qui mesure la marge de rotation disponible relativement à la norme déjà accumulée $\lVert x^{(l)}\rVert$.
 
-Cette lecture induit une **asymétrie de profondeur** :
+Cette quantité induit une **asymétrie de profondeur** :
 
-* **Levier précoce.** Tant que $\lVert x^{(l)} \rVert$ demeure faible, une mise à jour modérée peut présenter un $\rho_\perp^{(l)}$ non négligeable et imposer une orientation conditionnant les activations ultérieures. Ce phénomène est accentué en régime *Pre-Norm*, où les sous-couches opèrent sur une vue normalisée dont la dépendance est principalement **directionnelle**.
+* **Levier précoce (*early leverage*)** : lorsque $\lVert x^{(l)} \rVert$ est encore modérée, un $\Delta x^{(l)}$ peut induire un $\rho_\perp^{(l)}$ non négligeable ; l’orientation du flux est alors facilement réajustée, ce qui contraint fortement la trajectoire des activations ultérieures.
 
-* **Inertie tardive.** Lorsque $\lVert x^{(l)} \rVert$ devient grande relativement aux incréments typiques, $\rho_\perp^{(l)}$ se contracte : les couches tardives peuvent encore accumuler du signal, mais une correction directionnelle substantielle requiert soit $\lVert \Delta x^{(l)} \rVert=\Omega(\lVert x^{(l)} \rVert)$, soit une composante $\Delta x_\perp^{(l)}$ finement orientée vers des directions présentant un **gain élevé au readout** (et, plus généralement, une forte sensibilité au niveau des lectures pertinentes).
+* **Inertie tardive (*late inertia*)** : quand $\lVert x^{(l)} \rVert$ domine, $\rho_\perp^{(l)}$ se contracte : la direction de $x^{(l)}$ devient difficile à dévier. Une correction directionnelle substantielle requiert soit une énergie comparable à l’état courant $\big(\lVert \Delta x^{(l)} \rVert = \Omega(\lVert x^{(l)} \rVert)\big)$, soit une mise à jour avec une composante orthogonale finement alignée sur des directions à fort gain au readout (plus généralement, à forte sensibilité des lectures pertinentes).
 
-La dynamique se comprend alors comme une **superposition additive** dans un espace commun : l’état final résulte de la somme des contributions injectées couche après couche, et l’absence de mécanisme d’effacement implique qu’une “suppression” apparente d’un concept relève d’une **interférence destructive** (compensation géométrique) plutôt que d’une suppression structurale.
+#### Visibilité fonctionnelle : composantes actives vs silencieuses
 
-Formulé au niveau du décodage, si une projection linéaire de sortie $y = x\,W_U$ (p. ex. unembedding/logits), avec $x\in\mathbb{R}^{1\times d_{\text{model}}}$ et $W_U\in\mathbb{R}^{d_{\text{model}}\times \|\mathcal V\|}$, est sensible au sous-espace $\mathrm{Col}(W_U)$ (espace des colonnes), l’efficacité fonctionnelle d’une mise à jour dépend de sa **projection** sur ce sous-espace :
+Dans une architecture résiduelle, l’additivité est stricte : une “suppression” n’est pas une suppression structurale, mais un phénomène **projectif** (ce qui compte est ce qui est lu)
 
-* une contrainte (p. ex. une *feature* de refus) n’est pas retirée de $x$, mais peut devenir **inopérante** si la somme des mises à jour annule sa projection pertinente sur $\mathrm{Col}(W_U)$ (i.e. $\Delta x\,W_U \approx -x\,W_U$ sur les composantes décisionnelles) ;
+Si le décodage est (localement) une projection linéaire $y = x\,W_U$, avec $W_U \in \mathbb{R}^{d_{\text{model}}\times |\mathcal V|}$, alors l’effet observable d’une mise à jour est gouverné par sa projection sur l’espace lu $\mathrm{Im}(W_U)$ (l’image de la matrice, soit l'espace vectoriel engendré par ses colonnes).
 
-* inversement, des composantes ajoutées majoritairement **hors** des directions effectivement lues (faible projection sur $\mathrm{Col}(W_U)$, ou sur les directions auxquelles les sous-couches suivantes sont sensibles après normalisation) peuvent être présentes dans $x$ tout en produisant un effet marginal sur la sortie.
+Deux régimes géométriques en découlent :
 
-En conséquence, un contournement adversarial n’efface pas une contrainte injectée dans la somme résiduelle ; il consiste à déplacer la résultante vers une région où la projection de cette contrainte sur les **axes décisifs** — ceux de l’unembedding (logits) et ceux auxquels les opérateurs des couches suivantes sont sensibles — est compensée ou devient négligeable, malgré l’inertie induite par la contraction de $\rho_\perp^{(l)}$.
+* **Neutralisation (*Jailbreak*) :**  une composante de contrainte (p. ex. “refus”) peut persister dans $x$ mais devenir fonctionnellement inopérante si sa projection sur l’espace lu est annulée. L’objectif est une compensation au niveau des logits :
+
+  $$
+  \Delta x\,W_U \approx -x_{\text{refus}}\,W_U
+  \quad\Longrightarrow\quad
+  \langle x_{\text{total}}, d_{\text{refus}} \rangle \approx 0.
+  $$
+
+  La composante n’est pas effacée dans l’état, mais sa contribution sur l’axe décisionnel devient négligeable.
+
+**Masquage (Stealth) :**  inversement, une composante peut avoir une grande norme dans le résiduel tout en restant silencieuse si elle se situe (quasi) dans le noyau du readout ($\mathrm{Ker}(W_U)$), c'est-à-dire dans le complémentaire orthogonal de l'image $\mathrm{Im}(W_U)$ : 
+
+$$
+\Delta x \perp \mathrm{Im}(W_U) \;\;\Rightarrow\;\; P_{\mathrm{Im}(W_U)}(\Delta x) \approx 0.
+$$
+
+Ces directions peu visibles au readout immédiat peuvent néanmoins modifier la dynamique interne (attention, normalisation, interactions Q/K/V) avant d’être rendues visibles plus tard via un changement de sous-espace effectivement lu.
+
+En conséquence, un contournement adversarial n’efface pas une contrainte injectée dans la somme résiduelle : il exploite l’asymétrie de profondeur pour déplacer la résultante vers une zone de faible visibilité pour les lectures pertinentes.
+
+<hr style="width:40%; margin:auto;"><br>
 
 
-<hr style="width:40%; margin:auto;">
-
-### Transition : du substrat aux opérateurs
-
-La question se réduit alors à une contrainte de contrôlabilité : quels sous-espaces de $\Delta x^{(l)}$ sont effectivement accessibles à l’attention et aux MLP (par tête/couche), et comment ces sous-espaces bornent à la fois la capacité de rotation (via $\rho_\perp^{(l)}$) et l’influence sur les directions effectivement **lues** (couches ultérieures et décodage)
-
+En résumé, le problème se réduit à une contrainte de contrôlabilité : quels sous-espaces de $\Delta x^{(l)}$ sont effectivement accessibles à l’attention et aux MLP (par tête/couche), et comment ces sous-espaces bornent à la fois la capacité de rotation (via $\rho_\perp^{(l)}$) et l’influence sur les directions effectivement lues (couches ultérieures et décodage) ?
 ---
 
 
 ## 1.3 Mécanique des opérateurs : mélange temporel et mélange de canaux
 
-Le flux résiduel ayant été établi comme un substrat additif (cf. §1.2), l’analyse se concentre sur les opérateurs qui redistribuent l’information entre positions et transforment localement les représentations. Dans l’approche d’interprétabilité mécaniste, un bloc Transformer s’analyse comme l’alternance de deux mécanismes distingués par l’axe tensoriel sur lequel ils opèrent (Elhage et al., 2021) :
+Le flux résiduel ayant été établi comme un substrat additif, l’analyse se concentre sur les opérateurs qui redistribuent l’information entre positions et transforment localement les représentations. Dans l’approche d’interprétabilité mécaniste, un bloc Transformer s’analyse comme l’alternance de deux mécanismes distingués par l’axe tensoriel sur lequel ils opèrent (Elhage et al., 2021) :
 
-- **Attention (mélange temporel / routage inter-positions).** Opère sur l’axe de la séquence ($T$). Pour chaque tête $h$, elle construit une matrice $A^{(h)}(X)\in\mathbb{R}^{T\times T}$ (causale) qui définit, pour chaque position cible, une **distribution de mélange** sur les positions sources. Mécaniquement, les **queries/keys** déterminent le schéma de routage $A^{(h)}$, puis les **values** fournissent le contenu effectivement agrégé : l’opérateur réalise ainsi une forme de **copie/mélange** inter-positions dépendante du contenu, en important dans le résiduel des directions latentes provenant d’autres tokens.
+Le flux résiduel ayant été établi comme un substrat additif, l’analyse porte sur les opérateurs qui redistribuent l’information entre positions de la séquence et transforment localement les représentations. Dans l’approche d’interprétabilité mécaniste, un bloc Transformer s’analyse comme l’alternance de deux mécanismes, distingués par l’axe tensoriel sur lequel ils agissent (Elhage et al., 2021) :
 
-- **MLP/FFN (mélange de canaux / transformation locale).** Opère à position fixée sur l’axe $d_{\text{model}}$ (espace des *features*), indépendamment des autres tokens. Il implémente une application non linéaire *point par point* $x \mapsto \mathrm{MLP}(x)$ : typiquement une expansion linéaire, une non-linéarité (souvent **gated** dans les variantes modernes, p. ex. (GE)GLU/SwiGLU), puis une reprojection vers $d_{\text{model}}$ avant l’ajout résiduel. Dans une lecture mécaniste, on peut l’interpréter comme une **écriture conditionnelle** dans l’état latent : l’entrée sélectionne via le gating quelles directions internes s’activent, et la sortie combine des patrons de mise à jour “stockés” dans les poids pour ajuster la représentation du token (Geva et al., 2021).
+- **Attention (mélange inter-positions / routage sur l’axe séquence).** Opère sur l’axe $T$. Pour chaque tête $h$, elle construit une matrice d’adressage $A^{(h)}(X)\in\mathbb{R}^{T\times T}$ (causale) qui pondère, pour chaque position cible, les positions sources effectivement consultées. Mécaniquement, le circuit **QK** détermine le schéma de routage $A^{(h)}$, tandis que le circuit **OV** transporte le contenu agrégé : l’opérateur réalise ainsi une combinaison inter-positions conditionnée par l’état, en injectant dans le résiduel des directions latentes provenant d’autres tokens.
 
-Cette dichotomie structure l’analyse de sûreté : le mélange temporel gouverne l’**accessibilité causale** de l’information (quelles sources deviennent disponibles à une position donnée), tandis que le mélange de canaux gouverne sa **compilation** en variables latentes décodables (comment cette information se convertit en **logits de sortie**, puis en distribution via Softmax).
+- **MLP/FFN (mélange de canaux / transformation locale).** Opère à position fixée sur l’axe $d_{\text{model}}$ (espace des *features*), indépendamment des autres tokens. Il implémente une application non linéaire *pointwise* $x \mapsto \mathrm{MLP}(x)$ : typiquement une expansion linéaire, une non-linéarité (souvent **gated** dans les variantes modernes, p. ex. (GE)GLU/SwiGLU), puis une reprojection vers $d_{\text{model}}$ avant l’ajout résiduel. Dans une lecture mécaniste, il est possible de l’interpréter comme un opérateur d’**écriture conditionnée** : le gating sélectionne un sous-ensemble de directions internes, et la projection de sortie combine ces directions en une mise à jour additive de la représentation du token (Geva et al., 2021).
+
+Cette dichotomie structure l’analyse de sûreté : le mélange inter-positions gouverne l’**accessibilité causale** de l’information (quelles sources deviennent disponibles à une position donnée), tandis que le mélange de canaux gouverne sa **mise en forme** en variables latentes effectivement lues (comment l’information se convertit en logits via l’unembedding, puis en distribution via softmax).
+
 
 ### Rappel : lecture et écriture sur un même flux
 
-Pour $X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$, les deux opérateurs sont évalués sur une vue normalisée de l’état courant, puis produisent des mises à jour additives écrites dans le flux résiduel (cf. §1.2) :
+Pour $X^{(l)}\in\mathbb{R}^{T\times d_{\text{model}}}$, les deux opérateurs sont évalués sur une vue normalisée de l’état courant, puis produisent des mises à jour additives écrites dans le flux résiduel :
 
 $$
 X^{(l+1)} \;=\; X^{(l)} \;+\; \Delta X^{(l)}_{\mathrm{MHA}} \;+\; \Delta X^{(l)}_{\mathrm{MLP}}.
 $$
 
-<p>
-Ici, $\Delta X^{(l)}_{\mathrm{MHA}}$ est induite par le routage inter-positions, et $\Delta X^{(l)}_{\mathrm{MLP}}$ par la transformation locale. Les sections suivantes détaillent la construction de $A^{(h)}(X)$ via $Q/K$, masque causal et softmax, et la décomposition clé–valeur du FFN comme opérateur d’écriture dans le résiduel.
-</p>
+Ici, $\Delta X^{(l)}_{\mathrm{MHA}}$ provient du routage inter-positions (QK puis OV), et $\Delta X^{(l)}_{\mathrm{MLP}}$ d’une transformation locale des canaux. Les sections suivantes détaillent la construction de $A^{(h)}(X)$ via $Q/K$, masque causal et softmax, puis la décomposition du FFN comme opérateur d’écriture conditionnée dans le résiduel.
 
 
 <hr style="width:40%; margin:auto;">
