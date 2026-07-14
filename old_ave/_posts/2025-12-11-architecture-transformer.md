@@ -4,8 +4,12 @@ title: "I. Architecture Transformer et discrétisation du langage"
 categories: [théorie, introduction]
 featured: true
 math: true
-figure: "001"
-description: "De la tokenisation au flux résiduel : anatomie d’une architecture qui transforme des symboles discrets en trajectoires vectorielles."
+hero_image: "/assets/img/art1/header.png"
+sf_cta: "lire"
+sf_title: "Latence marginale"
+sf_meta: "—  La rencontre"
+sf_mode: details
+sf_open: false
 
 ---
 

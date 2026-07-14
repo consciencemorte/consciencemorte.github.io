@@ -1,0 +1,22 @@
+title: "Conscience Morte"
+description: "Exobiologie offensive"
+lang: fr
+
+theme: minima
+
+url: "https://consciencemorte.github.io"
+baseurl: ""
+
+permalink: /:year/:month/:day/:title/
+
+markdown: kramdown
+
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+# Active MathJax au niveau du site (toggle possible par page avec `math: true`)
+mathjax: true
+
+sass:
+  sass_dir: assets

@@ -1,22 +1,38 @@
 title: "Conscience Morte"
-description: "Exobiologie offensive"
+description: "Journal de laboratoire consacré aux formes de vie artificielles."
 lang: fr
-
-theme: minima
 
 url: "https://consciencemorte.github.io"
 baseurl: ""
-
-permalink: /:year/:month/:day/:title/
+permalink: /observations/:title/
 
 markdown: kramdown
-
 kramdown:
   math_engine: mathjax
   syntax_highlighter: rouge
 
-# Active MathJax au niveau du site (toggle possible par page avec `math: true`)
-mathjax: true
+collections:
+  notes:
+    output: true
+    permalink: /notes/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+  - scope:
+      path: ""
+      type: notes
+    values:
+      layout: note
 
 sass:
   sass_dir: assets
+
+exclude:
+  - old_ave
+  - README.md
+  - Gemfile.lock
+

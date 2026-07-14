@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'fr' }}">
+  {% include head.html %}
+  <body class="{{ page.body_class }}">
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    {% include header.html %}
+    <main id="main">{{ content }}</main>
+    {% include footer.html %}
+    <script src="{{ '/assets/site.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+  </body>
+</html>

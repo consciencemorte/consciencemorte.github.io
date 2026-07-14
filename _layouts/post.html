@@ -1,109 +1,37 @@
 ---
 layout: default
 ---
+<div class="reading-progress" aria-hidden="true"><span></span></div>
+<article class="observation">
+  <header class="post-header shell">
+    <div class="post-kicker">
+      <span>Observation {% if page.figure %}{{ page.figure }}{% else %}{{ page.date | date: '%j' }}{% endif %}</span>
+      <span>{{ page.categories | join: ' · ' }}</span>
+    </div>
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="post-deck">{{ page.description }}</p>{% endif %}
+    <div class="post-byline">
+      <span>Publié le {{ page.date | date: '%d.%m.%Y' }}</span>
+      <span>{% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }} minutes de lecture</span>
+    </div>
+  </header>
 
-{%- assign hero_image = page.hero_image | default: page.header_image | default: page.cover -%}
-{%- assign hero_subtitle = page.hero_subtitle | default: page.subtitle -%}
-
-<section class="cm-hero cm-hero-post"{% if hero_image %} style="--cm-hero-img: url('{{ hero_image | relative_url }}');"{% endif %}>
-  <div class="cm-shell">
-    <nav class="cm-breadcrumb" aria-label="Fil d'Ariane">
-      <span class="cm-breadcrumb-root">Fragments</span>
-      {%- if page.categories and page.categories != empty -%}
-        {%- for cat in page.categories -%}
-          <span class="cm-breadcrumb-sep">›</span>
-          <span class="cm-breadcrumb-item">{{ cat }}</span>
-        {%- endfor -%}
-      {%- endif -%}
-      <span class="cm-breadcrumb-sep">›</span>
-      <span class="cm-breadcrumb-current">{{ page.title }}</span>
-    </nav>
-    <h1 class="cm-hero-post-title">{{ page.title }}</h1>
-    {%- if hero_subtitle -%}
-      <p class="cm-hero-subtitle cm-hero-post-subtitle">{{ hero_subtitle }}</p>
-    {%- endif -%}
-    <p class="cm-hero-meta">{{ page.date | date: "%-d %b %Y" }}</p>
-  </div>
-</section>
-
-<article class="post post-with-hero">
-  <div class="post-body">
-    <aside class="post-toc" aria-label="Sommaire de l'article">
-      <div class="post-toc-title">Sommaire</div>
-      <nav class="post-toc-nav" id="cm-toc-nav">
-        <p class="post-toc-empty">Le sommaire apparaît ici.</p>
-      </nav>
+  <div class="article-grid shell">
+    <aside class="article-toc">
+      <p>Dans cette observation</p>
+      <nav id="toc"><span>Analyse du spécimen…</span></nav>
     </aside>
-    <section class="post-content" id="post-content">
-      {% include sf_fragment.html %}
-      {{ content }}
-    </section>
+    <div class="prose post-content" id="post-content">{{ content }}</div>
+    <aside class="article-margin">
+      <div class="margin-specimen">
+        <svg viewBox="0 0 120 150" aria-hidden="true">
+          <ellipse cx="60" cy="76" rx="19" ry="42"/>
+          <path d="M42 62C18 34 7 47 17 82c5 17 20 18 27 9M78 62c24-28 35-15 25 20-5 17-20 18-27 9M50 36c-9-18-19-20-25-16M70 36c9-18 19-20 25-16M59 34v85M43 54h34M42 78h36M47 101h26"/>
+        </svg>
+        <p><span>SP. 01</span><br>Architecture compacte<br>classe : mécanismes</p>
+      </div>
+      <p class="margin-note"><span>PROTOCOLE</span> Les équations, schémas et sorties de modèles sont traités comme des observations reproductibles.</p>
+    </aside>
   </div>
 </article>
 
-<section class="post-comments" aria-labelledby="cm-comments-title">
-  <div class="post-comments-inner">
-    <header class="post-comments-header">
-      <h2 id="cm-comments-title">Commentaires</h2>
-    </header>
-    <div id="cm-comments-embed" class="post-comments-embed" data-loaded="false">
-      <p class="post-comments-empty">Chargement…</p>
-    </div>
-  </div>
-</section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const content = document.querySelector('.post-content');
-    const tocNav = document.getElementById('cm-toc-nav');
-    if (!content || !tocNav) return;
-
-    const headings = Array.from(content.querySelectorAll('h2, h3'))
-      .filter((h) => !h.closest('.cm-fragment'));
-    if (!headings.length) {
-      tocNav.innerHTML = '<p class="post-toc-empty">Aucune section détectée.</p>';
-      return;
-    }
-
-    const list = document.createElement('ul');
-    headings.forEach((h) => {
-      const text = h.textContent.trim();
-      if (!text) return;
-      if (!h.id) {
-        h.id = text.toLowerCase()
-          .replace(/[^a-z0-9\u00C0-\u024f\s-]/gi, '')
-          .trim()
-          .replace(/\s+/g, '-');
-      }
-      const li = document.createElement('li');
-      if (h.tagName === 'H3') li.classList.add('is-sub');
-      const a = document.createElement('a');
-      a.href = `#${h.id}`;
-      a.textContent = text;
-      li.appendChild(a);
-      list.appendChild(li);
-    });
-
-    tocNav.innerHTML = '';
-    tocNav.appendChild(list);
-  });
-
-  /* Chargement différé d'Utterances pour les commentaires partagés */
-  document.addEventListener('DOMContentLoaded', () => {
-    const embed = document.getElementById('cm-comments-embed');
-    if (!embed || embed.dataset.loaded === 'true') return;
-
-    const script = document.createElement('script');
-    script.src = 'https://utteranc.es/client.js';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.setAttribute('repo', '{{ site.github.repository_nwo | default: "consciencemorte/consciencemorte.github.io" }}');
-    script.setAttribute('issue-term', 'pathname');
-    script.setAttribute('label', 'commentaire');
-    script.setAttribute('theme', 'github-dark');
-
-    embed.dataset.loaded = 'true';
-    embed.innerHTML = '';
-    embed.appendChild(script);
-  });
-</script>

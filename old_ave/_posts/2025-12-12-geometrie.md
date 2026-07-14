@@ -2,9 +2,6 @@
 layout: post
 title: "II. Géométrie de l'alignement : variétés, directions et zones d'ombre"
 categories: [théorie, introduction]
-math: true
-figure: "002"
-description: "Cartographier les directions latentes, les régions hors distribution et la superposition pour comprendre la fragilité de l’alignement."
 ---
 
 ### **Prélude : de la dynamique du flux résiduel à la cartographie latente**
