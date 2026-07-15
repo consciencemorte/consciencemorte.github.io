@@ -1,0 +1,29 @@
+---
+layout: default
+---
+<div class="reading-progress" aria-hidden="true"><span></span></div>
+<article class="project-detail">
+  <header class="project-header shell">
+    <div class="post-kicker">
+      <span>Terrain / {{ page.kind | default: 'protocole' }}</span>
+      <span>{{ page.status | default: 'en cours' }}</span>
+    </div>
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="post-deck">{{ page.description }}</p>{% endif %}
+    <div class="project-actions">
+      {% if page.repository %}<a class="project-action" href="{{ page.repository }}">Code source ↗</a>{% endif %}
+      {% if page.demo %}<a class="project-action" href="{{ page.demo }}">Démonstration ↗</a>{% endif %}
+    </div>
+  </header>
+  <div class="project-grid shell">
+    <aside class="project-facts">
+      <dl>
+        <div><dt>Statut</dt><dd>{{ page.status | default: 'en cours' }}</dd></div>
+        {% if page.stack %}<div><dt>Stack</dt><dd>{{ page.stack | join: ', ' }}</dd></div>{% endif %}
+        {% if page.license %}<div><dt>Licence</dt><dd>{{ page.license }}</dd></div>{% endif %}
+        {% if page.updated %}<div><dt>Révision</dt><dd>{{ page.updated | date: '%d.%m.%Y' }}</dd></div>{% endif %}
+      </dl>
+    </aside>
+    <div class="prose post-content" id="post-content">{{ content }}</div>
+  </div>
+</article>

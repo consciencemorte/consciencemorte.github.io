@@ -2,10 +2,22 @@
 layout: post
 title: "I. Architecture Transformer et discrétisation du langage"
 categories: [théorie, introduction]
+type: monographie
+topics: [mécanismes, sécurité, interprétabilité]
+level: intermédiaire
+status: document de travail
+updated: 2026-07-15
+series: anatomie-du-transformer
 featured: true
 math: true
 figure: "001"
 description: "De la tokenisation au flux résiduel : anatomie d’une architecture qui transforme des symboles discrets en trajectoires vectorielles."
+hero_image: "/assets/img/monographs/attacus-plate.webp"
+hero_position: "center 45%"
+hero_credit: "Tijdschrift voor entomologie — image courtesy of BHL"
+hero_source: "https://biodiversitylibrary.org/page/16330098"
+sf_insert: "sf/ada-5.md"
+sf_open: true
 
 ---
 

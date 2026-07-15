@@ -1,5 +1,5 @@
 title: "Conscience Morte"
-description: "Journal de laboratoire consacré aux formes de vie artificielles."
+description: "Xénobiologie offensive — interprétabilité, sécurité et théorie des systèmes d’intelligence artificielle."
 lang: fr
 
 url: "https://consciencemorte.github.io"
@@ -12,6 +12,12 @@ kramdown:
   syntax_highlighter: rouge
 
 collections:
+  essays:
+    output: true
+    permalink: /essais/:name/
+  projects:
+    output: true
+    permalink: /projets/:name/
   notes:
     output: true
     permalink: /notes/:name/
@@ -22,11 +28,25 @@ defaults:
       type: posts
     values:
       layout: post
+      type: monographie
   - scope:
       path: ""
       type: notes
     values:
       layout: note
+      type: note
+  - scope:
+      path: ""
+      type: essays
+    values:
+      layout: post
+      type: biosémiotique
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+      type: terrain
 
 sass:
   sass_dir: assets
@@ -35,4 +55,5 @@ exclude:
   - README.md
   - Gemfile.lock
   - old_archive
+  - _templates
   - vendor

@@ -17,5 +17,22 @@ layout: null
     <summary>{{ post.excerpt | strip_html | xml_escape }}</summary>
   </entry>
   {% endfor %}
+  {% for essay in site.essays limit: 10 %}
+  <entry>
+    <title>{{ essay.title | xml_escape }}</title>
+    <link href="{{ essay.url | absolute_url }}"/>
+    <updated>{{ essay.date | date_to_xmlschema }}</updated>
+    <id>{{ essay.url | absolute_url }}</id>
+    <summary>{{ essay.excerpt | strip_html | xml_escape }}</summary>
+  </entry>
+  {% endfor %}
+  {% for project in site.projects limit: 10 %}
+  <entry>
+    <title>{{ project.title | xml_escape }}</title>
+    <link href="{{ project.url | absolute_url }}"/>
+    <updated>{{ project.date | date_to_xmlschema }}</updated>
+    <id>{{ project.url | absolute_url }}</id>
+    <summary>{{ project.description | default: project.excerpt | strip_html | xml_escape }}</summary>
+  </entry>
+  {% endfor %}
 </feed>
-

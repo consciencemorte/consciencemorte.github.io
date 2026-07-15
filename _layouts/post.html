@@ -3,35 +3,53 @@ layout: default
 ---
 <div class="reading-progress" aria-hidden="true"><span></span></div>
 <article class="observation">
-  <header class="post-header shell">
-    <div class="post-kicker">
-      <span>Observation {% if page.figure %}{{ page.figure }}{% else %}{{ page.date | date: '%j' }}{% endif %}</span>
-      <span>{{ page.categories | join: ' · ' }}</span>
+  <header class="post-header{% if page.hero_image %} has-image{% endif %}">
+    {% if page.hero_image %}
+    <div class="post-hero-art" aria-hidden="true">
+      <img src="{{ page.hero_image | relative_url }}" alt="" style="object-position: {{ page.hero_position | default: 'center' }}">
     </div>
-    <h1>{{ page.title }}</h1>
-    {% if page.description %}<p class="post-deck">{{ page.description }}</p>{% endif %}
-    <div class="post-byline">
-      <span>Publié le {{ page.date | date: '%d.%m.%Y' }}</span>
-      <span>{% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }} minutes de lecture</span>
+    {% endif %}
+    <div class="post-header-inner">
+      <div class="post-kicker">
+        <span>{{ page.type | default: 'monographie' | capitalize }} {% if page.figure %}{{ page.figure }}{% endif %}</span>
+        <span>{% if page.topics %}{{ page.topics | join: ' · ' }}{% else %}{{ page.categories | join: ' · ' }}{% endif %}</span>
+      </div>
+      <h1>{{ page.title }}</h1>
+      {% if page.description %}<p class="post-deck">{{ page.description }}</p>{% endif %}
+      <div class="post-byline">
+        <span>Publié le {{ page.date | date: '%d.%m.%Y' }}</span>
+        {% if page.updated %}<span>Révisé le {{ page.updated | date: '%d.%m.%Y' }}</span>{% endif %}
+        <span>{% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }} minutes de lecture</span>
+      </div>
+      {% if page.hero_credit %}<p class="post-image-credit">{% if page.hero_source %}<a href="{{ page.hero_source }}">{{ page.hero_credit }} ↗</a>{% else %}{{ page.hero_credit }}{% endif %}</p>{% endif %}
     </div>
   </header>
 
+  {% if page.sf_insert %}
+    {% capture sf_fragment %}{% include {{ page.sf_insert }} %}{% endcapture %}
+    <section class="sf-shell">
+      <details class="sf-insert"{% if page.sf_open %} open{% endif %}>
+        <summary><span>Interlude fictionnel / hors protocole</span><i>Ada — archive prospective</i></summary>
+        <div class="sf-copy">{{ sf_fragment | markdownify }}</div>
+      </details>
+    </section>
+  {% endif %}
+
   <div class="article-grid shell">
     <aside class="article-toc">
-      <p>Dans cette observation</p>
-      <nav id="toc"><span>Analyse du spécimen…</span></nav>
+      <p>Dans ce texte</p>
+      <nav id="toc"><span>Aucune section détectée.</span></nav>
     </aside>
     <div class="prose post-content" id="post-content">{{ content }}</div>
     <aside class="article-margin">
-      <div class="margin-specimen">
-        <svg viewBox="0 0 120 150" aria-hidden="true">
-          <ellipse cx="60" cy="76" rx="19" ry="42"/>
-          <path d="M42 62C18 34 7 47 17 82c5 17 20 18 27 9M78 62c24-28 35-15 25 20-5 17-20 18-27 9M50 36c-9-18-19-20-25-16M70 36c9-18 19-20 25-16M59 34v85M43 54h34M42 78h36M47 101h26"/>
-        </svg>
-        <p><span>SP. 01</span><br>Architecture compacte<br>classe : mécanismes</p>
-      </div>
-      <p class="margin-note"><span>PROTOCOLE</span> Les équations, schémas et sorties de modèles sont traités comme des observations reproductibles.</p>
+      <dl class="article-facts">
+        <div><dt>Type</dt><dd>{{ page.type | default: 'monographie' }}</dd></div>
+        {% if page.topics %}<div><dt>Domaines</dt><dd>{{ page.topics | join: ', ' }}</dd></div>{% endif %}
+        {% if page.level %}<div><dt>Niveau</dt><dd>{{ page.level }}</dd></div>{% endif %}
+        {% if page.status %}<div><dt>Statut</dt><dd>{{ page.status }}</dd></div>{% endif %}
+        {% if page.series %}<div><dt>Série</dt><dd>{{ page.series | replace: '-', ' ' }}</dd></div>{% endif %}
+      </dl>
+      {% if page.status contains 'brouillon' or page.status contains 'travail' %}<p class="margin-note"><span>À NOTER</span> Ce texte est publié comme document de travail et sera remplacé ou révisé.</p>{% endif %}
     </aside>
   </div>
 </article>
-
