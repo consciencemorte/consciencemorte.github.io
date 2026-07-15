@@ -4,3 +4,6 @@ _site/
 old_archive/
 .claude
 .gitignore
+vendor/
+.bundle/
+

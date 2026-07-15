@@ -212,7 +212,7 @@ button { font: inherit; }
 .prose table { width: 100%; border-collapse: collapse; margin: 2em 0; font-family: var(--font-interface); font-size: 13px; }
 .prose th, .prose td { padding: 11px 8px; border-bottom: 1px solid var(--line); text-align: left; }
 .prose th { color: var(--oxide); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
-.prose .cm-figure, .prose figure { margin: 2.7em max(-7vw, -80px); }
+.prose .cm-figure, .prose figure { margin: 2.7em #{"max(-7vw, -80px)"}; }
 .prose figcaption { margin-top: 12px; color: var(--graphite); font: 11px/1.5 var(--font-interface); }
 .prose figcaption::before { content: "FIG. "; color: var(--oxide); font-family: var(--font-code); }
 .MathJax { font-size: .9em !important; }

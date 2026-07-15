@@ -35,3 +35,4 @@ exclude:
   - README.md
   - Gemfile.lock
   - old_archive
+  - vendor
