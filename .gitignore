@@ -2,3 +2,5 @@ _site/
 .sass-cache/
 .jekyll-cache/
 old_archive/
+.claude
+.gitignore

@@ -32,7 +32,6 @@ sass:
   sass_dir: assets
 
 exclude:
-  - old_ave
   - README.md
   - Gemfile.lock
-
+  - old_archive
