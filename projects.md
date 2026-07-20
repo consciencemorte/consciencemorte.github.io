@@ -23,6 +23,7 @@ intro: Protocoles, code d’interprétabilité, frameworks expérimentaux et rel
       <h2><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
       <p>{{ project.description }}</p>
     </div>
+    {% if project.hero_image %}<a class="project-thumb" href="{{ project.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ project.hero_image | relative_url }}" alt="" style="object-position: {{ project.hero_position | default: 'center' }}"></a>{% endif %}
     <a class="row-arrow" href="{{ project.url | relative_url }}" aria-label="Voir {{ project.title }}">↗</a>
   </article>
 {% endfor %}

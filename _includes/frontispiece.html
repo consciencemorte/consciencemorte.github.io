@@ -1,61 +1,6 @@
 <figure class="frontispiece" aria-labelledby="frontispiece-caption">
-  <svg viewBox="0 0 640 500" role="img" aria-label="Papillon de nuit gravé, traversé par quelques axes de mesure">
-    <defs>
-      <pattern id="hatch-left" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(19)">
-        <line x1="0" y1="0" x2="0" y2="7" class="hatch-line"/>
-      </pattern>
-      <pattern id="hatch-right" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-16)">
-        <line x1="0" y1="0" x2="0" y2="9" class="hatch-line"/>
-      </pattern>
-      <clipPath id="wing-left">
-        <path d="M306 211C270 108 178 54 70 94c10 66 66 133 178 174-72 8-135 55-158 133 78 31 169-12 217-100Z"/>
-      </clipPath>
-      <clipPath id="wing-right">
-        <path d="M334 215c39-98 132-148 239-105-14 64-70 126-181 164 72 10 132 57 153 133-80 26-166-17-212-103Z"/>
-      </clipPath>
-    </defs>
-
-    <g class="measure-lines">
-      <path d="M44 437h552M320 23v454" stroke-dasharray="4 9"/>
-      <circle cx="320" cy="253" r="204" stroke-dasharray="2 12"/>
-      <path d="M57 84h102M481 92h103"/>
-    </g>
-
-    <g class="moth-left">
-      <path class="wing" d="M306 211C270 108 178 54 70 94c10 66 66 133 178 174-72 8-135 55-158 133 78 31 169-12 217-100Z"/>
-      <rect x="56" y="52" width="260" height="380" fill="url(#hatch-left)" clip-path="url(#wing-left)" class="wing-hatch"/>
-      <path d="M294 222C236 191 158 135 86 99M273 255c-73-9-133-38-177-89M250 269c-67 8-129 51-151 122M278 286c-61 26-108 59-139 98"/>
-      <path d="M270 179c-49-50-112-73-165-68 24 41 63 73 119 92M246 301c-52 9-92 35-119 73"/>
-      <path class="oxide-fill" d="M224 139c-34-25-75-34-107-22 20 30 50 52 91 65Z"/>
-      <path class="wing-cell" d="M119 218c17-25 51-30 73-11 18 16 13 43-9 55-26 14-60-2-64-44Z"/>
-      <ellipse class="oxide-fill" cx="156" cy="232" rx="12" ry="9"/>
-      <path d="M107 329c32-8 68-6 100 6M118 352c29-4 57 1 81 12M146 388c22-5 43-3 60 3"/>
-    </g>
-
-    <g class="moth-right">
-      <path class="wing" d="M334 215c39-98 132-148 239-105-14 64-70 126-181 164 72 10 132 57 153 133-80 26-166-17-212-103Z"/>
-      <rect x="326" y="58" width="260" height="370" fill="url(#hatch-right)" clip-path="url(#wing-right)" class="wing-hatch"/>
-      <path d="M345 228c63-31 141-81 210-114M367 259c73-7 134-33 179-81M393 276c67 12 125 55 143 121M361 292c62 27 107 61 136 98"/>
-      <path d="M371 186c51-48 113-68 165-60-25 39-64 69-121 87M397 309c52 11 90 37 116 75"/>
-      <path class="wing-cell" d="M451 216c18-23 51-26 72-7 17 16 10 42-12 53-26 13-58-4-60-46Z"/>
-      <ellipse cx="488" cy="232" rx="12" ry="9"/>
-      <path d="M432 341c32-8 66-4 97 8M443 365c27-3 54 2 77 13M447 394c18-3 37-1 55 5"/>
-    </g>
-
-    <g class="moth-body">
-      <path d="M310 194c-7 36-7 170 10 235 18-64 19-197 10-235Z"/>
-      <ellipse cx="320" cy="183" rx="18" ry="23"/>
-      <path d="M312 165c-19-38-48-52-72-48M328 165c20-39 49-51 73-46"/>
-      <path d="M240 117c-8-1-15 4-16 12M401 119c8-1 15 4 16 12"/>
-      <path d="M311 226h18M308 257h24M307 291h26M309 327h22M312 365h16M315 400h10"/>
-    </g>
-
-    <g class="plate-labels">
-      <text x="44" y="76">PL. 00 / NOCTURNE</text>
-      <text x="550" y="458">n = 1</text>
-      <text x="299" y="493">AXE 01</text>
-    </g>
-  </svg>
-  <figcaption id="frontispiece-caption"><span>PL. 00</span> — Morphologie conjecturale d’une machine cognitive.</figcaption>
+  <div class="frontispiece-media">
+    <img src="{{ '/assets/img/site/frontispiece-snakes-of-australia.jpg' | relative_url }}" alt="Vipère de la mort australienne, planche naturaliste de Gerard Krefft">
+  </div>
+  <figcaption id="frontispiece-caption"><span>PL. 00</span> — <cite>The Snakes of Australia</cite>, Gerard Krefft, 1869 — image courtesy of BHL.</figcaption>
 </figure>
-

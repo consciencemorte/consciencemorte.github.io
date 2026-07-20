@@ -14,6 +14,7 @@ intro: Publications techniques, études longues et monographies sur les mécanis
       <span>{% if post.topics %}{{ post.topics | join: ' · ' }}{% else %}{{ post.categories | join: ' · ' }}{% endif %}{% if post.level %} — {{ post.level }}{% endif %}</span>
     </div>
     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%d.%m.%Y' }}</time>
+    {% if post.hero_image %}<a class="archive-thumb" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ post.hero_image | relative_url }}" alt="" style="object-position: {{ post.hero_position | default: 'center' }}"></a>{% endif %}
   </li>
 {% endfor %}
 </ul>

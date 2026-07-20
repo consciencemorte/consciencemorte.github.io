@@ -12,6 +12,9 @@ kramdown:
   syntax_highlighter: rouge
 
 collections:
+  biosemiotique:
+    output: true
+    permalink: /essais/:name/
   essays:
     output: true
     permalink: /essais/:name/
@@ -29,6 +32,12 @@ defaults:
     values:
       layout: post
       type: monographie
+  - scope:
+      path: ""
+      type: biosemiotique
+    values:
+      layout: post
+      type: prospective
   - scope:
       path: ""
       type: notes
@@ -53,7 +62,10 @@ sass:
 
 exclude:
   - README.md
+  - Gemfile
   - Gemfile.lock
+  - images_bank
   - old_archive
+  - resources
   - _templates
   - vendor

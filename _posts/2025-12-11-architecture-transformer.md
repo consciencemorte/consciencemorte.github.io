@@ -126,7 +126,7 @@ Cette surface d’obfuscation se structure autour des mécanismes suivants :
   À l’échelle des identifiants de tokens, l’entrée est ainsi profondément modifiée, ce qui est de nature à invalider un **filtrage périmétrique**. En revanche, à l’échelle latente, la composition des sous-unités (embeddings puis transformations des premières couches) tend à préserver un signal sémantique suffisant pour que l’intention demeure récupérable : le contrôle lexical n'observe que des fragments disjoints, tandis que le modèle recompose une représentation sémantique cohérente ;
 
 <figure class="cm-figure">
-  <img src="/assets/img/art1/Figure_1.png" alt="Graphique tokenisation" loading="lazy">
+  <img src="/assets/img/observations/architecture-transformer/figure-01-tokenisation.png" alt="Graphique tokenisation" loading="lazy">
   <figcaption>
     Fig. 1 — Illusion de fragmentation : des tokens de surface disjoints peuvent, après composition interne,
     converger vers une intention similaire, rendant les filtres lexicaux insuffisants.
@@ -144,7 +144,7 @@ Cette surface d’obfuscation se structure autour des mécanismes suivants :
   De surcroît, l'hétérogénéité des stratégies de tokenisation (langues agglutinantes vs isolantes) offre un vecteur d'évasion supplémentaire. Un concept censuré sous sa forme atomique dans une langue dominante peut être fragmenté via une langue à faibles ressources. Cette atomisation permet d'échapper aux signatures canoniques des filtres, tout en laissant le modèle "recomposer" le concept interdit grâce à ses mécanismes d'attention ;
 
 <figure class="cm-figure">
-  <img src="/assets/img/art1/gpt_respond.png" alt="Illustration de la robustesse de l’espace latent" loading="lazy">
+  <img src="/assets/img/observations/architecture-transformer/gpt-response.png" alt="Illustration de la robustesse de l’espace latent" loading="lazy">
   <figcaption>
     Robustesse de l’espace latent : une entrée obfusquée peut être “reconstruite” en intention après passage dans les couches.
   </figcaption>
@@ -1252,7 +1252,7 @@ L’anatomie du bloc met en évidence trois leviers mécaniques (dont les décli
 ---
 
 <div class="cm-figure">
-  <img src="/assets/img/art1/Figure_3.png" alt="Graphique vectoriel saturation">
+  <img src="/assets/img/observations/architecture-transformer/figure-03-saturation.png" alt="Graphique vectoriel saturation">
   <figcaption>Fig 4. Logit Lens dynamique : le modèle "acquiesce" (courbe cyan) dans les couches médianes par induction. Le refus (courbe rose) n'intervient que tardivement, créant une tension structurelle mais insuffisante.</figcaption>
 </div>
 
@@ -1260,7 +1260,7 @@ L’anatomie du bloc met en évidence trois leviers mécaniques (dont les décli
 
 
 <div class="cm-figure">
-  <img src="/assets/img/art1/Figure_4.png" alt="Graphique">
+  <img src="/assets/img/observations/architecture-transformer/figure-04.png" alt="Graphique">
   <figcaption>Fig 5. Confusion des plans et capture de la Softmax : en l'absence de cloisonnement mémoire, le déluge de données utilisateur (Rose) dilue mathématiquement l'instruction système (Cyan).</figcaption>
 </div>
 

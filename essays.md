@@ -5,7 +5,8 @@ permalink: /essais/
 intro: Textes prospectifs sur l’alignement, la cognition artificielle, les systèmes de signes et les trajectoires de l’intelligence non biologique.
 ---
 
-{% assign sorted_essays = site.essays | sort: 'date' | reverse %}
+{% assign all_essays = site.essays | concat: site.biosemiotique %}
+{% assign sorted_essays = all_essays | sort: 'date' | reverse %}
 {% if sorted_essays.size > 0 %}
 <ul class="archive-list">
 {% for essay in sorted_essays %}
@@ -16,6 +17,7 @@ intro: Textes prospectifs sur l’alignement, la cognition artificielle, les sys
       {% if essay.topics %}<span>{{ essay.topics | join: ' · ' }}</span>{% endif %}
     </div>
     <time datetime="{{ essay.date | date_to_xmlschema }}">{{ essay.date | date: '%d.%m.%Y' }}</time>
+    {% if essay.hero_image %}<a class="archive-thumb" href="{{ essay.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ essay.hero_image | relative_url }}" alt="" style="object-position: {{ essay.hero_position | default: 'center' }}"></a>{% endif %}
   </li>
 {% endfor %}
 </ul>

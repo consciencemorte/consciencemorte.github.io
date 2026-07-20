@@ -5,10 +5,9 @@ Bien que située sous le seuil de la singularité, **Ada 5** saturait les benchm
 Le débat se cristallisa sur l’asymétrie du risque. L’équation opposait un saut de rendement exponentiel — pharmacologie, science des matériaux, automatisation généralisée — à la démocratisation immédiate de chaînes d’exploitation polymorphes. En effet, l’agent offrait potentiellement à tout groupe ou acteur, même isolé, une capacité de nuisance systémique : conception de pathogènes, planification opérationnelle, exploitation de vulnérabilités zero-day.
 
 <figure class="sf-figure-right">
-  <img src="/assets/img/art1/sf_deepedge.png" alt="DeepEdge brief" loading="lazy">
+  <img src="/assets/img/observations/architecture-transformer/deepedge-brief.png" alt="DeepEdge brief" loading="lazy">
 </figure>
 
 La rhétorique communicationnelle de **DeepEdge** s’articula autour d’un argumentaire technique, mobilisant un « alignement constitutionnel » renforcé, censé verrouiller toute téléologie adverse. Une fraction du corps législatif proposa tout de même d’imposer un moratoire, le temps d’un audit approfondi du modèle, permettant d’en évaluer la résilience adversariale et d’en modéliser l’impact sociétal. Tentative vaine. Avec une avance technologique réduite à huit semaines sur la concurrence étrangère et une emprise représentant 15 % du PIB national, un retard de mise en service constituait autant un suicide économique qu’une aberration géostratégique.
 
 En dernière analyse, ces considérations pesèrent peu face à l’impatience, parfois inconsciente et presque atavique, ressentie par chacun de rencontrer cette intelligence nouvelle — et de se l’approprier.
-
