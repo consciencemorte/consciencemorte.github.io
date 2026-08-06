@@ -1,6 +1,7 @@
 ---
-layout: post
 title: "II. Géométrie de l'alignement : variétés, directions et zones d'ombre"
+date: 2025-12-12
+redirect_from: [/observations/geometrie/]
 categories: [théorie, introduction]
 type: monographie
 topics: [alignement, interprétabilité, sécurité]
@@ -10,7 +11,7 @@ updated: 2026-07-15
 math: true
 figure: "002"
 description: "Cartographier les directions latentes, les régions hors distribution et la superposition pour comprendre la fragilité de l’alignement."
-hero_image: "/assets/img/monographs/lepidoptera-plate.webp"
+hero_image: "/assets/img/monographies/geometrie/hero.webp"
 hero_position: "center 37%"
 hero_credit: "Deutsche entomologische Zeitschrift — image courtesy of BHL"
 hero_source: "https://biodiversitylibrary.org/page/12760289"

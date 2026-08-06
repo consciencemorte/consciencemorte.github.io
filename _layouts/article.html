@@ -2,26 +2,26 @@
 layout: default
 ---
 <div class="reading-progress" aria-hidden="true"><span></span></div>
-<article class="observation">
-  <header class="post-header{% if page.hero_image %} has-image{% endif %}">
+<article class="publication-detail">
+  <header class="article-header{% if page.hero_image %} has-image{% endif %}">
     {% if page.hero_image %}
-    <div class="post-hero-art" aria-hidden="true">
+    <div class="article-hero" aria-hidden="true">
       <img src="{{ page.hero_image | relative_url }}" alt="" style="object-position: {{ page.hero_position | default: 'center' }}">
     </div>
     {% endif %}
-    <div class="post-header-inner">
-      <div class="post-kicker">
+    <div class="article-header-inner">
+      <div class="article-kicker">
         <span>{{ page.type | default: 'monographie' | capitalize }} {% if page.figure %}{{ page.figure }}{% endif %}</span>
         <span>{% if page.topics %}{{ page.topics | join: ' · ' }}{% else %}{{ page.categories | join: ' · ' }}{% endif %}</span>
       </div>
       <h1>{{ page.title }}</h1>
-      {% if page.description %}<p class="post-deck">{{ page.description }}</p>{% endif %}
-      <div class="post-byline">
+      {% if page.description %}<p class="article-deck">{{ page.description }}</p>{% endif %}
+      <div class="article-byline">
         <span>Publié le {{ page.date | date: '%d.%m.%Y' }}</span>
         {% if page.updated %}<span>Révisé le {{ page.updated | date: '%d.%m.%Y' }}</span>{% endif %}
         <span>{% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }} minutes de lecture</span>
       </div>
-      {% if page.hero_credit %}<p class="post-image-credit">{% if page.hero_source %}<a href="{{ page.hero_source }}">{{ page.hero_credit }} ↗</a>{% else %}{{ page.hero_credit }}{% endif %}</p>{% endif %}
+      {% if page.hero_credit %}<p class="article-image-credit">{% if page.hero_source %}<a href="{{ page.hero_source }}">{{ page.hero_credit }} ↗</a>{% else %}{{ page.hero_credit }}{% endif %}</p>{% endif %}
     </div>
   </header>
 
@@ -40,7 +40,7 @@ layout: default
       <p>Dans ce texte</p>
       <nav id="toc"><span>Aucune section détectée.</span></nav>
     </aside>
-    <div class="prose post-content" id="post-content">{{ content }}</div>
+    <div class="prose article-content" id="article-content">{{ content }}</div>
     <aside class="article-margin">
       <dl class="article-facts">
         <div><dt>Type</dt><dd>{{ page.type | default: 'monographie' }}</dd></div>

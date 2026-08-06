@@ -4,23 +4,24 @@ lang: fr
 
 url: "https://consciencemorte.github.io"
 baseurl: ""
-permalink: /observations/:title/
-
 markdown: kramdown
 kramdown:
   math_engine: mathjax
   syntax_highlighter: rouge
 
+plugins:
+  - jekyll-redirect-from
+
 collections:
+  monographies:
+    output: true
+    permalink: /monographies/:name/
   biosemiotique:
     output: true
-    permalink: /essais/:name/
-  essays:
+    permalink: /biosemiotique/:name/
+  terrain:
     output: true
-    permalink: /essais/:name/
-  projects:
-    output: true
-    permalink: /projets/:name/
+    permalink: /terrain/:name/
   notes:
     output: true
     permalink: /notes/:name/
@@ -28,15 +29,15 @@ collections:
 defaults:
   - scope:
       path: ""
-      type: posts
+      type: monographies
     values:
-      layout: post
+      layout: article
       type: monographie
   - scope:
       path: ""
       type: biosemiotique
     values:
-      layout: post
+      layout: article
       type: prospective
   - scope:
       path: ""
@@ -46,15 +47,9 @@ defaults:
       type: note
   - scope:
       path: ""
-      type: essays
+      type: terrain
     values:
-      layout: post
-      type: biosémiotique
-  - scope:
-      path: ""
-      type: projects
-    values:
-      layout: project
+      layout: terrain
       type: terrain
 
 sass:
@@ -68,4 +63,5 @@ exclude:
   - old_archive
   - resources
   - _templates
+  - _tmp
   - vendor

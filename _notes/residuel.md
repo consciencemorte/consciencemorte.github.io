@@ -1,6 +1,7 @@
 ---
 title: "Le résiduel comme mémoire de travail"
 date: 2026-06-28
+redirect_from: [/notes/2026-06-28-residuel/]
 topics: [mécanismes, représentations]
 status: note
 ---

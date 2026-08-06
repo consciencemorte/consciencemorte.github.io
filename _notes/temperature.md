@@ -1,6 +1,7 @@
 ---
 title: "Ce que la température ne change pas"
 date: 2026-07-09
+redirect_from: [/notes/2026-07-09-temperature/]
 topics: [inférence, échantillonnage]
 status: note
 ---

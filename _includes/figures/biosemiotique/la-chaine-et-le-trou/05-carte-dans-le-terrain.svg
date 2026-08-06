@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-05" viewBox="0 0 1000 640" role="img" aria-labelledby="cm-05-t cm-05-d">
+<title id="cm-05-t">Quand la carte passe dans le terrain</title>
+<desc id="cm-05-d">Triptyque inspiré des forêts administratives décrites par James Scott. Une forêt hétérogène est réduite à un tableau de volume, d’âge et de rendement ; cette représentation devient ensuite le plan d’une forêt homogène plantée en rangées.</desc>
+<defs>
+<marker id="cm-05-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="var(--ink,#1c1c18)" stroke-width="1.3"></path></marker>
+<marker id="cm-05-arox" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="var(--oxide,#a84e2f)" stroke-width="1.3"></path></marker>
+<pattern id="cm-05-stip" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r=".65" fill="var(--graphite,#57564f)" opacity=".35"></circle><circle cx="0" cy="0" r=".65" fill="var(--graphite,#57564f)" opacity=".35"></circle></pattern>
+<pattern id="cm-05-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="var(--oxide,#a84e2f)" stroke-width=".6" opacity=".35"></line></pattern>
+<g id="cm-05-tree-wild"><path d="M0 30V58" class="r" style="fill:none;stroke:var(--ink,#1c1c18);stroke-width:1;vector-effect:non-scaling-stroke"></path><path d="M0 35C-18 34-25 22-18 12C-12 3 0 5 4 15C8 2 22 2 27 12C33 24 18 34 0 35Z" fill="none" stroke="var(--ink,#1c1c18)" stroke-width="1" vector-effect="non-scaling-stroke"></path></g>
+<g id="cm-05-tree-row"><path d="M0 22V52" class="r" style="fill:none;stroke:var(--ink,#1c1c18);stroke-width:1;vector-effect:non-scaling-stroke"></path><path d="M0 0L-15 28H15Z" fill="none" stroke="var(--ink,#1c1c18)" stroke-width="1" vector-effect="non-scaling-stroke"></path></g>
+</defs>
+
+
+<text x="60" y="28" class="l ox h" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:11.5px;font-weight:500;letter-spacing:.05em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">PL. 05 / RÉACTIVITÉ INSTITUTIONNELLE</text>
+<text x="940" y="28" text-anchor="end" class="ll h" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">TERRITOIRE · TABLEAU · TERRITOIRE</text>
+<path d="M52 52H948" class="r" style="fill:none;stroke:var(--ink,#1c1c18);stroke-width:1;vector-effect:non-scaling-stroke"></path>
+<text x="60" y="96" class="ts" style="fill:var(--ink,#1c1c18);font-family:var(--font-editorial,&#34;Newsreader&#34;,Georgia,serif);font-size:25px;font-weight:500;letter-spacing:-.015em">Quand la carte passe dans le terrain</text>
+<text x="60" y="119" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">LA SIMPLIFICATION DÉCRIT, COMMANDE, PUIS RECONSTRUIT SON OBJET</text>
+
+
+<text x="190" y="156" text-anchor="middle" class="l" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:11.5px;font-weight:500;letter-spacing:.05em">01 / FORÊT VÉCUE</text>
+<text x="500" y="156" text-anchor="middle" class="l ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:11.5px;font-weight:500;letter-spacing:.05em">02 / FORÊT ADMINISTRATIVE</text>
+<text x="810" y="156" text-anchor="middle" class="l" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:11.5px;font-weight:500;letter-spacing:.05em">03 / FORÊT RECONSTRUITE</text>
+
+
+<rect x="60" y="176" width="260" height="326" class="cardl" style="fill:var(--paper,#f3efe6);stroke:var(--line,#c9c1b3);stroke-width:.8;vector-effect:non-scaling-stroke"></rect>
+<path d="M76 446C115 426 145 438 180 420C218 400 253 414 304 390V486H76Z" fill="url(#cm-05-stip)" stroke="none"></path>
+<use href="#cm-05-tree-wild" transform="translate(105 244) scale(.9)"></use>
+<use href="#cm-05-tree-wild" transform="translate(168 258) scale(1.1)"></use>
+<use href="#cm-05-tree-wild" transform="translate(225 260) scale(.75)"></use>
+<use href="#cm-05-tree-wild" transform="translate(278 250) scale(1)"></use>
+<use href="#cm-05-tree-wild" transform="translate(130 340) scale(.7)"></use>
+<use href="#cm-05-tree-wild" transform="translate(196 318) scale(1.25)"></use>
+<use href="#cm-05-tree-wild" transform="translate(265 360) scale(.8)"></use>
+<path d="M90 420c24-18 42-9 61 2m-55 18c16-11 29-8 43 1m82-28c22-18 43-13 62 0" class="rms" style="fill:none;stroke:var(--moss,#52634e);stroke-width:1.4;vector-effect:non-scaling-stroke"></path>
+<circle cx="101" cy="407" r="5" fill="none" stroke="var(--moss,#52634e)" stroke-width="1"></circle>
+<circle cx="114" cy="397" r="4" fill="none" stroke="var(--moss,#52634e)" stroke-width="1"></circle>
+<text x="80" y="194" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">ESSENCES MULTIPLES</text>
+<text x="80" y="211" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">SOUS-BOIS · PÂTURAGE</text>
+<text x="80" y="228" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">USAGES LOCAUX · BOIS</text>
+<text x="190" y="466" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">OBJET DENSE, HÉTÉROGÈNE</text>
+<text x="190" y="484" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">partiellement connu</text>
+
+
+<path d="M328 335H366" class="r" marker-end="url(#cm-05-ar)" style="fill:none;stroke:var(--ink,#1c1c18);stroke-width:1;vector-effect:non-scaling-stroke"></path>
+<text x="347" y="316" text-anchor="middle" class="ll h" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">LIRE</text>
+<text x="347" y="352" text-anchor="middle" class="ll h" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">À DISTANCE</text>
+
+
+<rect x="374" y="176" width="252" height="326" fill="url(#cm-05-hatch)" stroke="var(--oxide,#a84e2f)" stroke-width=".9"></rect>
+<rect x="398" y="208" width="204" height="188" class="card" style="fill:var(--paper,#f3efe6);stroke:var(--ink,#1c1c18);stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<path d="M398 244H602M398 282H602M398 320H602M398 358H602" class="rl" style="fill:none;stroke:var(--line,#c9c1b3);stroke-width:.8;vector-effect:non-scaling-stroke"></path>
+<path d="M450 208V396M515 208V396M560 208V396" class="rl" style="fill:none;stroke:var(--line,#c9c1b3);stroke-width:.8;vector-effect:non-scaling-stroke"></path>
+<text x="424" y="230" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">PARCELLE</text>
+<text x="482" y="230" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">M³</text>
+<text x="537" y="230" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">ÂGE</text>
+<text x="581" y="230" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">RENDT.</text>
+<text x="424" y="268" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">A</text><text x="482" y="268" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">840</text><text x="537" y="268" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">32</text><text x="581" y="268" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">7,8</text>
+<text x="424" y="306" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">B</text><text x="482" y="306" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">910</text><text x="537" y="306" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">35</text><text x="581" y="306" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">8,1</text>
+<text x="424" y="344" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">C</text><text x="482" y="344" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">790</text><text x="537" y="344" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">30</text><text x="581" y="344" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">7,5</text>
+<text x="424" y="382" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">D</text><text x="482" y="382" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">930</text><text x="537" y="382" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">34</text><text x="581" y="382" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500">8,3</text>
+<text x="500" y="420" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">CE QUI ENTRE DANS LE TABLEAU</text>
+<text x="500" y="442" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">VOLUME EXPLOITABLE · ESSENCE</text>
+<text x="500" y="458" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">ÂGE · RENDEMENT</text>
+<path d="M410 470H590" class="rgd" style="fill:none;stroke:var(--oxide,#a84e2f);stroke-width:.9;stroke-dasharray:3 4;vector-effect:non-scaling-stroke"></path>
+<text x="500" y="488" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">LE RESTE DEVIENT MUET</text>
+
+
+<path d="M634 335H672" class="rox" marker-end="url(#cm-05-arox)" style="fill:none;stroke:var(--oxide,#a84e2f);stroke-width:1.6;vector-effect:non-scaling-stroke"></path>
+<text x="653" y="316" text-anchor="middle" class="ll ox h" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">RENDRE</text>
+<text x="653" y="352" text-anchor="middle" class="ll ox h" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">CONFORME</text>
+
+
+<rect x="680" y="176" width="260" height="326" class="cardl" style="fill:var(--paper,#f3efe6);stroke:var(--line,#c9c1b3);stroke-width:.8;vector-effect:non-scaling-stroke"></rect>
+<path d="M696 432H924M696 458H924M696 484H924" class="rg" style="fill:none;stroke:var(--line,#c9c1b3);stroke-width:.8;stroke-dasharray:2 6;vector-effect:non-scaling-stroke"></path>
+<path d="M720 210V486M760 210V486M800 210V486M840 210V486M880 210V486M920 210V486" class="rg" style="fill:none;stroke:var(--line,#c9c1b3);stroke-width:.8;stroke-dasharray:2 6;vector-effect:non-scaling-stroke"></path>
+<use href="#cm-05-tree-row" transform="translate(720 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(760 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(800 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(840 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(880 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(920 224)"></use>
+<use href="#cm-05-tree-row" transform="translate(720 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(760 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(800 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(840 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(880 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(920 316)"></use>
+<use href="#cm-05-tree-row" transform="translate(720 408)"></use>
+<use href="#cm-05-tree-row" transform="translate(760 408)"></use>
+<use href="#cm-05-tree-row" transform="translate(800 408)"></use>
+<use href="#cm-05-tree-row" transform="translate(840 408)"></use>
+<use href="#cm-05-tree-row" transform="translate(880 408)"></use>
+<use href="#cm-05-tree-row" transform="translate(920 408)"></use>
+<text x="810" y="194" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">UNE ESSENCE · UN ÂGE · UN RENDEMENT</text>
+<text x="810" y="466" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">TERRITOIRE RENDU LISIBLE</text>
+<text x="810" y="484" text-anchor="middle" class="tt" style="fill:var(--ink,#1c1c18);font-family:var(--font-interface,&#34;Inter&#34;,Arial,sans-serif);font-size:12.5px;font-weight:500;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">il finit par ressembler au tableau</text>
+
+<path d="M60 548H940" class="rl" style="fill:none;stroke:var(--line,#c9c1b3);stroke-width:.8;vector-effect:non-scaling-stroke"></path>
+<text x="190" y="573" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">OBJET</text>
+<text x="500" y="573" text-anchor="middle" class="ll ox" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">MESURE → COMMANDE</text>
+<text x="810" y="573" text-anchor="middle" class="ll" style="fill:var(--graphite,#57564f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em">OBJET RECONSTRUIT</text>
+<text x="500" y="620" text-anchor="middle" class="ll ox h" style="fill:var(--oxide,#a84e2f);font-family:var(--font-code,&#34;IBM Plex Mono&#34;,ui-monospace,monospace);font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:var(--paper,#f3efe6);stroke-width:3px;stroke-linejoin:round">LA MESURE N’A PAS SEULEMENT DÉCRIT SON OBJET : ELLE A FOURNI LE PLAN DE SA RECONSTRUCTION</text>
+
+</svg>

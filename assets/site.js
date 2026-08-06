@@ -21,7 +21,7 @@
     updateProgress();
   }
 
-  const content = document.getElementById('post-content');
+  const content = document.getElementById('article-content');
   const toc = document.getElementById('toc');
   if (content && toc) {
     const headings = Array.from(content.querySelectorAll('h2, h3'));

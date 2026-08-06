@@ -1,6 +1,7 @@
 ---
 title: "La superposition n’est pas une métaphore"
 date: 2026-07-14
+redirect_from: [/notes/2026-07-14-superposition/]
 topics: [interprétabilité, superposition]
 status: hypothèse
 ---

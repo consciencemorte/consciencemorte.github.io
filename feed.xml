@@ -8,31 +8,16 @@ layout: null
   <link href="{{ site.url }}{{ site.baseurl }}/"/>
   <updated>{{ site.time | date_to_xmlschema }}</updated>
   <id>{{ site.url }}{{ site.baseurl }}/</id>
-  {% for post in site.posts limit: 20 %}
+  {% assign all_content = site.monographies | concat: site.biosemiotique %}
+  {% assign all_content = all_content | concat: site.terrain %}
+  {% assign all_content = all_content | concat: site.notes | sort: 'date' | reverse %}
+  {% for item in all_content limit: 30 %}
   <entry>
-    <title>{{ post.title | xml_escape }}</title>
-    <link href="{{ post.url | absolute_url }}"/>
-    <updated>{{ post.date | date_to_xmlschema }}</updated>
-    <id>{{ post.url | absolute_url }}</id>
-    <summary>{{ post.excerpt | strip_html | xml_escape }}</summary>
-  </entry>
-  {% endfor %}
-  {% for essay in site.essays limit: 10 %}
-  <entry>
-    <title>{{ essay.title | xml_escape }}</title>
-    <link href="{{ essay.url | absolute_url }}"/>
-    <updated>{{ essay.date | date_to_xmlschema }}</updated>
-    <id>{{ essay.url | absolute_url }}</id>
-    <summary>{{ essay.excerpt | strip_html | xml_escape }}</summary>
-  </entry>
-  {% endfor %}
-  {% for project in site.projects limit: 10 %}
-  <entry>
-    <title>{{ project.title | xml_escape }}</title>
-    <link href="{{ project.url | absolute_url }}"/>
-    <updated>{{ project.date | date_to_xmlschema }}</updated>
-    <id>{{ project.url | absolute_url }}</id>
-    <summary>{{ project.description | default: project.excerpt | strip_html | xml_escape }}</summary>
+    <title>{{ item.title | xml_escape }}</title>
+    <link href="{{ item.url | absolute_url }}"/>
+    <updated>{{ item.date | date_to_xmlschema }}</updated>
+    <id>{{ item.url | absolute_url }}</id>
+    <summary>{{ item.description | default: item.excerpt | strip_html | xml_escape }}</summary>
   </entry>
   {% endfor %}
 </feed>

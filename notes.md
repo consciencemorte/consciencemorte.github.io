@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Notes — Revues de littérature
+title: Notes
 permalink: /notes/
 intro: Revues de littérature, lectures commentées et notes bibliographiques sur les travaux récents.
 ---

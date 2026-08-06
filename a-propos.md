@@ -1,7 +1,8 @@
 ---
 layout: page
 title: À propos
-permalink: /about/
+permalink: /a-propos/
+redirect_from: [/about/]
 intro: Conscience Morte est une publication indépendante de xénobiologie offensive consacrée aux machines cognitives.
 ---
 

@@ -1,11 +1,12 @@
 ---
 title: "Ce qui restera rare quand les modèles ne le seront plus"
 date: 2026-07-10
+redirect_from: [/essais/2026-07-10-ce-qui-restera-rare/]
 type: prospective
 topics: [assurance des modèles, interprétabilité, économie de l’IA]
 status: argument
 description: "À mesure que les modèles deviennent des composants substituables, adaptables et recombinables, la rareté se déplace vers leur qualification : comprendre ce qu’ils font, ce dont ils héritent, et quand s’y fier."
-hero_image: "/assets/img/essays/ce-qui-restera-rare/hero.jpg"
+hero_image: "/assets/img/biosemiotique/ce-qui-restera-rare/hero.jpg"
 hero_position: "center 44%"
 hero_credit: "The Avicultural Magazine — image courtesy of BHL"
 hero_source: "https://biodiversitylibrary.org/page/56188454"

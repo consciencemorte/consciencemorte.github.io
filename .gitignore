@@ -7,3 +7,4 @@ old_archive/
 vendor/
 .bundle/
 images_bank/
+_tmp/
