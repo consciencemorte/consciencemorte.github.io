@@ -1,11 +1,29 @@
 ---
 layout: default
 ---
-<article class="shell note-layout">
-  <header class="note-heading">
-    <a href="{{ '/notes/' | relative_url }}">← Revues de littérature</a>
-    <p class="eyebrow">Note / {{ page.date | date: '%d.%m.%Y' }}</p>
-    <h1>{{ page.title }}</h1>
+<article class="note-detail">
+  <header class="article-header note-header{% if page.hero_image %} has-image{% endif %}">
+    {% if page.hero_image %}
+    <div class="article-hero" aria-hidden="true">
+      <img src="{{ page.hero_image | relative_url }}" alt="" style="object-position: {{ page.hero_position | default: 'center' }}">
+    </div>
+    {% endif %}
+    <div class="article-header-inner">
+      <a class="note-back" href="{{ '/notes/' | relative_url }}">← Revues de littérature</a>
+      <div class="article-kicker">
+        <span>Note / {{ page.status | default: 'revue de littérature' }}</span>
+        {% if page.topics %}<span>{{ page.topics | join: ' · ' }}</span>{% endif %}
+      </div>
+      <h1>{{ page.title }}</h1>
+      {% if page.description %}<p class="article-deck">{{ page.description }}</p>{% endif %}
+      <div class="article-byline">
+        <span>Publié le {{ page.date | date: '%d.%m.%Y' }}</span>
+        <span>{% if page.reading_minutes %}{{ page.reading_minutes }}{% else %}{% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }}{% endif %} minutes de lecture</span>
+      </div>
+      {% if page.hero_credit %}<p class="article-image-credit">{% if page.hero_source %}<a href="{{ page.hero_source }}">{{ page.hero_credit }} ↗</a>{% else %}{{ page.hero_credit }}{% endif %}</p>{% endif %}
+    </div>
   </header>
+  <div class="shell note-layout">
   <div class="prose">{{ content }}</div>
+  </div>
 </article>

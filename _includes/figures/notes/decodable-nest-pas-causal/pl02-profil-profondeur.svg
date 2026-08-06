@@ -1,0 +1,88 @@
+<svg class="cm-diagram cm-note-pl02-profil-profondeur" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl02-profil-profondeur-title pl02-profil-profondeur-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl02-profil-profondeur-title">Décodabilité et influence causale</title>
+<desc id="pl02-profil-profondeur-desc">Profils schématiques de décodabilité et d’influence causale pour les tokens objets et le token CLS.</desc>
+
+<style>
+  .cm-note-pl02-profil-profondeur { color: var(--ink, #1c1c18); background: transparent; }
+  .cm-note-pl02-profil-profondeur text { fill: var(--ink, #1c1c18); }
+  .cm-note-pl02-profil-profondeur .ink { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1.35; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .ink-heavy { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .graphite { fill: none; stroke: var(--graphite, #57564f); stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .line { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .oxide { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 2.2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .oxide-thin { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .oxide-fill { fill: var(--oxide, #a84e2f); stroke: none; }
+  .cm-note-pl02-profil-profondeur .oxide-wash { fill: var(--oxide, #a84e2f); fill-opacity: .10; stroke: var(--oxide, #a84e2f); stroke-width: 1.1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .paper-deep { fill: var(--paper-deep, #e8e0d2); fill-opacity: .58; stroke: none; }
+  .cm-note-pl02-profil-profondeur .hatch-fill { fill: url(#pl02-profil-profondeur-hatch); stroke: var(--graphite, #57564f); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl02-profil-profondeur .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl02-profil-profondeur .subtitle { font: 500 25px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl02-profil-profondeur .section { font: 600 13px/1.2 "Inter", Arial, sans-serif; letter-spacing: .11em; }
+  .cm-note-pl02-profil-profondeur .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl02-profil-profondeur .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl02-profil-profondeur .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl02-profil-profondeur .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl02-profil-profondeur .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl02-profil-profondeur .muted { fill: var(--graphite, #57564f); }
+  .cm-note-pl02-profil-profondeur .accent-text { fill: var(--oxide, #a84e2f); }
+  .cm-note-pl02-profil-profondeur .center { text-anchor: middle; }
+  .cm-note-pl02-profil-profondeur .right { text-anchor: end; }
+  .cm-note-pl02-profil-profondeur .dashed { stroke-dasharray: 5 5; }
+</style>
+
+
+<defs>
+  <pattern id="pl02-profil-profondeur-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="var(--graphite, #57564f)" stroke-width="0.7" opacity="0.35"/>
+  </pattern>
+  <marker id="pl02-profil-profondeur-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink, #1c1c18)"/>
+  </marker>
+  <marker id="pl02-profil-profondeur-arrow-oxide" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--oxide, #a84e2f)"/>
+  </marker>
+  <marker id="pl02-profil-profondeur-arrow-graphite" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--graphite, #57564f)"/>
+  </marker>
+</defs>
+
+
+<text x="55" y="46" class="mono accent-text">PL. 02 / DEPTH PROFILE</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Décodabilité et influence causale</text>
+<text x="600" y="145" class="mono-small muted center">LECTURE QUALITATIVE DES RÉSULTATS DE HUANG ET CHANG</text>
+
+<text x="312.5" y="182" class="section center">TOKENS OBJETS</text>
+<line x1="70" y1="195" x2="555" y2="195" class="ink"/>
+<rect x="110" y="225" width="405" height="105" class="paper-deep"/>
+<rect x="110" y="415" width="405" height="105" class="paper-deep"/>
+<line x1="110" y1="330" x2="515" y2="330" class="ink"/>
+<line x1="110" y1="520" x2="515" y2="520" class="ink"/>
+<text x="110" y="214" class="mono-small muted">DÉCODABILITÉ · NORMALISÉE</text>
+<text x="110" y="404" class="mono-small muted">EFFET DU PATCHING SUR LA SORTIE</text>
+<path d="M 110.0 321.6 C 128.4 321.6, 128.4 319.5, 146.8 319.5 C 165.2 319.5, 165.2 314.2, 183.6 314.2 C 202.0 314.2, 202.0 306.9, 220.5 306.9 C 238.9 306.9, 238.9 294.3, 257.3 294.3 C 275.7 294.3, 275.7 277.5, 294.1 277.5 C 312.5 277.5, 312.5 257.6, 330.9 257.6 C 349.3 257.6, 349.3 241.8, 367.7 241.8 C 386.1 241.8, 386.1 231.3, 404.5 231.3 C 423.0 231.3, 423.0 228.2, 441.4 228.2 C 459.8 228.2, 459.8 227.1, 478.2 227.1 C 496.6 227.1, 496.6 227.1, 515.0 227.1" class="ink-heavy"/>
+<path d="M 110.0 514.8 C 128.4 514.8, 128.4 509.5, 146.8 509.5 C 165.2 509.5, 165.2 490.6, 183.6 490.6 C 202.0 490.6, 202.0 454.9, 220.5 454.9 C 238.9 454.9, 238.9 423.4, 257.3 423.4 C 275.7 423.4, 275.7 415.0, 294.1 415.0 C 312.5 415.0, 312.5 433.9, 330.9 433.9 C 349.3 433.9, 349.3 462.2, 367.7 462.2 C 386.1 462.2, 386.1 488.5, 404.5 488.5 C 423.0 488.5, 423.0 505.3, 441.4 505.3 C 459.8 505.3, 459.8 512.6, 478.2 512.6 C 496.6 512.6, 496.6 516.9, 515.0 516.9" class="oxide"/>
+<line x1="110.0" y1="520" x2="110.0" y2="527" class="ink"/><text x="110.0" y="545" class="mono-small center">L1</text><line x1="146.8" y1="520" x2="146.8" y2="527" class="ink"/><text x="146.8" y="545" class="mono-small center">L2</text><line x1="183.6" y1="520" x2="183.6" y2="527" class="ink"/><text x="183.6" y="545" class="mono-small center">L3</text><line x1="220.5" y1="520" x2="220.5" y2="527" class="ink"/><text x="220.5" y="545" class="mono-small center">L4</text><line x1="257.3" y1="520" x2="257.3" y2="527" class="ink"/><text x="257.3" y="545" class="mono-small center">L5</text><line x1="294.1" y1="520" x2="294.1" y2="527" class="ink"/><text x="294.1" y="545" class="mono-small center">L6</text><line x1="330.9" y1="520" x2="330.9" y2="527" class="ink"/><text x="330.9" y="545" class="mono-small center">L7</text><line x1="367.7" y1="520" x2="367.7" y2="527" class="ink"/><text x="367.7" y="545" class="mono-small center">L8</text><line x1="404.5" y1="520" x2="404.5" y2="527" class="ink"/><text x="404.5" y="545" class="mono-small center">L9</text><line x1="441.4" y1="520" x2="441.4" y2="527" class="ink"/><text x="441.4" y="545" class="mono-small center">L10</text><line x1="478.2" y1="520" x2="478.2" y2="527" class="ink"/><text x="478.2" y="545" class="mono-small center">L11</text><line x1="515.0" y1="520" x2="515.0" y2="527" class="ink"/><text x="515.0" y="545" class="mono-small center">L12</text>
+<text x="255" y="357" class="small accent-text center"><tspan x="255" dy="0">causal avant</tspan><tspan x="255" dy="18">d’être décodable</tspan></text><path d="M255 389 C255 420 250 445 260 470" class="oxide-thin" marker-end="url(#pl02-profil-profondeur-arrow-oxide)"/>
+
+
+<text x="887.5" y="182" class="section center">TOKEN CLS</text>
+<line x1="645" y1="195" x2="1130" y2="195" class="ink"/>
+<rect x="685" y="225" width="405" height="105" class="paper-deep"/>
+<rect x="685" y="415" width="405" height="105" class="paper-deep"/>
+<line x1="685" y1="330" x2="1090" y2="330" class="ink"/>
+<line x1="685" y1="520" x2="1090" y2="520" class="ink"/>
+<text x="685" y="214" class="mono-small muted">DÉCODABILITÉ · NORMALISÉE</text>
+<text x="685" y="404" class="mono-small muted">EFFET DU PATCHING SUR LA SORTIE</text>
+<path d="M 685.0 324.8 C 703.4 324.8, 703.4 321.6, 721.8 321.6 C 740.2 321.6, 740.2 311.1, 758.6 311.1 C 777.0 311.1, 777.0 290.1, 795.5 290.1 C 813.9 290.1, 813.9 264.9, 832.3 264.9 C 850.7 264.9, 850.7 248.1, 869.1 248.1 C 887.5 248.1, 887.5 239.7, 905.9 239.7 C 924.3 239.7, 924.3 235.5, 942.7 235.5 C 961.1 235.5, 961.1 234.4, 979.5 234.4 C 998.0 234.4, 998.0 233.4, 1016.4 233.4 C 1034.8 233.4, 1034.8 232.3, 1053.2 232.3 C 1071.6 232.3, 1071.6 232.3, 1090.0 232.3" class="ink-heavy"/>
+<path d="M 685.0 517.9 C 703.4 517.9, 703.4 517.9, 721.8 517.9 C 740.2 517.9, 740.2 516.9, 758.6 516.9 C 777.0 516.9, 777.0 514.8, 795.5 514.8 C 813.9 514.8, 813.9 509.5, 832.3 509.5 C 850.7 509.5, 850.7 501.1, 869.1 501.1 C 887.5 501.1, 887.5 483.2, 905.9 483.2 C 924.3 483.2, 924.3 459.1, 942.7 459.1 C 961.1 459.1, 961.1 438.1, 979.5 438.1 C 998.0 438.1, 998.0 423.4, 1016.4 423.4 C 1034.8 423.4, 1034.8 415.0, 1053.2 415.0 C 1071.6 415.0, 1071.6 419.2, 1090.0 419.2" class="oxide"/>
+<line x1="685.0" y1="520" x2="685.0" y2="527" class="ink"/><text x="685.0" y="545" class="mono-small center">L1</text><line x1="721.8" y1="520" x2="721.8" y2="527" class="ink"/><text x="721.8" y="545" class="mono-small center">L2</text><line x1="758.6" y1="520" x2="758.6" y2="527" class="ink"/><text x="758.6" y="545" class="mono-small center">L3</text><line x1="795.5" y1="520" x2="795.5" y2="527" class="ink"/><text x="795.5" y="545" class="mono-small center">L4</text><line x1="832.3" y1="520" x2="832.3" y2="527" class="ink"/><text x="832.3" y="545" class="mono-small center">L5</text><line x1="869.1" y1="520" x2="869.1" y2="527" class="ink"/><text x="869.1" y="545" class="mono-small center">L6</text><line x1="905.9" y1="520" x2="905.9" y2="527" class="ink"/><text x="905.9" y="545" class="mono-small center">L7</text><line x1="942.7" y1="520" x2="942.7" y2="527" class="ink"/><text x="942.7" y="545" class="mono-small center">L8</text><line x1="979.5" y1="520" x2="979.5" y2="527" class="ink"/><text x="979.5" y="545" class="mono-small center">L9</text><line x1="1016.4" y1="520" x2="1016.4" y2="527" class="ink"/><text x="1016.4" y="545" class="mono-small center">L10</text><line x1="1053.2" y1="520" x2="1053.2" y2="527" class="ink"/><text x="1053.2" y="545" class="mono-small center">L11</text><line x1="1090.0" y1="520" x2="1090.0" y2="527" class="ink"/><text x="1090.0" y="545" class="mono-small center">L12</text>
+<text x="955" y="357" class="small accent-text center"><tspan x="955" dy="0">décodable avant</tspan><tspan x="955" dy="18">d’acquérir un effet</tspan></text><path d="M955 389 C985 420 1015 460 1035 495" class="oxide-thin" marker-end="url(#pl02-profil-profondeur-arrow-oxide)"/>
+
+<text x="600" y="592" class="mono center muted">PROFONDEUR / COUCHES</text>
+<line x1="55" y1="645" x2="1145" y2="645" class="line"/>
+<text x="600" y="684" class="caption center">La profondeur du réseau peut dissocier la présence géométrique d’une variable</text>
+<text x="600" y="710" class="caption center">et son rôle effectif dans le calcul.</text>
+<text x="55" y="754" class="mono-small muted">COURBES INDICATIVES · ELLES REPRÉSENTENT UNE SÉQUENCE, PAS LES VALEURS DE L’ARTICLE</text>
+
+</svg>

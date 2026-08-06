@@ -311,10 +311,8 @@ button { font: inherit; }
 .MathJax { font-size: .9em !important; }
 
 .note-layout { max-width: 950px; min-height: 65vh; padding-block: 80px 120px; }
-.note-heading { margin-bottom: 55px; padding-bottom: 35px; border-bottom: 1px solid var(--ink); }
-.note-heading > a { font: 600 10px var(--font-interface); letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
-.note-heading .eyebrow { margin: 55px 0 20px; }
-.note-heading h1 { max-width: 800px; margin: 0; font-size: clamp(45px, 6vw, 70px); font-weight: 500; line-height: 1; }
+.note-back { position: absolute; top: 32px; left: 0; z-index: 3; font: 600 9px var(--font-interface); letter-spacing: .09em; text-decoration: none; text-transform: uppercase; }
+.note-header .article-kicker { margin-top: 26px; }
 
 /* Terrain documents */
 .terrain-header { padding-block: 72px 62px; border-bottom: 1px solid var(--ink); }
@@ -405,6 +403,9 @@ button { font: inherit; }
   .prose { font-size: 17px; line-height: 1.65; }
   .prose h2 { font-size: 31px; }
   .prose h3 { font-size: 23px; }
+  .note-layout { padding-block: 60px 85px; }
+  .note-back { top: 24px; }
+  .note-header .article-kicker { margin-top: 34px; }
   .cm-plate-scroll {
     overflow-x: auto;
     overscroll-behavior-inline: contain;

@@ -1,0 +1,78 @@
+<svg class="cm-diagram cm-note-pl03-sae-geometrie-causalite" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl03-sae-geometrie-causalite-title pl03-sae-geometrie-causalite-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl03-sae-geometrie-causalite-title">Un atome bien orienté peut rester éteint</title>
+<desc id="pl03-sae-geometrie-causalite-desc">À gauche, une direction cible et un atome du décodeur SAE sont presque parallèles. À droite, lorsque la cible est présente dans l’entrée, l’encodeur puis la compétition TopK peuvent néanmoins laisser l’activation de cet atome à zéro. L’atome est alors absent de la reconstruction et son ablation n’a aucun effet.</desc>
+<style>
+  .cm-note-pl03-sae-geometrie-causalite { color: var(--ink, #1c1c18); background: transparent; }
+  .cm-note-pl03-sae-geometrie-causalite text { fill: var(--ink, #1c1c18); }
+  .cm-note-pl03-sae-geometrie-causalite .ink { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1.35; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .ink-heavy { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .line { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .oxide { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .oxide-fill { fill: var(--oxide, #a84e2f); stroke: none; }
+  .cm-note-pl03-sae-geometrie-causalite .wash { fill: var(--paper-deep, #e8e0d2); fill-opacity: .62; stroke: none; }
+  .cm-note-pl03-sae-geometrie-causalite .card { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .accent-card { fill: var(--oxide, #a84e2f); fill-opacity: .09; stroke: var(--oxide, #a84e2f); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl03-sae-geometrie-causalite .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl03-sae-geometrie-causalite .subtitle { font: 500 25px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl03-sae-geometrie-causalite .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl03-sae-geometrie-causalite .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl03-sae-geometrie-causalite .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl03-sae-geometrie-causalite .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl03-sae-geometrie-causalite .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl03-sae-geometrie-causalite .muted { fill: var(--graphite, #57564f); }
+  .cm-note-pl03-sae-geometrie-causalite .accent { fill: var(--oxide, #a84e2f); }
+  .cm-note-pl03-sae-geometrie-causalite .center { text-anchor: middle; }
+</style>
+<defs>
+  <marker id="pl03-sae-geometrie-causalite-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1l8 4-8 4" class="ink"/></marker>
+  <marker id="pl03-sae-geometrie-causalite-arrow-oxide" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1l8 4-8 4" class="oxide"/></marker>
+</defs>
+
+<text x="55" y="46" class="mono accent">PL. 03 / SAE</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Un atome bien orienté peut rester éteint</text>
+<text x="600" y="145" class="mono-small muted center">GÉOMÉTRIE DU DÉCODEUR ≠ ACTIVATION DE L’ENCODEUR</text>
+
+<rect x="60" y="190" width="360" height="375" class="card"/>
+<text x="85" y="225" class="mono accent">01 · ACCORD GÉOMÉTRIQUE</text>
+<text x="240" y="268" class="subtitle center">deux directions proches</text>
+<line x1="115" y1="345" x2="350" y2="300" class="ink-heavy" marker-end="url(#pl03-sae-geometrie-causalite-arrow-ink)"/>
+<text x="120" y="326" class="label">direction cible d</text>
+<line x1="115" y1="420" x2="350" y2="373" class="oxide" marker-end="url(#pl03-sae-geometrie-causalite-arrow-oxide)"/>
+<text x="120" y="451" class="label accent">atome du décodeur a<tspan baseline-shift="sub" font-size="10">j</tspan></text>
+<rect x="115" y="485" width="250" height="48" class="wash"/>
+<text x="240" y="515" class="label center">cos(d, a<tspan baseline-shift="sub" font-size="10">j</tspan>) ≈ 1</text>
+
+<text x="470" y="378" class="title accent center">≠</text>
+<text x="470" y="410" class="mono-small muted center">N’IMPLIQUE PAS</text>
+
+<rect x="520" y="190" width="620" height="375" class="card"/>
+<text x="545" y="225" class="mono accent">02 · COMPORTEMENT DE L’ENCODEUR</text>
+<rect x="550" y="270" width="150" height="72" class="card"/>
+<text x="625" y="299" class="small center">entrée x</text>
+<text x="625" y="322" class="label center">cible présente</text>
+<line x1="700" y1="306" x2="742" y2="306" class="ink" marker-end="url(#pl03-sae-geometrie-causalite-arrow-ink)"/>
+<rect x="750" y="270" width="150" height="72" class="card"/>
+<text x="825" y="299" class="small center">scores encodeur</text>
+<text x="825" y="322" class="label center">W<tspan baseline-shift="sub" font-size="10">enc</tspan>x + b</text>
+<line x1="900" y1="306" x2="942" y2="306" class="ink" marker-end="url(#pl03-sae-geometrie-causalite-arrow-ink)"/>
+<rect x="950" y="270" width="160" height="72" class="accent-card"/>
+<text x="1030" y="299" class="small center accent">sélection parcimonieuse</text>
+<text x="1030" y="322" class="label center">TopK / seuil</text>
+<path d="M1030 342V382H920" class="oxide" marker-end="url(#pl03-sae-geometrie-causalite-arrow-oxide)"/>
+<rect x="780" y="382" width="280" height="65" class="accent-card"/>
+<text x="920" y="409" class="small center">activation de l’atome apparié</text>
+<text x="920" y="433" class="subtitle accent center">z<tspan baseline-shift="sub" font-size="15">j</tspan>(x) = 0</text>
+<path d="M780 414H725V486" class="ink" marker-end="url(#pl03-sae-geometrie-causalite-arrow-ink)"/>
+<rect x="560" y="486" width="330" height="48" class="wash"/>
+<text x="725" y="506" class="small center">atome absent de la reconstruction</text>
+<text x="725" y="525" class="label center">ablation sans effet</text>
+<text x="1100" y="480" class="mono-small muted" text-anchor="end">CAUSES POSSIBLES</text>
+<text x="1100" y="498" class="mono-small muted" text-anchor="end">ANTIPODALITÉ</text>
+<text x="1100" y="516" class="mono-small muted" text-anchor="end">COMPÉTITION TOPK</text>
+<text x="1100" y="534" class="mono-small muted" text-anchor="end">BIAIS D’ENCODEUR</text>
+
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="704" class="caption center">La similarité du décodeur établit une orientation ; seule l’activation de l’encodeur établit que l’atome est mobilisé.</text>
+<text x="55" y="758" class="mono-small muted">SCHÉMA CONCEPTUEL D’APRÈS LE MÉCANISME D’AUDIT DE BAL (2026)</text>
+</svg>
