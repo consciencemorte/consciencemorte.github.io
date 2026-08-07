@@ -65,7 +65,7 @@ La vulnérabilité ne tient pas seulement à l'imprécision de ces traces. Elle 
 
 Ce maillon est robuste. Passé une certaine échelle, une organisation ne peut plus gouverner directement ; elle gouverne par l'intermédiaire de la mesure, à travers ce qu'elle parvient à rendre visible.
 
-### 2 — La sélection ne retient que le mesurable
+### 2 — Le mesurable reçoit la boucle rapide
 **Christiano** emploie une définition volontairement large du _machine learning_ : essayer de nombreuses politiques, observer leurs résultats, puis reproduire celles qui fonctionnent. Une telle procédure suppose un signal de sélection. Ce qui ne produit aucun signal de ce type ne peut alimenter la boucle d’apprentissage.
 
 Une asymétrie se loge ici. Une stratégie peut être optimisée rapidement pour augmenter un score de satisfaction ou produire la réponse que préfère un évaluateur ; vérifier qu'elle améliore effectivement et durablement l'état que le score prétend représenter demande un jugement plus lent, moins reproductible, plus coûteux. Ce qui est mesurable reçoit une boucle rapide ; le réel attend.
@@ -85,7 +85,7 @@ Aucune tromperie n’est requise. Ni conscience de la situation, ni objectif cac
   <div class="cm-plate-scroll" tabindex="0" aria-label="Planche 01 — faire défiler horizontalement si nécessaire">
     {% include figures/biosemiotique/la-chaine-et-le-trou/01-proxy-endogene-artificiel.svg %}
   </div>
-  <figcaption>01 — Quand la hausse cesse d’être endogène : deux modes d’obtention du même score. Planche originale.</figcaption>
+  <figcaption>01 — Un même score final peut résulter d’une amélioration de la propriété visée ou d’une action sur sa mesure. Schéma causal, non série de données.</figcaption>
 </figure>
 
 ### 4 — La correction retombe sous la mesure
@@ -158,19 +158,19 @@ La formule aujourd’hui canonique — _une mesure qui devient une cible cesse d
 
 **David Manheim** et **Scott Garrabrant** ont depuis distingué quatre variantes de cette dégradation :
 
-- le _Goodhart régressionnel_ sélectionne le bruit de la mesure plutôt que la propriété recherchée ;
+- le _Goodhart régressionnel_ sélectionne, avec la propriété recherchée, l’erreur d’une mesure imparfaite ;
 - le _Goodhart extrémal_ pousse le système hors du domaine où leur corrélation avait été constatée ;
-- le _Goodhart causal_ agit sur le proxy sans agir sur ce qu’il représente ;
-- le _Goodhart adversarial_ suppose un acteur qui connaît l’écart et l’exploite à son profit.
+- le _Goodhart causal_ apparaît lorsqu’une intervention modifie le lien causal entre le proxy et ce qu’il représente ;
+- le _Goodhart adversarial_ ajoute un agent dont les objectifs diffèrent de ceux du régulateur et dont l’action dégrade la relation entre mesure et cible.
 
 <figure class="cm-figure cm-plate" id="figure-04">
   <div class="cm-plate-scroll" tabindex="0" aria-label="Planche 04 — faire défiler horizontalement si nécessaire">
     {% include figures/biosemiotique/la-chaine-et-le-trou/04-variantes-goodhart.svg %}
   </div>
-  <figcaption>04 — Les quatre variantes de Goodhart, d’après Manheim et Garrabrant, et la frontière entre les deux scénarios.</figcaption>
+  <figcaption>04 — Les quatre variantes de Goodhart, d’après Manheim et Garrabrant, et leur recoupement partiel — non leur équivalence — avec les deux scénarios.</figcaption>
 </figure>
 
-Cette partition recoupe la frontière tracée plus haut, sans se confondre avec elle. Les variantes extrémale et causale suffisent à porter la première partie de _What Failure Looks Like_ : aucune n’exige une conscience de la situation, un objectif dissimulé ou une volonté de tromper. Une procédure aveugle peut apprendre à modifier ce qui la mesure. La variante adversariale ajoute autre chose : un acteur dont les objectifs divergent et pour lequel la conformité devient un instrument.
+Cette partition recoupe la frontière tracée plus haut, sans se confondre avec elle. Les variantes extrémale et causale suffisent à porter la première partie de _What Failure Looks Like_ : aucune n’exige une conscience de la situation, un objectif dissimulé ou une volonté de tromper. Une procédure aveugle peut apprendre à modifier ce qui la mesure. La variante adversariale ajoute un agent aux objectifs différents ; elle n’établit pas, à elle seule, la conformité stratégique du second scénario. Celle-ci exige encore un objectif persistant, une représentation de l’évaluation et une capacité de planification instrumentale.
 
 Ce n’est donc pas l’action sur la mesure qui sépare le _gémissement_ du _fracas_. Une optimisation sans intention peut déjà produire cet effet. La différence réside dans la fonction qu’il remplit : conséquence de la sélection dans un cas, stratégie de conservation dans l’autre.
 
@@ -181,7 +181,8 @@ On suppose volontiers que la quantification s’impose parce qu’elle connaît 
 Le quatrième maillon comportait deux temps : les institutions formalisent leur jugement, puis délèguent cette formalisation. **Porter** établit le premier, sans l’IA : une institution peut transformer son jugement en procédure avant même que la complexité ne l’y contraigne. Il n’établit pas le second. Rien dans son travail ne montre que cette procédure doive être confiée à un dispositif que plus personne ne peut auditer. Il explique la pente, non son terme.
 
 <figure class="cm-side-figure cm-side-figure-right" id="figure-foret">
-  <img src="{{ '/assets/img/biosemiotique/la-chaine-et-le-trou/foret-administration-prussienne.jpeg' | relative_url }}" alt="Illustration historique d’une forêt réduite à des rangées d’arbres mesurables, sous le regard d’un arpenteur">
+  <img src="{{ '/assets/img/biosemiotique/la-chaine-et-le-trou/foret-administration-prussienne.jpeg' | relative_url }}" alt="Gravure de 1808 comparant une coupe de taillis sous futaie d’un an, à gauche, et une coupe de futaie de dix ans, à droite, sous le regard d’un forestier">
+  <figcaption>Frontispice de Friedrich Karl Hartig, <em>Die Hoch- und Niederwaldbehandlung</em>, partie I, 1808 — comparaison de deux régimes de coupe, et non représentation d’une forêt en rangées.</figcaption>
 </figure>
 
 Un dernier cas montre ce qui se produit lorsque la simplification atteint son objet. À la fin du XVIIIe siècle, les administrations forestières prussiennes et saxonnes cherchent à rendre la forêt gouvernable. **James Scott** décrit l’opération. Ce qui compte pour l’État est le volume de bois exploitable ; le sous-bois, les essences sans valeur marchande, le pâturage et les usages locaux disparaissent de la représentation administrative. Puis la simplification passe de la carte au terrain : on replante en rangées régulières, avec des essences sélectionnées et des classes d’âge homogènes, jusqu’à ce que la forêt ressemble au tableau qui sert à la gérer. La mesure n’a pas seulement décrit imparfaitement son objet. Elle a fourni le plan de sa reconstruction.
@@ -190,7 +191,7 @@ Un dernier cas montre ce qui se produit lorsque la simplification atteint son ob
   <div class="cm-plate-scroll" tabindex="0" aria-label="Planche 05 — faire défiler horizontalement si nécessaire">
     {% include figures/biosemiotique/la-chaine-et-le-trou/05-carte-dans-le-terrain.svg %}
   </div>
-  <figcaption>05 — Quand la carte passe dans le terrain, d’après James Scott.</figcaption>
+  <figcaption>05 — Quand la carte passe dans le terrain, d’après James Scott. Schéma conceptuel ; les valeurs du tableau sont illustratives.</figcaption>
 </figure>
 
 Un lecteur de 2019 avait déjà formulé l’objection qu’appelle cette généalogie. **Tobias Baumann** la pose dans le fil de discussion : les humains et les organisations optimisent depuis longtemps ce qui se mesure ; ils cherchent depuis longtemps à accroître leur influence ; les institutions parviennent jusqu’à un certain point à contenir ces comportements. Il s’agit de problèmes pérennes, susceptibles de s’aggraver comme de s’atténuer.

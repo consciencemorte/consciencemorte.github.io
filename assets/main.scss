@@ -308,6 +308,7 @@ button { font: inherit; }
 .cm-plate { min-width: 0; }
 .cm-plate svg { display: block; width: 100%; height: auto; overflow: visible; }
 .cm-plate-scroll { width: 100%; min-width: 0; max-width: 100%; background: var(--paper); }
+.cm-plate-scroll:focus-visible { outline: 2px solid var(--oxide); outline-offset: 4px; }
 .MathJax { font-size: .9em !important; }
 
 .note-layout { max-width: 950px; min-height: 65vh; padding-block: 80px 120px; }
@@ -413,7 +414,7 @@ button { font: inherit; }
     scrollbar-width: thin;
     scrollbar-color: var(--line) transparent;
   }
-  .cm-plate-scroll svg { min-width: 720px; }
+  .cm-plate-scroll svg { min-width: 900px; }
   .cm-plate figcaption::after { content: " — faire glisser pour lire la planche entière"; color: var(--oxide); }
   .page-layout { padding-block: 65px 90px; }
   .page-heading h1 { font-size: 54px; }
