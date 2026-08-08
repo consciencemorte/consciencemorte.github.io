@@ -1,0 +1,105 @@
+<svg class="cm-diagram cm-note-pl05-trois-proprietes" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl05tp-title pl05tp-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl05tp-title">Trois propriétés, trois modes d’échec</title>
+<desc id="pl05tp-desc">Un état ou une direction candidate est soumis à trois familles de tests portant sur la lecture, l’influence et le contrôle. Pour chacune, la planche indique le protocole, la conclusion que le résultat autorise, puis ce qu’un résultat positif et un résultat nul ne permettent pas de conclure.</desc>
+
+<style>
+  .cm-note-pl05-trois-proprietes { color: var(--ink, #1c1c18); background: transparent; }
+  .cm-note-pl05-trois-proprietes text { fill: var(--ink, #1c1c18); }
+  .cm-note-pl05-trois-proprietes .ink { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1.3; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .line { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .oxide { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 1.8; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .wash { fill: var(--paper-deep, #e8e0d2); fill-opacity: .62; stroke: none; }
+  .cm-note-pl05-trois-proprietes .card { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .accent-card { fill: var(--oxide, #a84e2f); fill-opacity: .09; stroke: var(--oxide, #a84e2f); stroke-width: 1.1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .fail-card { fill: none; stroke: var(--graphite, #57564f); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-trois-proprietes .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl05-trois-proprietes .subtitle { font: 500 22px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl05-trois-proprietes .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl05-trois-proprietes .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl05-trois-proprietes .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl05-trois-proprietes .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl05-trois-proprietes .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl05-trois-proprietes .muted { fill: var(--graphite, #57564f); }
+  .cm-note-pl05-trois-proprietes .accent { fill: var(--oxide, #a84e2f); }
+  .cm-note-pl05-trois-proprietes .center { text-anchor: middle; }
+</style>
+
+<defs>
+  <marker id="pl05tp-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M1 1l8 4-8 4" class="ink"/>
+  </marker>
+</defs>
+
+<text x="55" y="46" class="mono accent">PL. 05 / MÉTHODES</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Trois propriétés, trois modes d’échec</text>
+<text x="600" y="145" class="mono-small muted center">LECTURE · INFLUENCE · CONTRÔLE — AUCUNE N’IMPLIQUE LES DEUX AUTRES</text>
+
+<rect x="450" y="168" width="300" height="52" class="accent-card"/>
+<text x="600" y="200" class="subtitle center">état ou direction candidate</text>
+<path d="M510 220V238H225V250" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+<path d="M600 220V250" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+<path d="M690 220V238H975V250" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+
+<!-- ============ COLUMN 01 · LECTURE ============ -->
+<rect x="55" y="250" width="340" height="388" class="card"/>
+<text x="225" y="286" class="mono accent center">01 · LECTURE</text>
+<text x="225" y="322" class="subtitle center">est-elle extractible ?</text>
+<rect x="90" y="342" width="270" height="50" class="wash"/>
+<text x="225" y="363" class="small center muted">probe entraîné ou logit lens,</text>
+<text x="225" y="381" class="label center">évalué hors échantillon</text>
+<line x1="225" y1="392" x2="225" y2="416" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+<rect x="90" y="424" width="270" height="56" class="accent-card"/>
+<text x="225" y="446" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="225" y="467" class="label center accent">accessible à ce lecteur</text>
+<rect x="90" y="502" width="270" height="86" class="fail-card"/>
+<text x="225" y="524" class="mono-small center muted">CE QUE LE RÉSULTAT NE DIT PAS</text>
+<text x="106" y="548" class="mono accent">+</text>
+<text x="126" y="548" class="small">un positif n’établit pas l’usage</text>
+<text x="106" y="572" class="mono muted">0</text>
+<text x="126" y="572" class="small">un nul dépend du lecteur choisi</text>
+
+<!-- ============ COLUMN 02 · INFLUENCE ============ -->
+<rect x="430" y="250" width="340" height="388" class="card"/>
+<text x="600" y="286" class="mono accent center">02 · INFLUENCE</text>
+<text x="600" y="322" class="subtitle center">la sortie change-t-elle ?</text>
+<rect x="465" y="342" width="270" height="50" class="wash"/>
+<text x="600" y="363" class="small center muted">patching ou ablation,</text>
+<text x="600" y="381" class="label center">dans un contraste défini</text>
+<line x1="600" y1="392" x2="600" y2="416" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+<rect x="465" y="424" width="270" height="56" class="accent-card"/>
+<text x="600" y="446" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="600" y="467" class="label center accent">influence sous cette intervention</text>
+<rect x="465" y="502" width="270" height="86" class="fail-card"/>
+<text x="600" y="524" class="mono-small center muted">CE QUE LE RÉSULTAT NE DIT PAS</text>
+<text x="481" y="548" class="mono accent">+</text>
+<text x="501" y="548" class="small">un positif porte sur l’état remplacé</text>
+<text x="481" y="572" class="mono muted">0</text>
+<text x="501" y="572" class="small">un nul peut masquer une compensation</text>
+
+<!-- ============ COLUMN 03 · CONTRÔLE ============ -->
+<rect x="805" y="250" width="340" height="388" class="card"/>
+<text x="975" y="286" class="mono accent center">03 · CONTRÔLE</text>
+<text x="975" y="322" class="subtitle center">peut-on la piloter ?</text>
+<rect x="840" y="342" width="270" height="50" class="wash"/>
+<text x="975" y="363" class="small center muted">direction injectée à un site</text>
+<text x="975" y="381" class="label center">et une amplitude choisis</text>
+<line x1="975" y1="392" x2="975" y2="416" class="ink" marker-end="url(#pl05tp-arrow-ink)"/>
+<rect x="840" y="424" width="270" height="56" class="accent-card"/>
+<text x="975" y="446" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="975" y="467" class="label center accent">contrôle dans ce régime d’injection</text>
+<rect x="840" y="502" width="270" height="86" class="fail-card"/>
+<text x="975" y="524" class="mono-small center muted">CE QUE LE RÉSULTAT NE DIT PAS</text>
+<text x="856" y="548" class="mono accent">+</text>
+<text x="876" y="548" class="small">un succès n’établit pas l’usage spontané</text>
+<text x="856" y="572" class="mono muted">0</text>
+<text x="876" y="572" class="small">un nul peut venir de la non-spécificité</text>
+
+<text x="600" y="618" class="mono-small muted center">LIU — RECOUVREMENT 85–88 % AVEC LE CALCUL DE LA TÂCHE · RATIO DE SPÉCIFICITÉ ≤ 0,152</text>
+
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="703" class="caption center">Chaque instrument a son propre problème d’identification.</text>
+<text x="600" y="729" class="caption center">Trianguler consiste à croiser des tests dont les modes d’échec diffèrent, non à les empiler.</text>
+<text x="55" y="758" class="mono-small muted">CHAQUE CONCLUSION DÉPEND DU SITE, DU CONTRASTE, DE LA BASELINE ET DE LA MÉTRIQUE</text>
+
+</svg>

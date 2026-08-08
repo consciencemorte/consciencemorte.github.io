@@ -1,0 +1,127 @@
+<svg class="cm-diagram cm-note-pl01-quatre-dissociations" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl01qd-title pl01qd-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl01qd-title">Quatre raisons pour qu’une direction décodable reste sans effet</title>
+<desc id="pl01qd-desc">Un flux résiduel lu par un probe externe, puis quatre mécanismes distincts par lesquels une direction présente dans les activations peut ne pas influencer la sortie : elle n’appartient pas au sous-espace lu en aval, elle est redondante, elle apparaît après l’étape qui fixe la sortie, ou sa contribution est annulée par une écriture ultérieure.</desc>
+
+<style>
+  .cm-note-pl01-quatre-dissociations { color: var(--ink, #1c1c18); background: transparent; }
+  .cm-note-pl01-quatre-dissociations text { fill: var(--ink, #1c1c18); }
+  .cm-note-pl01-quatre-dissociations .ink { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1.35; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .ink-heavy { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .graphite { fill: none; stroke: var(--graphite, #57564f); stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .line { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .oxide { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 2.2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .oxide-thin { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .oxide-fill { fill: var(--oxide, #a84e2f); stroke: none; }
+  .cm-note-pl01-quatre-dissociations .paper-deep { fill: var(--paper-deep, #e8e0d2); fill-opacity: .58; stroke: none; }
+  .cm-note-pl01-quatre-dissociations .card { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .hatch-fill { fill: url(#pl01qd-hatch); stroke: var(--graphite, #57564f); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-quatre-dissociations .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl01-quatre-dissociations .subtitle { font: 500 22px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl01-quatre-dissociations .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl01-quatre-dissociations .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl01-quatre-dissociations .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl01-quatre-dissociations .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl01-quatre-dissociations .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl01-quatre-dissociations .muted { fill: var(--graphite, #57564f); }
+  .cm-note-pl01-quatre-dissociations .accent-text { fill: var(--oxide, #a84e2f); }
+  .cm-note-pl01-quatre-dissociations .center { text-anchor: middle; }
+  .cm-note-pl01-quatre-dissociations .dashed { stroke-dasharray: 5 5; }
+</style>
+
+<defs>
+  <pattern id="pl01qd-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="var(--graphite, #57564f)" stroke-width="0.7" opacity="0.35"/>
+  </pattern>
+  <marker id="pl01qd-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink, #1c1c18)"/>
+  </marker>
+  <marker id="pl01qd-arrow-oxide" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--oxide, #a84e2f)"/>
+  </marker>
+  <marker id="pl01qd-arrow-graphite" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--graphite, #57564f)"/>
+  </marker>
+</defs>
+
+<text x="55" y="46" class="mono accent-text">PL. 01 / DISSOCIATIONS</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Décodable n’est pas causal</text>
+<text x="600" y="145" class="mono-small muted center">UNE DIRECTION PRÉSENTE DANS LES ACTIVATIONS · QUATRE FAÇONS DE RESTER SANS EFFET</text>
+
+<!-- probe -->
+<text x="674" y="192" class="subtitle center">probe linéaire</text>
+<text x="674" y="210" class="mono-small muted center">LECTURE EXTERNE · INFORMATION EXTRACTIBLE</text>
+<line x1="674" y1="256" x2="674" y2="220" class="ink" marker-end="url(#pl01qd-arrow-ink)"/>
+
+<!-- residual stream spine -->
+<line x1="110" y1="270" x2="1078" y2="270" class="ink-heavy" marker-end="url(#pl01qd-arrow-ink)"/>
+<line x1="110" y1="284" x2="1060" y2="284" class="graphite"/>
+<g><rect x="98" y="256" width="24" height="42" class="paper-deep"/><line x1="110" y1="254" x2="110" y2="300" class="ink"/><text x="110" y="243" class="mono center">L1</text></g>
+<g><rect x="286" y="256" width="24" height="42" class="paper-deep"/><line x1="298" y1="254" x2="298" y2="300" class="ink"/><text x="298" y="243" class="mono center">L2</text></g>
+<g><rect x="474" y="256" width="24" height="42" class="paper-deep"/><line x1="486" y1="254" x2="486" y2="300" class="ink"/><text x="486" y="243" class="mono center">L3</text></g>
+<g><rect x="662" y="256" width="24" height="42" class="paper-deep"/><line x1="674" y1="254" x2="674" y2="300" class="ink"/><text x="674" y="243" class="mono center">L4</text></g>
+<g><rect x="850" y="256" width="24" height="42" class="paper-deep"/><line x1="862" y1="254" x2="862" y2="300" class="ink"/><text x="862" y="243" class="mono center">L5</text></g>
+<g><rect x="1038" y="256" width="24" height="42" class="paper-deep"/><line x1="1050" y1="254" x2="1050" y2="300" class="ink"/><text x="1050" y="243" class="mono center">L6</text></g>
+<circle cx="1100" cy="270" r="11" class="ink"/>
+<text x="1118" y="274" class="small">sortie</text>
+<text x="110" y="320" class="mono muted">h<tspan baseline-shift="super" font-size="8">(l)</tspan> · espace de communication partagé : lu et écrit à chaque couche</text>
+
+<line x1="55" y1="352" x2="1145" y2="352" class="line"/>
+<text x="600" y="378" class="mono-small muted center">LE PROBE RÉUSSIT DANS LES QUATRE CAS · LA SORTIE NE CHANGE DANS AUCUN</text>
+
+<!-- CARD 01 -->
+<rect x="55" y="398" width="256" height="228" class="card"/>
+<text x="71" y="426" class="mono accent-text">01</text>
+<text x="71" y="452" class="subtitle">Hors lecture</text>
+<line x1="91" y1="490" x2="151" y2="490" class="oxide" marker-end="url(#pl01qd-arrow-oxide)"/>
+<path d="M175 500 L235 500 L223 524 L163 524 Z" class="hatch-fill"/>
+<line x1="156" y1="482" x2="168" y2="498" class="oxide-thin"/>
+<line x1="168" y1="482" x2="156" y2="498" class="oxide-thin"/>
+<text x="71" y="558" class="label">La direction n’appartient</text>
+<text x="71" y="576" class="label">pas au sous-espace lu par</text>
+<text x="71" y="594" class="label">les composants aval.</text>
+<text x="71" y="616" class="mono-small muted">W<tspan baseline-shift="sub" font-size="7">Q</tspan> · W<tspan baseline-shift="sub" font-size="7">K</tspan> · W<tspan baseline-shift="sub" font-size="7">V</tspan> · W<tspan baseline-shift="sub" font-size="7">in</tspan></text>
+
+<!-- CARD 02 -->
+<rect x="333" y="398" width="256" height="228" class="card"/>
+<text x="349" y="426" class="mono accent-text">02</text>
+<text x="349" y="452" class="subtitle">Redondante</text>
+<line x1="369" y1="478" x2="479" y2="478" class="oxide" marker-end="url(#pl01qd-arrow-oxide)"/>
+<line x1="369" y1="506" x2="479" y2="506" class="graphite" marker-end="url(#pl01qd-arrow-graphite)"/>
+<circle cx="500" cy="492" r="9" class="ink"/>
+<text x="349" y="558" class="label">L’information est aussi</text>
+<text x="349" y="576" class="label">portée ailleurs ; retirer</text>
+<text x="349" y="594" class="label">cette copie ne change rien.</text>
+<text x="349" y="616" class="mono-small muted">ABLATION SANS EFFET</text>
+
+<!-- CARD 03 -->
+<rect x="611" y="398" width="256" height="228" class="card"/>
+<text x="627" y="426" class="mono accent-text">03</text>
+<text x="627" y="452" class="subtitle">Post-décision</text>
+<line x1="700" y1="470" x2="700" y2="514" class="ink-heavy"/>
+<text x="700" y="530" class="mono-small muted center">DÉCISION</text>
+<line x1="647" y1="492" x2="688" y2="492" class="graphite dashed"/>
+<line x1="714" y1="492" x2="834" y2="492" class="oxide" marker-end="url(#pl01qd-arrow-oxide)"/>
+<text x="627" y="558" class="label">Elle apparaît après</text>
+<text x="627" y="576" class="label">l’étape de calcul qui</text>
+<text x="627" y="594" class="label">fixe déjà la sortie.</text>
+<text x="627" y="616" class="mono-small accent-text">HUANG ET CHANG — OBJETS TARDIFS</text>
+
+<!-- CARD 04 -->
+<rect x="889" y="398" width="256" height="228" class="card"/>
+<text x="905" y="426" class="mono accent-text">04</text>
+<text x="905" y="452" class="subtitle">Compensée</text>
+<line x1="925" y1="492" x2="995" y2="492" class="oxide" marker-end="url(#pl01qd-arrow-oxide)"/>
+<line x1="1075" y1="492" x2="1005" y2="492" class="graphite" marker-end="url(#pl01qd-arrow-graphite)"/>
+<text x="1100" y="497" class="label accent-text">= 0</text>
+<text x="905" y="558" class="label">Une écriture ultérieure</text>
+<text x="905" y="576" class="label">annule sa contribution</text>
+<text x="905" y="594" class="label">dans le flux résiduel.</text>
+<text x="905" y="616" class="mono-small muted">EFFET NET NUL</text>
+
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="703" class="caption center">Une seule de ces quatre situations relève d’un défaut d’alignement géométrique.</text>
+<text x="600" y="729" class="caption center">Les trois autres sont temporelles ou fonctionnelles, et un probe ne les distingue pas.</text>
+<text x="55" y="760" class="mono-small muted">SCHÉMA CONCEPTUEL · CAS POSSIBLES, NON EXCLUSIFS · AUCUN N’EST DIAGNOSTIQUÉ PAR LE PROBE SEUL</text>
+
+</svg>

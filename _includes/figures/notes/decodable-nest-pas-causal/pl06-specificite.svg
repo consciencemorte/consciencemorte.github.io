@@ -1,0 +1,145 @@
+<svg class="cm-diagram cm-note-pl06-specificite" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl06sp-title pl06sp-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl06sp-title">Discriminant n’est pas spécifique</title>
+<desc id="pl06sp-desc">À gauche, une direction sépare correctement deux classes d’états internes : le probe atteint 71,6 pour cent d’exactitude équilibrée. À droite, la même direction est décomposée : sa composante se situe très majoritairement dans le sous-espace critique pour la tâche, avec 85 à 88 pour cent de recouvrement et un ratio de spécificité inférieur ou égal à 0,152. Injecter le long de cette direction déplace donc le calcul de la tâche autant que le régime d’échec visé, ce qui produit un effet net nul.</desc>
+
+<style>
+  .cm-note-pl06-specificite { color: var(--ink, #1c1c18); background: transparent; }
+  .cm-note-pl06-specificite text { fill: var(--ink, #1c1c18); }
+  .cm-note-pl06-specificite .ink { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 1.35; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .ink-heavy { fill: none; stroke: var(--ink, #1c1c18); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .graphite { fill: var(--graphite, #57564f); stroke: none; }
+  .cm-note-pl06-specificite .graphite-line { fill: none; stroke: var(--graphite, #57564f); stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .line { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .oxide { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 2.2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .oxide-thin { fill: none; stroke: var(--oxide, #a84e2f); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .oxide-fill { fill: var(--oxide, #a84e2f); stroke: none; }
+  .cm-note-pl06-specificite .oxide-wash { fill: var(--oxide, #a84e2f); fill-opacity: .10; stroke: var(--oxide, #a84e2f); stroke-width: 1.1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .paper-deep { fill: var(--paper-deep, #e8e0d2); fill-opacity: .58; stroke: none; }
+  .cm-note-pl06-specificite .card { fill: none; stroke: var(--line, #c9c1b3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .hatch-fill { fill: url(#pl06sp-hatch); stroke: var(--graphite, #57564f); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl06-specificite .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl06-specificite .subtitle { font: 500 22px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl06-specificite .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl06-specificite .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl06-specificite .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl06-specificite .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl06-specificite .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl06-specificite .muted { fill: var(--graphite, #57564f); }
+  .cm-note-pl06-specificite .accent-text { fill: var(--oxide, #a84e2f); }
+  .cm-note-pl06-specificite .center { text-anchor: middle; }
+  .cm-note-pl06-specificite .right { text-anchor: end; }
+  .cm-note-pl06-specificite .dashed { stroke-dasharray: 5 5; }
+</style>
+
+<defs>
+  <pattern id="pl06sp-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="var(--graphite, #57564f)" stroke-width="0.7" opacity="0.35"/>
+  </pattern>
+  <marker id="pl06sp-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink, #1c1c18)"/>
+  </marker>
+  <marker id="pl06sp-arrow-oxide" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--oxide, #a84e2f)"/>
+  </marker>
+  <marker id="pl06sp-arrow-graphite" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--graphite, #57564f)"/>
+  </marker>
+</defs>
+
+<text x="55" y="46" class="mono accent-text">PL. 06 / SPÉCIFICITÉ</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Discriminant n’est pas spécifique</text>
+<text x="600" y="145" class="mono-small muted center">POURQUOI UNE DIRECTION BIEN SÉPARANTE PEUT NE RIEN PILOTER · D’APRÈS LIU (2026)</text>
+
+<!-- ===== LEFT PANEL : le probe réussit ===== -->
+<rect x="55" y="176" width="520" height="400" class="card"/>
+<text x="79" y="208" class="mono accent-text">01 · CE QUE VOIT LE PROBE</text>
+<line x1="79" y1="220" x2="551" y2="220" class="line"/>
+
+<circle cx="203.0" cy="365.9" r="4.5" class="graphite"/>
+<circle cx="203.8" cy="343.3" r="4.5" class="graphite"/>
+<circle cx="181.4" cy="346.6" r="4.5" class="graphite"/>
+<circle cx="246.6" cy="362.2" r="4.5" class="graphite"/>
+<circle cx="245.3" cy="358.1" r="4.5" class="graphite"/>
+<circle cx="226.2" cy="357.1" r="4.5" class="graphite"/>
+<circle cx="169.9" cy="368.6" r="4.5" class="graphite"/>
+<circle cx="229.5" cy="365.3" r="4.5" class="graphite"/>
+<circle cx="176.8" cy="324.0" r="4.5" class="graphite"/>
+<circle cx="183.0" cy="340.3" r="4.5" class="graphite"/>
+<circle cx="223.1" cy="350.7" r="4.5" class="graphite"/>
+<circle cx="229.6" cy="335.3" r="4.5" class="graphite"/>
+<circle cx="223.0" cy="362.8" r="4.5" class="graphite"/>
+<circle cx="195.1" cy="385.7" r="4.5" class="graphite"/>
+<circle cx="388.7" cy="327.7" r="4.5" class="oxide-fill"/>
+<circle cx="351.6" cy="281.3" r="4.5" class="oxide-fill"/>
+<circle cx="359.6" cy="297.0" r="4.5" class="oxide-fill"/>
+<circle cx="394.0" cy="306.6" r="4.5" class="oxide-fill"/>
+<circle cx="357.6" cy="276.3" r="4.5" class="oxide-fill"/>
+<circle cx="356.4" cy="328.2" r="4.5" class="oxide-fill"/>
+<circle cx="344.8" cy="306.3" r="4.5" class="oxide-fill"/>
+<circle cx="384.0" cy="267.8" r="4.5" class="oxide-fill"/>
+<circle cx="373.5" cy="330.3" r="4.5" class="oxide-fill"/>
+<circle cx="324.0" cy="294.1" r="4.5" class="oxide-fill"/>
+<circle cx="368.4" cy="278.7" r="4.5" class="oxide-fill"/>
+<circle cx="389.7" cy="298.3" r="4.5" class="oxide-fill"/>
+<circle cx="332.6" cy="317.1" r="4.5" class="oxide-fill"/>
+<circle cx="393.0" cy="322.8" r="4.5" class="oxide-fill"/>
+
+<!-- separating hyperplane : perpendicular to (160,-52) through midpoint (292,326) -->
+<line x1="253" y1="446" x2="331" y2="206" class="ink-heavy"/>
+<text x="352" y="200" class="mono-small muted">HYPERPLAN SÉPARATEUR</text>
+
+<!-- normal direction d_OT -->
+<line x1="255" y1="405" x2="368" y2="368" class="oxide" marker-end="url(#pl06sp-arrow-oxide)"/>
+<text x="378" y="372" class="label accent-text">d<tspan baseline-shift="sub" font-size="10">OT</tspan></text>
+
+<circle cx="97" cy="470" r="4.5" class="graphite"/>
+<text x="112" y="474" class="small muted">réponse normale</text>
+<circle cx="257" cy="470" r="4.5" class="oxide-fill"/>
+<text x="272" y="474" class="small muted">régime d’overthinking</text>
+
+<rect x="79" y="496" width="472" height="58" class="oxide-wash"/>
+<text x="315" y="519" class="mono-small center">CONCLUSION</text>
+<text x="315" y="541" class="label center accent-text">71,6 % d’exactitude équilibrée · p &lt; 10⁻¹⁶</text>
+
+<!-- ===== RIGHT PANEL : ce que fait l'injection ===== -->
+<rect x="625" y="176" width="520" height="400" class="card"/>
+<text x="649" y="208" class="mono accent-text">02 · CE QUE FAIT L’INJECTION</text>
+<line x1="649" y1="220" x2="1121" y2="220" class="line"/>
+
+<!-- task-critical subspace band -->
+<g transform="rotate(-25 860 380)">
+  <rect x="670" y="342" width="400" height="76" class="hatch-fill"/>
+</g>
+<text x="668" y="454" class="mono-small muted" transform="rotate(-25 668 454)">SOUS-ESPACE CRITIQUE POUR LA TÂCHE</text>
+
+<!-- origin -->
+<circle cx="740" cy="424" r="4" class="ink-heavy"/>
+
+<!-- parallel component (inside the band) -->
+<line x1="740" y1="424" x2="974" y2="315" class="graphite-line" marker-end="url(#pl06sp-arrow-graphite)"/>
+<!-- orthogonal component (short) -->
+<line x1="974" y1="315" x2="960" y2="286" class="oxide" marker-end="url(#pl06sp-arrow-oxide)"/>
+<!-- d_OT itself -->
+<line x1="740" y1="424" x2="960" y2="286" class="oxide dashed"/>
+<text x="972" y="278" class="label accent-text">d<tspan baseline-shift="sub" font-size="10">OT</tspan></text>
+
+<line x1="890" y1="372" x2="866" y2="424" class="line"/>
+<text x="862" y="440" class="mono-small muted right">85–88 % DE RECOUVREMENT</text>
+<line x1="967" y1="300" x2="1030" y2="268" class="line"/>
+<text x="1036" y="266" class="mono-small accent-text">RATIO DE SPÉCIFICITÉ ≤ 0,152</text>
+
+<rect x="649" y="496" width="472" height="58" class="oxide-wash"/>
+<text x="885" y="519" class="mono-small center">CONCLUSION</text>
+<text x="885" y="541" class="label center accent-text">5 familles · 29 configurations · n = 1 273 · Δ ≈ 0</text>
+
+<!-- bridge -->
+<text x="600" y="613" class="label center">Pousser le long de d<tspan baseline-shift="sub" font-size="10">OT</tspan> déplace le calcul de la tâche autant que le régime d’échec visé.</text>
+<text x="600" y="637" class="small center muted">Le probe mesure une séparation ; le steering exige en plus que la direction soit isolable du reste du calcul.</text>
+
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="703" class="caption center">L’échec du steering linéaire fixe n’est pas une absence d’information :</text>
+<text x="600" y="729" class="caption center">c’est un défaut de spécificité de la direction extraite.</text>
+<text x="55" y="760" class="mono-small muted">RÉSULTATS NULS RÉPLIQUÉS SUR QWEN2.5-7B ET MMLU-STEM · UN ADAPTATEUR NON LINÉAIRE APPRIS DONNE UN GAIN PRÉLIMINAIRE</text>
+
+</svg>
