@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-note-07" viewBox="0 0 1536 1024" role="img" aria-labelledby="t2 d2" preserveAspectRatio="xMidYMid meet">
+  <title id="t2">Que signifie une absence observée ?</title>
+  <desc id="d2">Schéma diagnostique montrant qu’une absence comportementale peut correspondre à plusieurs états internes : circuit détruit, désactivé, contourné ou difficile d’accès. Une ligne méthodologique recommande prompts adversariaux, probing, steering et interventions causales.</desc>
+  <defs>
+    <style><![CDATA[
+    .cm-note-07 text {
+      fill: var(--ink, #1f1e1a);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    .cm-note-07 .title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .cm-note-07 .plate {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .cm-note-07 .section {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+    }
+    .cm-note-07 .label {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .cm-note-07 .mono {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+    .cm-note-07 .small {
+      font-size: 16px;
+    }
+    .cm-note-07 .caption {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 19px;
+      font-style: italic;
+    }
+    .cm-note-07 .ink-stroke { stroke: var(--ink, #1f1e1a); stroke-width: 1.4; fill: none; }
+    .cm-note-07 .line-stroke { stroke: var(--line, #b9b2a3); stroke-width: 1.0; fill: none; }
+    .cm-note-07 .graphite-stroke { stroke: var(--graphite, #5b5a54); stroke-width: 1.2; fill: none; }
+    .cm-note-07 .oxide-stroke { stroke: var(--oxide, #a64b32); stroke-width: 1.8; fill: none; }
+    .cm-note-07 .box { fill: rgba(255,255,255,0.0); stroke: var(--ink, #1f1e1a); stroke-width: 1.4; }
+    .cm-note-07 .softbox { fill: rgba(255,255,255,0.0); stroke: var(--line, #b9b2a3); stroke-width: 1.1; }
+    .cm-note-07 .oxide-box { fill: rgba(166,75,50,0.08); stroke: var(--oxide, #a64b32); stroke-width: 1.4; }
+    .cm-note-07 .muted { fill: var(--graphite, #5b5a54); }
+    .cm-note-07 .oxide { fill: var(--oxide, #a64b32); }
+    .cm-note-07 .center { text-anchor: middle; dominant-baseline: middle; }
+    .cm-note-07 .left { text-anchor: start; dominant-baseline: middle; }
+    .cm-note-07 .right { text-anchor: end; dominant-baseline: middle; }
+    .cm-note-07 .baseline { dominant-baseline: alphabetic; }
+    .cm-note-07 .paperline { stroke: var(--line, #b9b2a3); stroke-width: 1.0; }
+]]></style>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="var(--ink, #1f1e1a)" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1536" height="1024" fill="transparent"/>
+  <text x="72" y="70" class="plate">PL. 07 / DIAGNOSTIC</text>
+  <line x1="72" y1="88" x2="1464" y2="88" class="paperline"/>
+  <text x="768" y="150" class="title center">Que signifie une absence observée ?</text>
+  <line x1="360" y1="168" x2="1176" y2="168" class="paperline"/>
+
+  <!-- Central diagnostic structure -->
+  <rect x="563" y="356" width="410" height="126" class="softbox"/>
+  <text x="768" y="404" class="section center">Absence comportementale</text>
+  <text x="768" y="438" class="caption center">constat d’entrée-sortie sur une distribution limitée</text>
+
+  <!-- surrounding boxes -->
+  <rect x="190" y="260" width="300" height="104" class="box"/>
+  <text x="340" y="312" class="section center">Circuit détruit</text>
+
+  <rect x="1046" y="260" width="300" height="104" class="box"/>
+  <text x="1196" y="312" class="section center">Circuit désactivé</text>
+
+  <rect x="190" y="520" width="300" height="104" class="box"/>
+  <text x="340" y="572" class="section center">Circuit contourné</text>
+
+  <rect x="1046" y="520" width="300" height="104" class="box"/>
+  <text x="1196" y="560" class="section center">Circuit difficile</text>
+  <text x="1196" y="590" class="section center" style="font-size:23px;">d’accès</text>
+
+  <!-- arrows -->
+  <line x1="563" y1="392" x2="502" y2="340" class="graphite-stroke" marker-end="url(#arrow2)"/>
+  <line x1="973" y1="392" x2="1034" y2="340" class="graphite-stroke" marker-end="url(#arrow2)"/>
+  <line x1="563" y1="446" x2="502" y2="546" class="graphite-stroke" marker-end="url(#arrow2)"/>
+  <line x1="973" y1="446" x2="1034" y2="546" class="graphite-stroke" marker-end="url(#arrow2)"/>
+
+  <!-- method line -->
+  <line x1="200" y1="710" x2="460" y2="710" class="oxide-stroke"/>
+  <line x1="1076" y1="710" x2="1336" y2="710" class="oxide-stroke"/>
+  <text x="768" y="712" class="mono center oxide" style="font-size:19px; font-weight:700;">UN TEST COMPORTEMENTAL SEUL EST INSUFFISANT</text>
+
+  <!-- method boxes -->
+  <rect x="176" y="766" width="252" height="78" class="softbox"/>
+  <text x="302" y="798" class="label center">Prompts adversariaux</text>
+  <text x="302" y="824" class="small center muted">éliciter le circuit silencieux</text>
+
+  <line x1="428" y1="805" x2="500" y2="805" class="graphite-stroke" marker-end="url(#arrow2)"/>
+
+  <rect x="504" y="766" width="220" height="78" class="softbox"/>
+  <text x="614" y="798" class="label center">Probing</text>
+  <text x="614" y="824" class="small center muted">représentation / accessibilité</text>
+
+  <line x1="724" y1="805" x2="796" y2="805" class="graphite-stroke" marker-end="url(#arrow2)"/>
+
+  <rect x="800" y="766" width="220" height="78" class="softbox"/>
+  <text x="910" y="798" class="label center">Steering</text>
+  <text x="910" y="824" class="small center muted">réouvrir le canal d’expression</text>
+
+  <line x1="1020" y1="805" x2="1092" y2="805" class="graphite-stroke" marker-end="url(#arrow2)"/>
+
+  <rect x="1096" y="766" width="264" height="78" class="box"/>
+  <text x="1228" y="798" class="label center">Interventions causales</text>
+  <text x="1228" y="824" class="small center muted">détruit, désactivé ou contourné ?</text>
+
+  <line x1="72" y1="900" x2="1464" y2="900" class="paperline"/>
+  <text x="768" y="954" class="caption center">Une sortie absente peut correspondre à plusieurs états internes différents.</text>
+</svg>

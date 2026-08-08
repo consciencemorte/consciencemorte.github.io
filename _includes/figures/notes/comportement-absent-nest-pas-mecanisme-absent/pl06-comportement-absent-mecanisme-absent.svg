@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-note-06" viewBox="0 0 1536 1024" role="img" aria-labelledby="t1 d1" preserveAspectRatio="xMidYMid meet">
+  <title id="t1">Comportement absent ≠ mécanisme absent</title>
+  <desc id="d1">Schéma mécanistique montrant un contenu latent maintenu dans les couches précoces, un gating tardif au niveau de l'accessibilité dans le flux résiduel, et la récupération du comportement par déclencheur, steering ou prompt adversarial.</desc>
+  <defs>
+    <style><![CDATA[
+    .cm-note-06 text {
+      fill: var(--ink, #1f1e1a);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    .cm-note-06 .title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .cm-note-06 .plate {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .cm-note-06 .section {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+    }
+    .cm-note-06 .label {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .cm-note-06 .mono {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+    .cm-note-06 .small {
+      font-size: 16px;
+    }
+    .cm-note-06 .caption {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 19px;
+      font-style: italic;
+    }
+    .cm-note-06 .ink-stroke { stroke: var(--ink, #1f1e1a); stroke-width: 1.4; fill: none; }
+    .cm-note-06 .line-stroke { stroke: var(--line, #b9b2a3); stroke-width: 1.0; fill: none; }
+    .cm-note-06 .graphite-stroke { stroke: var(--graphite, #5b5a54); stroke-width: 1.2; fill: none; }
+    .cm-note-06 .oxide-stroke { stroke: var(--oxide, #a64b32); stroke-width: 1.8; fill: none; }
+    .cm-note-06 .box { fill: rgba(255,255,255,0.0); stroke: var(--ink, #1f1e1a); stroke-width: 1.4; }
+    .cm-note-06 .softbox { fill: rgba(255,255,255,0.0); stroke: var(--line, #b9b2a3); stroke-width: 1.1; }
+    .cm-note-06 .oxide-box { fill: rgba(166,75,50,0.08); stroke: var(--oxide, #a64b32); stroke-width: 1.4; }
+    .cm-note-06 .muted { fill: var(--graphite, #5b5a54); }
+    .cm-note-06 .oxide { fill: var(--oxide, #a64b32); }
+    .cm-note-06 .center { text-anchor: middle; dominant-baseline: middle; }
+    .cm-note-06 .left { text-anchor: start; dominant-baseline: middle; }
+    .cm-note-06 .right { text-anchor: end; dominant-baseline: middle; }
+    .cm-note-06 .baseline { dominant-baseline: alphabetic; }
+    .cm-note-06 .paperline { stroke: var(--line, #b9b2a3); stroke-width: 1.0; }
+]]></style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="var(--ink, #1f1e1a)" />
+    </marker>
+    <marker id="arrowOx" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="var(--oxide, #a64b32)" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1536" height="1024" fill="transparent"/>
+  <text x="72" y="70" class="plate">PL. 06 / GATING</text>
+  <line x1="72" y1="88" x2="1464" y2="88" class="paperline"/>
+  <text x="768" y="150" class="title center">Comportement absent ≠ mécanisme absent</text>
+  <line x1="350" y1="168" x2="1186" y2="168" class="paperline"/>
+
+  <text x="250" y="260" class="section center">Représentation</text>
+  <text x="768" y="260" class="section center">Accessibilité</text>
+  <text x="1286" y="260" class="section center">Expression</text>
+  <line x1="80" y1="276" x2="420" y2="276" class="line-stroke"/>
+  <line x1="548" y1="276" x2="988" y2="276" class="line-stroke"/>
+  <line x1="1120" y1="276" x2="1450" y2="276" class="line-stroke"/>
+
+  <!-- Left column -->
+  <rect x="92" y="335" width="315" height="210" class="box"/>
+  <text x="250" y="375" class="section center">Couches précoces</text>
+  <line x1="110" y1="396" x2="389" y2="396" class="line-stroke"/>
+  <rect x="140" y="418" width="220" height="92" class="softbox"/>
+  <text x="250" y="452" class="section center" style="font-size:23px;">Information /</text>
+  <text x="250" y="482" class="section center" style="font-size:23px;">politique latente</text>
+  <text x="250" y="640" class="caption center">encodée dans les paramètres</text>
+  <text x="250" y="676" class="caption center">présence latente</text>
+
+  <!-- Center column -->
+  <rect x="608" y="354" width="320" height="54" class="softbox"/>
+  <text x="768" y="381" class="label center">Tête d’attention</text>
+  <line x1="768" y1="408" x2="768" y2="442" class="graphite-stroke" marker-end="url(#arrow)"/>
+
+  <rect x="610" y="488" width="316" height="40" class="softbox"/>
+  <text x="768" y="508" class="caption center">flux résiduel</text>
+  <line x1="432" y1="508" x2="1032" y2="508" class="ink-stroke" marker-end="url(#arrow)"/>
+
+  <!-- gate -->
+  <g>
+    <rect x="720" y="472" width="96" height="72" rx="8" class="oxide-box"/>
+    <line x1="768" y1="472" x2="768" y2="544" class="oxide-stroke"/>
+    <ellipse cx="768" cy="466" rx="36" ry="10" class="oxide-stroke"/>
+    <line x1="768" y1="444" x2="768" y2="456" class="oxide-stroke"/>
+    <line x1="756" y1="466" x2="780" y2="466" class="oxide-stroke"/>
+    <text x="768" y="574" class="section center oxide">gating</text>
+    <text x="768" y="602" class="caption center">lecture inhibée / conditionnée</text>
+  </g>
+
+  <line x1="768" y1="528" x2="768" y2="592" class="graphite-stroke"/>
+  <rect x="608" y="614" width="320" height="54" class="softbox"/>
+  <text x="768" y="641" class="label center">Lecteur MLP</text>
+  <line x1="768" y1="592" x2="768" y2="614" class="graphite-stroke" marker-end="url(#arrow)"/>
+  <text x="768" y="730" class="caption center">canal d’expression standard</text>
+
+  <!-- Right column -->
+  <rect x="1130" y="362" width="250" height="58" class="softbox"/>
+  <text x="1255" y="391" class="label center">logits / réponse</text>
+  <line x1="1255" y1="420" x2="1255" y2="462" class="graphite-stroke" marker-end="url(#arrow)"/>
+  <rect x="1100" y="466" width="310" height="68" class="box"/>
+  <text x="1255" y="500" class="section center">Comportement absent</text>
+  <text x="1255" y="730" class="caption center">sortie observable standard</text>
+
+  <!-- Recovery path -->
+  <line x1="816" y1="540" x2="816" y2="760" class="oxide-stroke" marker-end="url(#arrowOx)"/>
+  <text x="836" y="620" class="mono oxide left">déclencheur / steering / prompt adversarial</text>
+  <rect x="622" y="760" width="388" height="76" class="oxide-box"/>
+  <text x="816" y="796" class="section center oxide" style="font-size:28px;">Comportement récupéré</text>
+  <text x="816" y="826" class="caption center">récupération partielle ou contextuelle</text>
+
+  <!-- Footer -->
+  <line x1="72" y1="900" x2="1464" y2="900" class="paperline"/>
+  <text x="768" y="952" class="caption center">L’absence d’un comportement observable peut résulter d’un gating tardif : le contenu reste représenté,</text>
+  <text x="768" y="978" class="caption center">mais son canal d’expression standard est fermé dans les conditions ordinaires.</text>
+</svg>

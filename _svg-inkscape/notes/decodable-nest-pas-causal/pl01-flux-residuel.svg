@@ -1,0 +1,99 @@
+<svg class="cm-diagram cm-note-pl01-flux-residuel" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl01-flux-residuel-title pl01-flux-residuel-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl01-flux-residuel-title">Décodable n’est pas causal</title>
+<desc id="pl01-flux-residuel-desc">Schéma du flux résiduel montrant une direction décodable qui n’est pas lue par les circuits aval.</desc>
+
+<style>
+  .cm-note-pl01-flux-residuel { color: #1c1c18; background: transparent; }
+  .cm-note-pl01-flux-residuel text { fill: #1c1c18; }
+  .cm-note-pl01-flux-residuel .ink { fill: none; stroke: #1c1c18; stroke-width: 1.35; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .ink-heavy { fill: none; stroke: #1c1c18; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .graphite { fill: none; stroke: #57564f; stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .line { fill: none; stroke: #c9c1b3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .oxide { fill: none; stroke: #a84e2f; stroke-width: 2.2; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .oxide-thin { fill: none; stroke: #a84e2f; stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .oxide-fill { fill: #a84e2f; stroke: none; }
+  .cm-note-pl01-flux-residuel .oxide-wash { fill: #a84e2f; fill-opacity: .10; stroke: #a84e2f; stroke-width: 1.1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .paper-deep { fill: #e8e0d2; fill-opacity: .58; stroke: none; }
+  .cm-note-pl01-flux-residuel .hatch-fill { fill: url(#pl01-flux-residuel-hatch); stroke: #57564f; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl01-flux-residuel .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl01-flux-residuel .subtitle { font: 500 25px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl01-flux-residuel .section { font: 600 13px/1.2 "Inter", Arial, sans-serif; letter-spacing: .11em; }
+  .cm-note-pl01-flux-residuel .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl01-flux-residuel .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl01-flux-residuel .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl01-flux-residuel .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl01-flux-residuel .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl01-flux-residuel .muted { fill: #57564f; }
+  .cm-note-pl01-flux-residuel .accent-text { fill: #a84e2f; }
+  .cm-note-pl01-flux-residuel .center { text-anchor: middle; }
+  .cm-note-pl01-flux-residuel .right { text-anchor: end; }
+  .cm-note-pl01-flux-residuel .dashed { stroke-dasharray: 5 5; }
+</style>
+
+
+<defs>
+  <pattern id="pl01-flux-residuel-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#57564f" stroke-width="0.7" opacity="0.35"/>
+  </pattern>
+  <marker id="pl01-flux-residuel-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1c1c18"/>
+  </marker>
+  <marker id="pl01-flux-residuel-arrow-oxide" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#a84e2f"/>
+  </marker>
+  <marker id="pl01-flux-residuel-arrow-graphite" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#57564f"/>
+  </marker>
+</defs>
+
+
+<text x="55" y="46" class="mono accent-text">PL. 01 / RESIDUAL STREAM</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Décodable n’est pas causal</text>
+<line x1="420" y1="135" x2="780" y2="135" class="line"/>
+
+<!-- residual stream -->
+<line x1="80" y1="270" x2="1115" y2="270" class="ink-heavy" marker-end="url(#pl01-flux-residuel-arrow-ink)"/>
+<line x1="80" y1="287" x2="1095" y2="287" class="graphite"/>
+<g><rect x="161" y="253" width="28" height="50" class="paper-deep"/><line x1="175" y1="250" x2="175" y2="306" class="ink"/><text x="175" y="232" class="mono center">L1</text></g><g><rect x="341" y="253" width="28" height="50" class="paper-deep"/><line x1="355" y1="250" x2="355" y2="306" class="ink"/><text x="355" y="232" class="mono center">L2</text></g><g><rect x="521" y="253" width="28" height="50" class="paper-deep"/><line x1="535" y1="250" x2="535" y2="306" class="ink"/><text x="535" y="232" class="mono center">L3</text></g><g><rect x="701" y="253" width="28" height="50" class="paper-deep"/><line x1="715" y1="250" x2="715" y2="306" class="ink"/><text x="715" y="232" class="mono center">L4</text></g><g><rect x="881" y="253" width="28" height="50" class="paper-deep"/><line x1="895" y1="250" x2="895" y2="306" class="ink"/><text x="895" y="232" class="mono center">L5</text></g>
+<circle cx="1128" cy="270" r="15" class="ink"/>
+<text x="1150" y="275" class="small">sortie</text>
+<text x="80" y="320" class="mono muted">h<tspan baseline-shift="super" font-size="8">(l)</tspan> · espace de communication partagé</text>
+
+<!-- probe -->
+<line x1="535" y1="250" x2="535" y2="166" class="ink" marker-end="url(#pl01-flux-residuel-arrow-ink)"/>
+<text x="535" y="145" class="subtitle center">probe linéaire</text>
+<text x="535" y="164" class="mono-small muted center">LECTURE EXTERNE · INFORMATION EXTRACTIBLE</text>
+
+<!-- decodable direction -->
+<rect x="275" y="355" width="365" height="82" class="paper-deep"/>
+<line x1="320" y1="396" x2="615" y2="396" class="oxide" marker-end="url(#pl01-flux-residuel-arrow-oxide)"/>
+<text x="465" y="384" class="label accent-text center">direction décodable d</text>
+<text x="465" y="420" class="mono-small muted center">PRÉSENTE DANS LE FLUX RÉSIDUEL</text>
+<line x1="535" y1="306" x2="535" y2="355" class="oxide-thin dashed"/>
+
+<!-- downstream read subspaces -->
+<path d="M760 345 L940 345 L895 415 L715 415 Z" class="hatch-fill"/>
+<path d="M760 480 L940 480 L895 550 L715 550 Z" class="hatch-fill"/>
+<text x="970" y="368" class="label">projections d’entrée de l’attention</text>
+<text x="970" y="391" class="mono-small muted">WQ · WK · WV · LECTURE AVAL</text>
+<text x="970" y="503" class="label">projection d’entrée du MLP</text>
+<text x="970" y="526" class="mono-small muted">W<tspan baseline-shift="sub" font-size="8">in</tspan> · LECTURE AVAL</text>
+<line x1="940" y1="378" x2="955" y2="378" class="ink" marker-end="url(#pl01-flux-residuel-arrow-ink)"/>
+<line x1="940" y1="513" x2="955" y2="513" class="ink" marker-end="url(#pl01-flux-residuel-arrow-ink)"/>
+
+<!-- misalignment -->
+<line x1="642" y1="396" x2="700" y2="396" class="oxide-thin dashed"/>
+<line x1="681" y1="378" x2="705" y2="414" class="oxide-thin"/>
+<line x1="705" y1="378" x2="681" y2="414" class="oxide-thin"/>
+<text x="690" y="445" class="mono-small accent-text center">NON ALIGNÉE AVEC LES DIRECTIONS LUES</text>
+<path d="M695 450 C675 485 670 510 700 530" class="oxide-thin" marker-end="url(#pl01-flux-residuel-arrow-oxide)"/>
+<text x="715" y="582" class="label accent-text">hors des directions lues dans ce cas</text>
+
+<!-- caption -->
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="703" class="caption center">Un probe externe et les projections d’entrée du modèle ne lisent pas nécessairement</text>
+<text x="600" y="729" class="caption center">les mêmes directions du flux résiduel.</text>
+<text x="55" y="760" class="mono-small muted">SCHÉMA CONCEPTUEL · PROBE ≠ LECTURE INTERNE</text>
+
+</svg>

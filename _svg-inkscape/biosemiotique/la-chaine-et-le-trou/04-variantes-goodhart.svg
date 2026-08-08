@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-04" viewBox="0 0 1000 700" role="img" aria-labelledby="cm-04-t cm-04-d">
+<title id="cm-04-t">Quatre mécanismes de rupture entre une mesure et sa cible</title>
+<desc id="cm-04-d">Taxonomie de Manheim et Garrabrant. Le Goodhart régressionnel sélectionne aussi l’erreur d’une mesure imparfaite. L’extrémal sort du domaine où la relation avait été établie. Le causal modifie cette relation par l’intervention du régulateur. L’adversarial ajoute un agent aux objectifs différents. Ce dernier recoupe partiellement le scénario du fracas de Christiano, sans lui être équivalent : le fracas exige en plus un objectif persistant, une représentation de l’évaluation et une planification instrumentale.</desc>
+<defs>
+<pattern id="cm-04-ink" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#1c1c18" stroke-width=".6" opacity=".4"/></pattern>
+<pattern id="cm-04-ox" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#a84e2f" stroke-width=".6" opacity=".4"/></pattern>
+</defs>
+
+<text x="60" y="28" class="l ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">PL. 04 / VARIANTES DE GOODHART</text>
+<text x="940" y="28" text-anchor="end" class="ll h" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">QUATRE MÉCANISMES · CATÉGORIES COMBINABLES</text>
+<path d="M52 52H948" style="fill:none;stroke:#1c1c18;stroke-width:1;vector-effect:non-scaling-stroke"/>
+<text x="60" y="96" class="ts" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:25px;font-weight:500;letter-spacing:-.015em">Quatre mécanismes de rupture entre mesure et cible</text>
+<text x="60" y="119" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">D’APRÈS MANHEIM ET GARRABRANT · UNE TAXONOMIE DES CAUSES, PAS QUATRE DEGRÉS DE GRAVITÉ</text>
+
+<text x="76" y="158" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">MÉCANISME</text>
+<text x="760" y="158" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">CONDITION DISTINCTIVE</text>
+
+<rect x="60" y="174" width="880" height="84" fill="#f3efe6" stroke="#1c1c18" stroke-width=".9"/>
+<circle cx="98" cy="216" r="22" fill="url(#cm-04-ink)" stroke="#1c1c18" stroke-width=".9"/>
+<text x="98" y="221" text-anchor="middle" class="num" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:13px;font-weight:500">01</text>
+<text x="140" y="207" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500">Goodhart régressionnel</text>
+<text x="140" y="231" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">Viser les hauts scores sélectionne aussi l’erreur d’une mesure imparfaite.</text>
+<path d="M660 188V244" style="fill:none;stroke:#c9c1b3;stroke-width:.8"/>
+<text x="800" y="207" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">MESURE IMPARFAITE</text>
+<text x="800" y="227" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">+ SÉLECTION</text>
+
+<rect x="60" y="272" width="880" height="84" fill="#f3efe6" stroke="#1c1c18" stroke-width=".9"/>
+<circle cx="98" cy="314" r="22" fill="url(#cm-04-ink)" stroke="#1c1c18" stroke-width=".9"/>
+<text x="98" y="319" text-anchor="middle" class="num" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:13px;font-weight:500">02</text>
+<text x="140" y="305" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500">Goodhart extrémal</text>
+<text x="140" y="329" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">La sélection sort du domaine où la relation avait été établie.</text>
+<path d="M660 286V342" style="fill:none;stroke:#c9c1b3;stroke-width:.8"/>
+<text x="800" y="305" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">VALEURS EXTRÊMES</text>
+<text x="800" y="325" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">OU CHANGEMENT DE RÉGIME</text>
+
+<rect x="60" y="370" width="880" height="84" fill="#f3efe6" stroke="#1c1c18" stroke-width=".9"/>
+<circle cx="98" cy="412" r="22" fill="url(#cm-04-ink)" stroke="#1c1c18" stroke-width=".9"/>
+<text x="98" y="417" text-anchor="middle" class="num" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:13px;font-weight:500">03</text>
+<text x="140" y="403" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500">Goodhart causal</text>
+<text x="140" y="427" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">L’intervention modifie le lien causal entre la cible et sa mesure.</text>
+<path d="M660 384V440" style="fill:none;stroke:#c9c1b3;stroke-width:.8"/>
+<text x="800" y="403" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">ACTION DU RÉGULATEUR</text>
+<text x="800" y="423" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">SUR LE SYSTÈME</text>
+
+<rect x="60" y="468" width="880" height="84" fill="url(#cm-04-ox)" stroke="#a84e2f" stroke-width="1.1"/>
+<circle cx="98" cy="510" r="22" fill="#f3efe6" stroke="#a84e2f" stroke-width="1.1"/>
+<text x="98" y="515" text-anchor="middle" class="num" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:13px;font-weight:500">04</text>
+<text x="140" y="501" class="tsm ox" style="fill:#a84e2f;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500">Goodhart adversarial</text>
+<text x="140" y="525" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">Un agent aux buts différents dégrade la mesure du régulateur.</text>
+<path d="M660 482V538" style="fill:none;stroke:#a84e2f;stroke-width:.8"/>
+<text x="800" y="501" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">UN ACTEUR DISTINCT</text>
+<text x="800" y="521" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">A DES BUTS DIFFÉRENTS</text>
+
+<rect x="60" y="578" width="880" height="76" fill="#f3efe6" stroke="#a84e2f" stroke-width=".9" stroke-dasharray="5 4"/>
+<text x="80" y="600" class="l ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em">RECOUPEMENT AVEC CHRISTIANO — PARTIEL, PAS UNE ÉQUIVALENCE</text>
+<text x="80" y="623" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">Les trois premiers permettent une dérive sans adversaire. Le quatrième ajoute des objectifs distincts ;</text>
+<text x="80" y="642" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">le « fracas » exige encore persistance de l’objectif, représentation de l’évaluation et planification.</text>
+<text x="500" y="688" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">LA TAXONOMIE EXPLIQUE COMMENT UNE MESURE CASSE ; ELLE NE DÉRIVE PAS UNE PRISE DE CONTRÔLE</text>
+</svg>

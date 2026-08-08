@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-01" viewBox="0 0 1000 640" role="img" aria-labelledby="cm-01-t cm-01-d">
+<title id="cm-01-t">Un même score ne signifie pas un même progrès</title>
+<desc id="cm-01-d">Schéma causal, et non série de données. À partir d’une même situation initiale, deux interventions atteignent le même score final. La première améliore la propriété visée, ce qui fait monter le proxy. La seconde agit directement sur le dispositif de mesure : le proxy monte tandis que la propriété visée reste inchangée.</desc>
+<defs>
+<marker id="cm-01-arox" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="#a84e2f" stroke-width="1.3"/></marker>
+<marker id="cm-01-arms" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="#52634e" stroke-width="1.3"/></marker>
+<pattern id="cm-01-stip" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".65" fill="#57564f" opacity=".32"/><circle cx="0" cy="0" r=".65" fill="#57564f" opacity=".32"/></pattern>
+<pattern id="cm-01-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#a84e2f" stroke-width=".65" opacity=".35"/></pattern>
+</defs>
+
+<text x="60" y="28" class="l ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">PL. 01 / DIVERGENCE DU PROXY</text>
+<text x="940" y="28" text-anchor="end" class="ll h" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">MÊME SCORE FINAL · DEUX INTERVENTIONS</text>
+<path d="M52 52H948" style="fill:none;stroke:#1c1c18;stroke-width:1;vector-effect:non-scaling-stroke"/>
+<text x="60" y="96" class="ts" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:25px;font-weight:500;letter-spacing:-.015em">Un même score ne signifie pas un même progrès</text>
+<text x="60" y="119" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">SCHÉMA CAUSAL — LES FLÈCHES REPRÉSENTENT DEUX INTERVENTIONS, PAS UNE SÉRIE DE DONNÉES</text>
+
+<path d="M142 510V154M142 510H758" style="fill:none;stroke:#1c1c18;stroke-width:1;vector-effect:non-scaling-stroke"/>
+<path d="M142 430H758M142 350H758M142 270H758M142 190H758" style="fill:none;stroke:#c9c1b3;stroke-width:.8;stroke-dasharray:2 6;vector-effect:non-scaling-stroke"/>
+<path d="M270 510V154M398 510V154M526 510V154M654 510V154" style="fill:none;stroke:#c9c1b3;stroke-width:.8;stroke-dasharray:2 6;vector-effect:non-scaling-stroke"/>
+<text x="116" y="334" transform="rotate(-90 116 334)" text-anchor="middle" class="l" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em">SCORE MESURÉ</text>
+<text x="450" y="555" text-anchor="middle" class="l" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em">PROPRIÉTÉ VISÉE</text>
+<text x="132" y="514" text-anchor="end" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">faible</text>
+<text x="132" y="160" text-anchor="end" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">élevé</text>
+<text x="142" y="532" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">faible</text>
+<text x="758" y="532" text-anchor="end" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">élevée</text>
+
+<path d="M190 490C280 438 358 390 430 338C510 280 584 225 684 154L724 214C626 282 550 338 468 398C382 460 302 506 220 542Z" fill="url(#cm-01-stip)" stroke="#c9c1b3" stroke-width=".9"/>
+<text x="278" y="474" transform="rotate(-33 278 474)" class="ll h" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">RELATION VALIDÉE</text>
+
+<circle cx="398" cy="390" r="6" fill="#f3efe6" stroke="#1c1c18" stroke-width="1.2"/>
+<text x="376" y="411" text-anchor="end" class="ll h" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">SITUATION INITIALE</text>
+
+<path d="M398 390C470 338 548 276 654 190" marker-end="url(#cm-01-arms)" style="fill:none;stroke:#52634e;stroke-width:1.6;vector-effect:non-scaling-stroke"/>
+<text x="548" y="326" class="tsm h" style="fill:#52634e;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">Agir sur la propriété</text>
+<text x="548" y="347" class="tt h" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">la propriété progresse, puis le proxy suit</text>
+
+<path d="M398 390C386 330 386 252 398 190" marker-end="url(#cm-01-arox)" style="fill:none;stroke:#a84e2f;stroke-width:1.8;vector-effect:non-scaling-stroke"/>
+<text x="218" y="286" class="tsm ox h" style="fill:#a84e2f;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">Agir sur la mesure</text>
+<text x="218" y="307" class="tt h" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">le score monte ; la propriété ne bouge pas</text>
+
+<path d="M398 190H654" style="fill:none;stroke:#a84e2f;stroke-width:.9;stroke-dasharray:3 4;vector-effect:non-scaling-stroke"/>
+<rect x="398" y="198" width="256" height="24" fill="url(#cm-01-hatch)"/>
+<text x="526" y="181" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">MÊME SCORE FINAL</text>
+<path d="M398 196V510M654 196V510" style="fill:none;stroke:#a84e2f;stroke-width:.8;stroke-dasharray:3 5;vector-effect:non-scaling-stroke"/>
+<text x="398" y="494" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">CIBLE INCHANGÉE</text>
+<text x="654" y="494" text-anchor="middle" class="ll ms h" style="fill:#52634e;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">CIBLE AMÉLIORÉE</text>
+
+<rect x="790" y="176" width="154" height="126" style="fill:#f3efe6;stroke:#52634e;stroke-width:.9"/>
+<text x="867" y="199" text-anchor="middle" class="ll ms" style="fill:#52634e;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">A · CIBLE</text>
+<text x="867" y="228" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">propriété</text>
+<path d="M867 236V258" marker-end="url(#cm-01-arms)" style="fill:none;stroke:#52634e;stroke-width:1.4"/>
+<text x="867" y="282" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">proxy</text>
+
+<rect x="790" y="326" width="154" height="154" fill="url(#cm-01-hatch)" stroke="#a84e2f" stroke-width=".9"/>
+<text x="867" y="349" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">B · MESURE</text>
+<text x="867" y="378" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">dispositif</text>
+<path d="M867 386V408" marker-end="url(#cm-01-arox)" style="fill:none;stroke:#a84e2f;stroke-width:1.6"/>
+<text x="867" y="432" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">proxy</text>
+<text x="867" y="460" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">PROPRIÉTÉ STABLE</text>
+
+<path d="M60 578H940" style="fill:none;stroke:#c9c1b3;stroke-width:.8;vector-effect:non-scaling-stroke"/>
+<text x="500" y="610" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px">L’ÉGALITÉ DU SCORE NE GARANTIT PAS L’ÉGALITÉ DU PROGRÈS</text>
+</svg>

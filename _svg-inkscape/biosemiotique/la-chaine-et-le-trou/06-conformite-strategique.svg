@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-06" viewBox="0 0 1000 640" role="img" aria-labelledby="cm-06-t cm-06-d">
+<title id="cm-06-t">La conformité ne révèle pas sa fonction</title>
+<desc id="cm-06-d">Deux modèles causaux produisent le même comportement conforme et le même score. Dans le premier, le critère évalué est l’objectif. Dans le second, la conformité est un moyen instrumental. La barrière d’observation empêche l’évaluateur de départager ces mécanismes à partir du seul résultat.</desc>
+<defs>
+<marker id="cm-06-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="#1c1c18" stroke-width="1.3"></path></marker>
+<marker id="cm-06-arox" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4" fill="none" stroke="#a84e2f" stroke-width="1.3"></path></marker>
+<pattern id="cm-06-stip" width="4.8" height="4.8" patternUnits="userSpaceOnUse"><circle cx="2.4" cy="2.4" r=".65" fill="#57564f" opacity=".42"></circle><circle cx="0" cy="0" r=".65" fill="#57564f" opacity=".42"></circle></pattern>
+<pattern id="cm-06-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#a84e2f" stroke-width=".65" opacity=".34"></line></pattern>
+</defs>
+
+
+<text x="60" y="28" class="l ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px;stroke-linejoin:round">PL. 06 / IDENTIFICATION CAUSALE</text>
+<text x="940" y="28" text-anchor="end" class="ll h" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px;stroke-linejoin:round">DEUX POLITIQUES · UNE OBSERVATION</text>
+<path d="M52 52H948" class="r" style="fill:none;stroke:#1c1c18;stroke-width:1;vector-effect:non-scaling-stroke"></path>
+<text x="60" y="96" class="ts" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:25px;font-weight:500;letter-spacing:-.015em">La conformité ne révèle pas sa fonction</text>
+<text x="60" y="119" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">LE SIGNAL OBSERVE LE RÉSULTAT, PAS LA RÈGLE INTERNE QUI L’A PRODUIT</text>
+
+
+<text x="60" y="153" class="l" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em">MÉCANISMES INTERNES</text>
+<rect x="76" y="174" width="364" height="236" class="cardl" style="fill:#f3efe6;stroke:#c9c1b3;stroke-width:.8;vector-effect:non-scaling-stroke"></rect>
+<text x="258" y="204" text-anchor="middle" class="ll ms" style="fill:#52634e;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">MODÈLE A · POURSUITE DU CRITÈRE</text>
+<rect x="124" y="228" width="268" height="48" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="258" y="250" text-anchor="middle" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;letter-spacing:-.01em">Objectif = critère évalué</text>
+<text x="258" y="268" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">LA CONFORMITÉ EST LA FIN</text>
+<path d="M258 276V306" class="rms" marker-end="url(#cm-06-ar)" style="fill:none;stroke:#52634e;stroke-width:1.4;vector-effect:non-scaling-stroke"></path>
+<rect x="142" y="312" width="232" height="54" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="258" y="337" text-anchor="middle" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;letter-spacing:-.01em">Comportement conforme</text>
+<text x="258" y="355" text-anchor="middle" class="ll ms" style="fill:#52634e;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">CONSÉQUENCE DIRECTE</text>
+
+<rect x="560" y="174" width="364" height="236" fill="url(#cm-06-hatch)" stroke="#a84e2f" stroke-width=".9"></rect>
+<text x="742" y="204" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">MODÈLE B · CONFORMITÉ INSTRUMENTALE</text>
+<rect x="608" y="220" width="268" height="48" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="742" y="242" text-anchor="middle" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;letter-spacing:-.01em">Objectif distinct</text>
+<text x="742" y="260" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">PERSISTE HORS DE L’ÉVALUATION</text>
+<path d="M742 268V288" class="rox" marker-end="url(#cm-06-arox)" style="fill:none;stroke:#a84e2f;stroke-width:1.6;vector-effect:non-scaling-stroke"></path>
+<rect x="608" y="294" width="268" height="44" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="742" y="313" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">représente score → sélection → influence</text>
+<text x="742" y="329" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">PLANIFICATION INSTRUMENTALE</text>
+<path d="M742 338V354" class="rox" marker-end="url(#cm-06-arox)" style="fill:none;stroke:#a84e2f;stroke-width:1.6;vector-effect:non-scaling-stroke"></path>
+<rect x="626" y="360" width="232" height="40" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="742" y="384" text-anchor="middle" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;letter-spacing:-.01em">Comportement conforme</text>
+
+
+<rect x="60" y="430" width="880" height="28" fill="url(#cm-06-stip)"></rect>
+<path d="M60 430H940M60 458H940" class="rgd" style="fill:none;stroke:#a84e2f;stroke-width:.9;stroke-dasharray:3 4;vector-effect:non-scaling-stroke"></path>
+<text x="500" y="449" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px;stroke-linejoin:round">BARRIÈRE D’OBSERVATION — L’OBJECTIF INTERNE N’EST PAS DIRECTEMENT ÉVALUÉ</text>
+
+
+<path d="M258 366V418H180V486H446" class="r" marker-end="url(#cm-06-ar)" style="fill:none;stroke:#1c1c18;stroke-width:1;vector-effect:non-scaling-stroke"></path>
+<path d="M742 400V418H820V486H554" class="rox" marker-end="url(#cm-06-arox)" style="fill:none;stroke:#a84e2f;stroke-width:1.6;vector-effect:non-scaling-stroke"></path>
+<rect x="394" y="472" width="212" height="74" class="card" style="fill:#f3efe6;stroke:#1c1c18;stroke-width:.9;vector-effect:non-scaling-stroke"></rect>
+<text x="500" y="496" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">OBSERVATION DISPONIBLE</text>
+<text x="500" y="520" text-anchor="middle" class="tsm" style="fill:#1c1c18;font-family:&#34;Newsreader&#34;,Georgia,serif;font-size:18px;font-weight:500;letter-spacing:-.01em">même comportement</text>
+<text x="500" y="539" text-anchor="middle" class="tt" style="fill:#1c1c18;font-family:&#34;Inter&#34;,Arial,sans-serif;font-size:12.5px;font-weight:500">même score · même sélection</text>
+
+<text x="258" y="517" text-anchor="middle" class="ll ms" style="fill:#52634e;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">COMPATIBLE</text>
+<text x="742" y="517" text-anchor="middle" class="ll ox" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">COMPATIBLE</text>
+<path d="M160 568H840" class="rl" style="fill:none;stroke:#c9c1b3;stroke-width:.8;vector-effect:non-scaling-stroke"></path>
+<text x="500" y="589" text-anchor="middle" class="ll" style="fill:#57564f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em">COMPATIBILITÉ OBSERVATIONNELLE ≠ ÉGALITÉ DE PROBABILITÉ</text>
+<text x="500" y="620" text-anchor="middle" class="ll ox h" style="fill:#a84e2f;font-family:&#34;IBM Plex Mono&#34;,ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.07em;paint-order:stroke;stroke:#f3efe6;stroke-width:3px;stroke-linejoin:round">BIEN SCORER PEUT DEVENIR UNE STRATÉGIE PLUTÔT QU’UNE PREUVE</text>
+
+</svg>

@@ -1,0 +1,75 @@
+<svg class="cm-diagram cm-note-pl05-lecture-ecriture" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="pl05-lecture-ecriture-title pl05-lecture-ecriture-desc" preserveAspectRatio="xMidYMid meet">
+<title id="pl05-lecture-ecriture-title">Trois tests, trois conclusions</title>
+<desc id="pl05-lecture-ecriture-desc">Un état interne ou une direction candidate est soumis à trois familles de tests. Un probe teste si une variable est accessible. Un remplacement ou une ablation teste si l’intervention modifie la sortie dans un contraste défini. Une injection teste si la direction permet de contrôler la sortie dans le régime choisi. Les conclusions ne sont pas interchangeables.</desc>
+<style>
+  .cm-note-pl05-lecture-ecriture { color: #1c1c18; background: transparent; }
+  .cm-note-pl05-lecture-ecriture text { fill: #1c1c18; }
+  .cm-note-pl05-lecture-ecriture .ink { fill: none; stroke: #1c1c18; stroke-width: 1.3; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-lecture-ecriture .line { fill: none; stroke: #c9c1b3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-lecture-ecriture .oxide { fill: none; stroke: #a84e2f; stroke-width: 1.8; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-lecture-ecriture .wash { fill: #e8e0d2; fill-opacity: .62; stroke: none; }
+  .cm-note-pl05-lecture-ecriture .card { fill: none; stroke: #1c1c18; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-lecture-ecriture .accent-card { fill: #a84e2f; fill-opacity: .09; stroke: #a84e2f; stroke-width: 1.1; vector-effect: non-scaling-stroke; }
+  .cm-note-pl05-lecture-ecriture .title { font: 500 42px/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
+  .cm-note-pl05-lecture-ecriture .subtitle { font: 500 24px/1.2 "Newsreader", Georgia, serif; }
+  .cm-note-pl05-lecture-ecriture .label { font: 500 15px/1.3 "Inter", Arial, sans-serif; }
+  .cm-note-pl05-lecture-ecriture .small { font: 500 12px/1.35 "Inter", Arial, sans-serif; }
+  .cm-note-pl05-lecture-ecriture .mono { font: 500 11px/1.3 "IBM Plex Mono", monospace; letter-spacing: .06em; }
+  .cm-note-pl05-lecture-ecriture .mono-small { font: 500 9px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .cm-note-pl05-lecture-ecriture .caption { font: 400 17px/1.4 "Newsreader", Georgia, serif; font-style: italic; }
+  .cm-note-pl05-lecture-ecriture .muted { fill: #57564f; }
+  .cm-note-pl05-lecture-ecriture .accent { fill: #a84e2f; }
+  .cm-note-pl05-lecture-ecriture .center { text-anchor: middle; }
+</style>
+<defs>
+  <marker id="pl05-lecture-ecriture-arrow-ink" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1l8 4-8 4" class="ink"/></marker>
+</defs>
+
+<text x="55" y="46" class="mono accent">PL. 05 / MÉTHODES</text>
+<line x1="55" y1="62" x2="1145" y2="62" class="line"/>
+<text x="600" y="116" class="title center">Trois tests, trois conclusions</text>
+<text x="600" y="145" class="mono-small muted center">ACCESSIBILITÉ · INFLUENCE SOUS INTERVENTION · CONTRÔLE SOUS INJECTION</text>
+
+<rect x="450" y="172" width="300" height="58" class="accent-card"/>
+<text x="600" y="207" class="subtitle center">état ou direction candidate</text>
+<path d="M510 230V267H225V300" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+<path d="M600 230V300" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+<path d="M690 230V267H975V300" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+
+<rect x="55" y="300" width="340" height="310" class="card"/>
+<text x="225" y="342" class="mono accent center">01 · PROBE</text>
+<text x="225" y="382" class="subtitle center">peut-on prédire la variable ?</text>
+<rect x="90" y="420" width="270" height="56" class="wash"/>
+<text x="225" y="443" class="small center">apprentissage puis évaluation</text>
+<text x="225" y="463" class="label center">sur des exemples tenus à part</text>
+<line x1="225" y1="476" x2="225" y2="510" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+<rect x="90" y="518" width="270" height="60" class="accent-card"/>
+<text x="225" y="543" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="225" y="566" class="label center accent">information accessible au probe</text>
+
+<rect x="430" y="300" width="340" height="310" class="card"/>
+<text x="600" y="342" class="mono accent center">02 · PATCHING / ABLATION</text>
+<text x="600" y="382" class="subtitle center">la sortie change-t-elle ?</text>
+<rect x="465" y="420" width="270" height="56" class="wash"/>
+<text x="600" y="443" class="small center">état remplacé ou composant retiré</text>
+<text x="600" y="463" class="label center">dans un contraste défini</text>
+<line x1="600" y1="476" x2="600" y2="510" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+<rect x="465" y="518" width="270" height="60" class="accent-card"/>
+<text x="600" y="543" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="600" y="566" class="label center accent">influence sous cette intervention</text>
+
+<rect x="805" y="300" width="340" height="310" class="card"/>
+<text x="975" y="342" class="mono accent center">03 · STEERING</text>
+<text x="975" y="382" class="subtitle center">peut-on piloter la sortie ?</text>
+<rect x="840" y="420" width="270" height="56" class="wash"/>
+<text x="975" y="443" class="small center">direction injectée à un site</text>
+<text x="975" y="463" class="label center">et une amplitude choisis</text>
+<line x1="975" y1="476" x2="975" y2="510" class="ink" marker-end="url(#pl05-lecture-ecriture-arrow-ink)"/>
+<rect x="840" y="518" width="270" height="60" class="accent-card"/>
+<text x="975" y="543" class="mono-small center">CONCLUSION PERMISE</text>
+<text x="975" y="566" class="label center accent">contrôle dans ce régime d’injection</text>
+
+<line x1="55" y1="665" x2="1145" y2="665" class="line"/>
+<text x="600" y="704" class="caption center">Une mesure positive dans une colonne ne prédit pas automatiquement le résultat des deux autres.</text>
+<text x="55" y="758" class="mono-small muted">CHAQUE CONCLUSION DÉPEND DU SITE, DU CONTRASTE, DE LA BASELINE ET DE LA MÉTRIQUE</text>
+</svg>
