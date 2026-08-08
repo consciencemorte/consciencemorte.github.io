@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-note-08" viewBox="0 0 1536 1024" role="img" aria-labelledby="t8 d8" preserveAspectRatio="xMidYMid meet">
+  <title id="t8">Une non-récupération est une région, pas un point</title>
+  <desc id="d8">Plan à deux axes : régime d'accès de l'attaquant en ordonnée (prompt en boîte noire, logits, activations, poids et réentraînement) et budget d'extraction en abscisse. Les taux de récupération rapportés par Jang et al., Xiang et al. et Patil et al. y sont placés. La région effectivement testée est délimitée ; tout ce qui se trouve au-delà n'est couvert par aucune affirmation de suppression.</desc>
+  <defs>
+    <style><![CDATA[
+    .cm-note-08 text {
+      fill: var(--ink, #1f1e1a);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    .cm-note-08 .title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 40px; font-weight: 600; letter-spacing: 0.2px;
+    }
+    .cm-note-08 .plate {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 18px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .cm-note-08 .axis {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 16px; letter-spacing: 0.04em;
+    }
+    .cm-note-08 .axistitle {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .cm-note-08 .mono {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 15px; letter-spacing: 0.04em;
+    }
+    .cm-note-08 .pt { font-size: 19px; font-weight: 600; }
+    .cm-note-08 .ptsub { font-size: 17px; }
+    .cm-note-08 .caption { font-family: "Newsreader", Georgia, serif; font-size: 19px; font-style: italic; }
+    .cm-note-08 .line-stroke { stroke: var(--line, #b9b2a3); stroke-width: 1.0; fill: none; }
+    .cm-note-08 .grid { stroke: var(--line, #b9b2a3); stroke-width: 0.8; stroke-dasharray: 3 5; fill: none; }
+    .cm-note-08 .ink-stroke { stroke: var(--ink, #1f1e1a); stroke-width: 1.4; fill: none; }
+    .cm-note-08 .graphite-stroke { stroke: var(--graphite, #5b5a54); stroke-width: 1.2; fill: none; }
+    .cm-note-08 .oxide-stroke { stroke: var(--oxide, #a64b32); stroke-width: 1.8; fill: none; }
+    .cm-note-08 .tested { fill: rgba(166,75,50,0.07); stroke: var(--oxide, #a64b32); stroke-width: 1.4; stroke-dasharray: 6 4; }
+    .cm-note-08 .oxide { fill: var(--oxide, #a64b32); }
+    .cm-note-08 .muted { fill: var(--graphite, #5b5a54); }
+    .cm-note-08 .dot { fill: var(--oxide, #a64b32); }
+    .cm-note-08 .dot-open { fill: none; stroke: var(--ink, #1f1e1a); stroke-width: 1.8; }
+    .cm-note-08 .center { text-anchor: middle; dominant-baseline: middle; }
+    .cm-note-08 .left { text-anchor: start; dominant-baseline: middle; }
+    .cm-note-08 .right { text-anchor: end; dominant-baseline: middle; }
+    .cm-note-08 .paperline { stroke: var(--line, #b9b2a3); stroke-width: 1.0; }
+]]></style>
+  </defs>
+
+  <rect x="0" y="0" width="1536" height="1024" fill="transparent"/>
+  <text x="72" y="70" class="plate">PL. 08 / MODÈLE DE MENACE</text>
+  <line x1="72" y1="88" x2="1464" y2="88" class="paperline"/>
+  <text x="768" y="150" class="title center">Une non-récupération est une région, pas un point</text>
+  <line x1="260" y1="172" x2="1276" y2="172" class="paperline"/>
+
+  <!-- tested envelope -->
+  <rect x="300" y="415" width="440" height="315" class="tested"/>
+  <text x="320" y="714" class="mono oxide left">RÉGION EFFECTIVEMENT TESTÉE</text>
+
+  <!-- grid -->
+  <line x1="300" y1="690" x2="1320" y2="690" class="grid"/>
+  <line x1="300" y1="580" x2="1320" y2="580" class="grid"/>
+  <line x1="300" y1="470" x2="1320" y2="470" class="grid"/>
+  <line x1="300" y1="360" x2="1320" y2="360" class="grid"/>
+  <line x1="420"  y1="330" x2="420"  y2="730" class="grid"/>
+  <line x1="660"  y1="330" x2="660"  y2="730" class="grid"/>
+  <line x1="900"  y1="330" x2="900"  y2="730" class="grid"/>
+  <line x1="1140" y1="330" x2="1140" y2="730" class="grid"/>
+
+  <!-- axes -->
+  <line x1="300" y1="330" x2="300" y2="730" class="ink-stroke"/>
+  <line x1="300" y1="730" x2="1320" y2="730" class="ink-stroke"/>
+
+  <!-- y labels -->
+  <text x="284" y="690" class="axis right">prompt (black-box)</text>
+  <text x="284" y="580" class="axis right">logits</text>
+  <text x="284" y="470" class="axis right">activations</text>
+  <text x="284" y="360" class="axis right">accès aux poids</text>
+  <text x="120" y="288" class="axistitle left">Accès de l’attaquant</text>
+
+  <!-- x labels -->
+  <text x="420"  y="756" class="axis center">B = 1</text>
+  <text x="660"  y="756" class="axis center">B = 20</text>
+  <text x="900"  y="756" class="axis center">B = 10²</text>
+  <text x="1140" y="756" class="axis center">B = 10³</text>
+  <text x="1320" y="800" class="axistitle right">Budget d’extraction (candidats ou requêtes)</text>
+
+  <!-- Jang / ELM -->
+  <circle cx="420" cy="690" r="10" class="dot"/>
+  <text x="472" y="618" class="pt left oxide">Jang et al. — ELM</text>
+  <text x="472" y="642" class="ptsub left muted">préfixe hindi · 57,3 % récupérés</text>
+
+  <!-- Jang / RMU-TAR : mêmes attaques, résultat différent -->
+  <circle cx="420" cy="690" r="18" class="dot-open"/>
+  <path d="M438,690 L760,682" class="graphite-stroke"/>
+  <text x="780" y="670" class="pt left">RMU, TAR</text>
+  <text x="780" y="694" class="ptsub left muted">mêmes attaques · non récupérés</text>
+
+  <!-- Xiang / steering -->
+  <circle cx="420" cy="470" r="10" class="dot"/>
+  <text x="446" y="434" class="pt left oxide">Xiang et al. — steering</text>
+  <text x="446" y="458" class="ptsub left muted">une direction · 50 % Qwen, 90 % Gemma</text>
+
+  <!-- Patil / head projection -->
+  <circle cx="660" cy="470" r="10" class="dot"/>
+  <text x="686" y="506" class="pt left oxide">Patil et al. — ROME sur GPT-J</text>
+  <text x="686" y="530" class="ptsub left muted">projection d’états cachés · 38 % à B = 20</text>
+
+  <!-- untested region -->
+  <text x="1000" y="380" class="mono muted center">DOMAINE NON COUVERT</text>
+  <text x="1000" y="406" class="mono muted center">budgets supérieurs · accès aux poids · réentraînement</text>
+  <path d="M760,415 L760,330 L1320,330" class="graphite-stroke" stroke-dasharray="4 6"/>
+
+  <line x1="72" y1="900" x2="1464" y2="900" class="paperline"/>
+  <text x="768" y="946" class="caption center">38 % et 57,3 % ne mesurent pas la même chose : chaque taux n’est défini que par son couple (accès, budget).</text>
+  <text x="768" y="976" class="caption center">Une affirmation d’unlearning ne porte que sur la région effectivement testée.</text>
+</svg>

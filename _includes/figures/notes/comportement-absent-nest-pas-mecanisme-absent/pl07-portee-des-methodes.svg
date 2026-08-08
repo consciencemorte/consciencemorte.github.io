@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-note-07" viewBox="0 0 1536 1024" role="img" aria-labelledby="t7 d7" preserveAspectRatio="xMidYMid meet">
+  <title id="t7">Que teste chaque méthode ?</title>
+  <desc id="d7">Matrice croisant sept méthodes d'évaluation avec les trois niveaux représentation, accessibilité et expression. Un disque plein indique un test direct, un cercle vide une contrainte indirecte, une case vide un niveau hors de portée. L'observation comportementale et les interventions causales portent sur la conjonction ou la relation entre niveaux.</desc>
+  <defs>
+    <style><![CDATA[
+    .cm-note-07 text {
+      fill: var(--ink, #1f1e1a);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    .cm-note-07 .title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 40px; font-weight: 600; letter-spacing: 0.2px;
+    }
+    .cm-note-07 .plate {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 18px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .cm-note-07 .section { font-family: "Newsreader", Georgia, serif; font-size: 25px; font-weight: 600; }
+    .cm-note-07 .label { font-size: 19px; font-weight: 500; }
+    .cm-note-07 .mono {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 15px; letter-spacing: 0.04em;
+    }
+    .cm-note-07 .num {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 15px; font-weight: 600; letter-spacing: 0.10em;
+    }
+    .cm-note-07 .small { font-size: 16px; }
+    .cm-note-07 .caption { font-family: "Newsreader", Georgia, serif; font-size: 19px; font-style: italic; }
+    .cm-note-07 .line-stroke { stroke: var(--line, #b9b2a3); stroke-width: 1.0; fill: none; }
+    .cm-note-07 .graphite-stroke { stroke: var(--graphite, #5b5a54); stroke-width: 1.3; fill: none; }
+    .cm-note-07 .oxide-stroke { stroke: var(--oxide, #a64b32); stroke-width: 1.6; fill: none; }
+    .cm-note-07 .dot-full { fill: var(--ink, #1f1e1a); }
+    .cm-note-07 .dot-open { fill: none; stroke: var(--graphite, #5b5a54); stroke-width: 1.6; }
+    .cm-note-07 .muted { fill: var(--graphite, #5b5a54); }
+    .cm-note-07 .oxide { fill: var(--oxide, #a64b32); }
+    .cm-note-07 .center { text-anchor: middle; dominant-baseline: middle; }
+    .cm-note-07 .left { text-anchor: start; dominant-baseline: middle; }
+    .cm-note-07 .right { text-anchor: end; dominant-baseline: middle; }
+    .cm-note-07 .paperline { stroke: var(--line, #b9b2a3); stroke-width: 1.0; }
+]]></style>
+  </defs>
+
+  <rect x="0" y="0" width="1536" height="1024" fill="transparent"/>
+  <text x="72" y="70" class="plate">PL. 07 / PORTÉE DES MÉTHODES</text>
+  <line x1="72" y1="88" x2="1464" y2="88" class="paperline"/>
+  <text x="768" y="150" class="title center">Que teste chaque méthode ?</text>
+  <line x1="440" y1="172" x2="1096" y2="172" class="paperline"/>
+
+  <!-- Column headers -->
+  <text x="760"  y="248" class="num center muted">01</text>
+  <text x="1010" y="248" class="num center muted">02</text>
+  <text x="1260" y="248" class="num center muted">03</text>
+  <text x="760"  y="284" class="section center">Représentation</text>
+  <text x="1010" y="284" class="section center">Accessibilité</text>
+  <text x="1260" y="284" class="section center">Expression</text>
+  <line x1="120" y1="310" x2="1400" y2="310" class="graphite-stroke"/>
+
+  <!-- Row 1 : observation comportementale (bracket) -->
+  <text x="580" y="350" class="label right">Observation comportementale</text>
+  <path d="M655,338 L655,350 L1365,350 L1365,338" class="oxide-stroke"/>
+  <text x="1010" y="376" class="mono oxide center">PORTE SUR LA CONJONCTION — NE LOCALISE PAS</text>
+  <line x1="120" y1="398" x2="1400" y2="398" class="line-stroke"/>
+
+  <!-- Row 2 : analyse des logits -->
+  <text x="580" y="436" class="label right">Analyse des logits</text>
+  <circle cx="1260" cy="436" r="11" class="dot-full"/>
+  <line x1="120" y1="466" x2="1400" y2="466" class="line-stroke"/>
+
+  <!-- Row 3 : probing -->
+  <text x="580" y="496" class="label right">Probing</text>
+  <circle cx="760" cy="496" r="11" class="dot-full"/>
+  <circle cx="1010" cy="496" r="10" class="dot-open"/>
+  <line x1="120" y1="526" x2="1400" y2="526" class="line-stroke"/>
+
+  <!-- Row 4 : modification du contexte -->
+  <text x="580" y="556" class="label right">Modification du contexte (prompt)</text>
+  <circle cx="760" cy="556" r="10" class="dot-open"/>
+  <circle cx="1010" cy="556" r="11" class="dot-full"/>
+  <line x1="120" y1="586" x2="1400" y2="586" class="line-stroke"/>
+
+  <!-- Row 5 : fine-tuning -->
+  <text x="580" y="616" class="label right">Fine-tuning / relearning</text>
+  <circle cx="760" cy="616" r="10" class="dot-open"/>
+  <circle cx="1010" cy="616" r="11" class="dot-full"/>
+  <line x1="120" y1="646" x2="1400" y2="646" class="line-stroke"/>
+
+  <!-- Row 6 : steering -->
+  <text x="580" y="676" class="label right">Steering</text>
+  <circle cx="760" cy="676" r="10" class="dot-open"/>
+  <circle cx="1010" cy="676" r="11" class="dot-full"/>
+  <circle cx="1260" cy="676" r="10" class="dot-open"/>
+  <line x1="120" y1="708" x2="1400" y2="708" class="line-stroke"/>
+
+  <!-- Row 7 : interventions causales (bracket) -->
+  <text x="580" y="746" class="label right">Interventions causales</text>
+  <path d="M655,758 L655,746 L1365,746 L1365,758" class="oxide-stroke"/>
+  <text x="1010" y="784" class="mono oxide center">TESTE LES DÉPENDANCES ENTRE NIVEAUX</text>
+  <line x1="120" y1="806" x2="1400" y2="806" class="graphite-stroke"/>
+
+  <!-- Legend -->
+  <circle cx="132" cy="852" r="9" class="dot-full"/>
+  <text x="152" y="852" class="small left muted">teste directement</text>
+  <circle cx="340" cy="852" r="8" class="dot-open"/>
+  <text x="360" y="852" class="small left muted">contraint indirectement</text>
+  <text x="612" y="852" class="small left muted">case vide : hors de portée</text>
+  <path d="M880,860 L880,852 L940,852 L940,860" class="oxide-stroke"/>
+  <text x="958" y="852" class="small left muted">porte sur la conjonction ou la relation</text>
+
+  <line x1="72" y1="900" x2="1464" y2="900" class="paperline"/>
+  <text x="768" y="946" class="caption center">Aucune méthode ne couvre les trois niveaux à elle seule.</text>
+  <text x="768" y="976" class="caption center">Une affirmation de suppression doit nommer le niveau testé et la méthode qui le teste.</text>
+</svg>

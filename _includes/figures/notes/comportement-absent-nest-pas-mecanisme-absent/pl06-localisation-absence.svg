@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cm-diagram cm-note-06" viewBox="0 0 1536 1024" role="img" aria-labelledby="t6 d6" preserveAspectRatio="xMidYMid meet">
+  <title id="t6">Où se situe la modification ?</title>
+  <desc id="d6">Grille à trois niveaux — représentation, accessibilité, expression. Chaque niveau est associé à ce qu'une absence comportementale y signifierait et au résultat empirique qui l'appuie ou l'écarte. Les trois niveaux convergent vers une même observation en sortie.</desc>
+  <defs>
+    <style><![CDATA[
+    .cm-note-06 text {
+      fill: var(--ink, #1f1e1a);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    .cm-note-06 .title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .cm-note-06 .plate {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .cm-note-06 .section {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 30px;
+      font-weight: 600;
+    }
+    .cm-note-06 .label { font-size: 19px; font-weight: 500; }
+    .cm-note-06 .mono {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+    }
+    .cm-note-06 .num {
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+    }
+    .cm-note-06 .caption {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 19px;
+      font-style: italic;
+    }
+    .cm-note-06 .ink-stroke { stroke: var(--ink, #1f1e1a); stroke-width: 1.4; fill: none; }
+    .cm-note-06 .line-stroke { stroke: var(--line, #b9b2a3); stroke-width: 1.0; fill: none; }
+    .cm-note-06 .graphite-stroke { stroke: var(--graphite, #5b5a54); stroke-width: 1.2; fill: none; }
+    .cm-note-06 .oxide-stroke { stroke: var(--oxide, #a64b32); stroke-width: 1.6; fill: none; }
+    .cm-note-06 .box { fill: rgba(255,255,255,0.0); stroke: var(--ink, #1f1e1a); stroke-width: 1.4; }
+    .cm-note-06 .softbox { fill: rgba(255,255,255,0.0); stroke: var(--line, #b9b2a3); stroke-width: 1.1; }
+    .cm-note-06 .muted { fill: var(--graphite, #5b5a54); }
+    .cm-note-06 .oxide { fill: var(--oxide, #a64b32); }
+    .cm-note-06 .center { text-anchor: middle; dominant-baseline: middle; }
+    .cm-note-06 .left { text-anchor: start; dominant-baseline: middle; }
+    .cm-note-06 .paperline { stroke: var(--line, #b9b2a3); stroke-width: 1.0; }
+]]></style>
+    <marker id="arrow6" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="var(--graphite, #5b5a54)"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1536" height="1024" fill="transparent"/>
+  <text x="72" y="70" class="plate">PL. 06 / LOCALISATION</text>
+  <line x1="72" y1="88" x2="1464" y2="88" class="paperline"/>
+  <text x="768" y="150" class="title center">Où se situe la modification ?</text>
+  <line x1="420" y1="172" x2="1116" y2="172" class="paperline"/>
+
+  <text x="140" y="264" class="mono muted left">NIVEAUX DE LOCALISATION</text>
+  <text x="1305" y="264" class="mono muted center">OBSERVATION</text>
+
+  <!-- ROW 1 — Représentation -->
+  <rect x="140" y="300" width="920" height="128" class="box"/>
+  <line x1="390" y1="300" x2="390" y2="428" class="line-stroke"/>
+  <text x="265" y="336" class="num center muted">01</text>
+  <text x="265" y="380" class="section center">Représentation</text>
+  <text x="418" y="344" class="label left">L’information n’est plus encodée dans les états pertinents.</text>
+  <text x="418" y="372" class="label left muted">Le calcul qui la produisait est altéré ou détruit.</text>
+  <text x="418" y="406" class="mono oxide left">AUCUN DES TRAVAUX CITÉS NE L’ÉTABLIT</text>
+
+  <!-- ROW 2 — Accessibilité -->
+  <rect x="140" y="466" width="920" height="128" class="box"/>
+  <line x1="390" y1="466" x2="390" y2="594" class="line-stroke"/>
+  <text x="265" y="502" class="num center muted">02</text>
+  <text x="265" y="546" class="section center">Accessibilité</text>
+  <text x="418" y="510" class="label left">L’information reste encodée mais n’est pas atteinte</text>
+  <text x="418" y="538" class="label left muted">ou pas activée dans le contexte considéré.</text>
+  <text x="418" y="572" class="mono oxide left">HUBINGER ET AL. — ACTIVATION CONDITIONNÉE AU DÉCLENCHEUR</text>
+
+  <!-- ROW 3 — Expression -->
+  <rect x="140" y="632" width="920" height="128" class="box"/>
+  <line x1="390" y1="632" x2="390" y2="760" class="line-stroke"/>
+  <text x="265" y="668" class="num center muted">03</text>
+  <text x="265" y="712" class="section center">Expression</text>
+  <text x="418" y="676" class="label left">L’information est accessible au calcul mais son influence</text>
+  <text x="418" y="704" class="label left muted">sur les logits est réduite ou compensée.</text>
+  <text x="418" y="738" class="mono oxide left">JANG ET AL. — LOGITS ET SORTIES CORRÉLÉS : PAS LE CAS GÉNÉRAL</text>
+
+  <!-- Bracket spanning 02–03 : Xiang -->
+  <path d="M120,466 L100,466 L100,760 L120,760" class="oxide-stroke"/>
+  <text x="140" y="800" class="mono oxide left">XIANG ET AL. — COUCHES PRÉCOCES PRÉSERVÉES, MODIFICATION TARDIVE : DISSOCIATION EN 02–03</text>
+
+  <!-- Convergence -->
+  <line x1="1060" y1="364" x2="1152" y2="498" class="graphite-stroke" marker-end="url(#arrow6)"/>
+  <line x1="1060" y1="530" x2="1152" y2="530" class="graphite-stroke" marker-end="url(#arrow6)"/>
+  <line x1="1060" y1="696" x2="1152" y2="562" class="graphite-stroke" marker-end="url(#arrow6)"/>
+
+  <rect x="1160" y="455" width="290" height="150" class="box"/>
+  <text x="1305" y="502" class="section center">Absence</text>
+  <text x="1305" y="536" class="section center">comportementale</text>
+  <text x="1305" y="572" class="caption center muted">sortie observée sous</text>
+  <text x="1305" y="594" class="caption center muted">évaluation standard</text>
+
+  <line x1="72" y1="900" x2="1464" y2="900" class="paperline"/>
+  <text x="768" y="946" class="caption center">Une même absence en sortie est compatible avec les trois niveaux.</text>
+  <text x="768" y="976" class="caption center">Les travaux cités ne les départagent pas également.</text>
+</svg>
